@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="fingerprint-03-svgrepo-com" transform="translate(-0.058 -0.238)">
+    <g id="Rectangle_451" data-name="Rectangle 451" transform="translate(0.058 0.238)" fill="#fff" stroke="#e7e7e7" stroke-width="2">
+      <rect width="64" height="64" rx="13" stroke="none"/>
+      <rect x="1" y="1" width="62" height="62" rx="12" fill="none"/>
+    </g>
+    <g id="Group_3416" data-name="Group 3416" transform="translate(-59.728 -138.544)">
+      <circle id="Ellipse_1168" data-name="Ellipse 1168" cx="2.843" cy="2.843" r="2.843" transform="translate(81.478 175.399)" fill="none" stroke="#263238" stroke-linecap="square" stroke-width="3"/>
+      <path id="Path_9402" data-name="Path 9402" d="M27.17,2,14.09,15.08a8.886,8.886,0,1,0,6.243,5.842L22.9,18.35V14.085H27.17V9.819h4.265l2.133-2.133V2Z" transform="translate(73.501 153.495)" fill="none" stroke="#263238" stroke-linecap="square" stroke-width="3"/>
+    </g>
+  </g>
+</svg>
