@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import HomeThemeSwitch from "./HomeThemeSwitch";
+import ProfileModal from "../../profile/components/ProfileModal";
 
 function HeaderAction({ children, sx }) {
   return (
@@ -33,7 +34,7 @@ function HeaderAction({ children, sx }) {
 }
 
 export default function HomeHeader() {
-  const [ setIsProfileOpen] = useState(false);
+  const [ isProfileOpen,setIsProfileOpen] = useState(false);
 
   return (
     <>
@@ -131,6 +132,7 @@ export default function HomeHeader() {
           </HeaderAction>
         </Stack>
       </Box>
+      <ProfileModal open={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
 
     </>
   );
