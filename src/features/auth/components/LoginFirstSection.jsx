@@ -1,5 +1,5 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import img from "../Assets/Group 7020.png";
+import img from "../Assets/Scroll Group 12.svg";
 
 export default function LoginFirstSection() {
   const theme = useTheme();
@@ -47,7 +47,7 @@ export default function LoginFirstSection() {
         src={img}
         alt="لوحة إدارة مشروع التخرج"
         sx={{
-          height: "105%",
+          height: "100%",
           display: "block",
           objectFit: "cover",
           objectPosition: "center",

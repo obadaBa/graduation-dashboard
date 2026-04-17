@@ -46,7 +46,7 @@ export default function ConfirmPasswordFormPanel() {
         width: { xs: "100%", lg: "60%", xl: "58%" },
         display: "flex",
         alignItems: "center",
-        justifyContent: { xs: "center", lg: "flex-start" },
+        justifyContent: { xs: "center", lg: "center" },
         minHeight: { xs: "100dvh", lg: "100dvh" },
         px: { xs: 2, sm: 3, md: 4, lg: 0 },
         py: { xs: 2, sm: 3, lg: 0 },

@@ -30,6 +30,17 @@ export const createAppTheme = (mode) => {
               button: "#4275FF",
               buttonText: "#FFFFFF",
             },
+            dashboard: {
+              drawerBackground: "#FFFFFF",
+              activeItem: {
+                color: "#5583FF",
+                background: "#F3F6FF",
+              },
+              inactiveItem: {
+                color: "#A1A1A1",
+              },
+              divider: "#DFDFDF",
+            },
           }
         : {
             app: {
@@ -48,6 +59,17 @@ export const createAppTheme = (mode) => {
               loginText: "#C0C0C0",
               button: "#7298FF",
               buttonText: "#121212",
+            },
+            dashboard: {
+              drawerBackground: "#121212",
+              activeItem: {
+                color: "#7298FF",
+                background: "#F3F6FF",
+              },
+              inactiveItem: {
+                color: "#484848",
+              },
+              divider: "#DFDFDF",
             },
           }),
     },

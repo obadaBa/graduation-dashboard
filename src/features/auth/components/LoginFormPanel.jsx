@@ -27,12 +27,13 @@ export default function LoginFormPanel() {
   return (
     <Box
       sx={{
-        width: { xs: "100%", lg: "60%", xl: "58%" },
+        width: { xs: "100%", lg: "60%", xl: "57%" },
         display: "flex",
         alignItems: "center",
         justifyContent: { xs: "center", lg: "flex-start" },
         minHeight: { xs: "100dvh", lg: "100dvh" },
         py: { xs: 2, sm: 3, lg: 0 },
+       
       }}
     >
       <Box

@@ -9,7 +9,7 @@ export default function AuthPageLayout({ children }) {
         display: "flex",
         flexDirection: { xs: "column", lg: "row" },
         justifyContent: "space-between",
-        alignItems: "stretch",
+        alignItems: "center",
         overflowX: "hidden",
       }}
     >

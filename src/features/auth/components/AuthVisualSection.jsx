@@ -16,7 +16,7 @@ export default function AuthVisualSection({
         display: { xs: "none", lg: "flex" },
         width: { lg: "40%", xl: "42%" },
         minWidth: { lg: 360, xl: 420 },
-        height: "100dvh",
+        height: "99dvh",
         position: "relative",
         alignItems: "center",
         px: { lg: 2.5, xl: 3 },

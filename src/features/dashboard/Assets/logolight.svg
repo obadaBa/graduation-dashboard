@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="46.273" height="46" viewBox="0 0 46.273 46">
+  <defs>
+    <filter id="Rectangle_60">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161" result="color"/>
+      <feComposite operator="out" in="SourceGraphic" in2="blur"/>
+      <feComposite operator="in" in="color"/>
+      <feComposite operator="in" in2="SourceGraphic"/>
+    </filter>
+    <filter id="Path_1379" x="0.525" y="8.679" width="45.748" height="33.492" filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur-2"/>
+      <feFlood flood-opacity="0.31"/>
+      <feComposite operator="in" in2="blur-2"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_61" x="13.128" y="6.132" width="19.484" height="19.484" filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-3"/>
+      <feFlood flood-opacity="0.322"/>
+      <feComposite operator="in" in2="blur-3"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_6578" data-name="Group 6578" transform="translate(250 -75.67)">
+    <g data-type="innerShadowGroup">
+      <rect id="Rectangle_60-2" data-name="Rectangle 60" width="46" height="46" rx="6" transform="translate(-250 75.67)" fill="#4275ff"/>
+      <g transform="matrix(1, 0, 0, 1, -250, 75.67)" filter="url(#Rectangle_60)">
+        <rect id="Rectangle_60-3" data-name="Rectangle 60" width="46" height="46" rx="6" fill="#fff"/>
+      </g>
+    </g>
+    <g id="Group_6577" data-name="Group 6577" transform="translate(-240.475 87.802)">
+      <g transform="matrix(1, 0, 0, 1, -9.53, -12.13)" filter="url(#Path_1379)">
+        <path id="Path_1379-2" data-name="Path 1379" d="M-197.441,111.614s-10.593,9.941-15.358,10.225-8.394-4.594-8.394-4.594l-3.97,4.594s4.821,6.353,12.365,5.1,15.358-9.568,15.358-9.7C-197.385,117.245-197.441,111.614-197.441,111.614Z" transform="translate(234.69 -93.94)" fill="#fff"/>
+      </g>
+      <g transform="matrix(1, 0, 0, 1, -9.53, -12.13)" filter="url(#Rectangle_61)">
+        <rect id="Rectangle_61-2" data-name="Rectangle 61" width="5.292" height="5.292" transform="translate(22.87 12.13) rotate(45)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

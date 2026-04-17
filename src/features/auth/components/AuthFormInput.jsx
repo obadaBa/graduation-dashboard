@@ -7,7 +7,9 @@ export default function AuthFormInput({
   placeholder,
   ariaLabel,
   type = "text",
+  startAdornment,
   endAdornment,
+  sx,
 }) {
   const theme = useTheme();
 
@@ -45,13 +47,18 @@ export default function AuthFormInput({
       name={name}
       control={control}
       render={({ field }) => (
-        <FormControl variant="outlined" sx={inputSx}>
+        <FormControl variant="outlined" sx={{ ...inputSx, ...sx }}>
           <OutlinedInput
             {...field}
             type={type}
             fullWidth
             placeholder={placeholder}
             inputProps={{ "aria-label": ariaLabel }}
+            startAdornment={
+              startAdornment ? (
+                <InputAdornment position="start">{startAdornment}</InputAdornment>
+              ) : null
+            }
             endAdornment={
               endAdornment ? (
                 <InputAdornment position="end">{endAdornment}</InputAdornment>
