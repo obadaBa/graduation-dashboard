@@ -56,7 +56,7 @@ export default function HomeSection2Header() {
         spacing={1.25}
         sx={{
           width: { xs: "100%", md: "auto" },
-          justifyContent: { sm: "flex-end" },
+          justifyContent: { sm: "flex-start", xs: "flex-start" },
           alignItems: { xs: "flex-start", sm: "center" },
         }}
         gap={2}

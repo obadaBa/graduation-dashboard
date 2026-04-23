@@ -94,19 +94,97 @@ function FloatingStatCard({ title, value, unit, change, positive = true, sx }) {
 
 export default function HalfCircleHero() {
   return (
-    <Box
-      sx={{
-        order: { xs: 1, lg: 2 },
-        position: "relative",
-        height: { xs: 350, md: 382, lg: 392 },
-        overflow: "visible",
-        transform: {
-          xs: "translateX(18px)",
-          md: "translateX(28px)",
-          lg: "translateX(120px)",
-        },
-      }}
-    >
+    <>
+      <Box
+        dir="ltr"
+        onWheel={(event) => {
+          if (event.currentTarget.scrollWidth <= event.currentTarget.clientWidth) {
+            return;
+          }
+
+          event.currentTarget.scrollLeft += event.deltaY;
+        }}
+        sx={{
+          display: { xs: "flex", lg: "none" },
+          order: 1,
+          gap: 1.5,
+          width: "100%",
+          minWidth: 0,
+          maxWidth: { xs: "calc(100vw - 24px)", sm:  "calc(100vw - 24px)" },
+          justifySelf: "stretch",
+          overflowX: "auto",
+          overflowY: "hidden",
+          px: 1.5,
+          mx: { xs: -1.5, lg: 0 },
+          pb: 1.2,
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        }}
+      >
+        <FloatingStatCard
+          title="المبيعات الكلية"
+          value="245,000"
+          unit="ليرة سورية"
+          change="+10%"
+          sx={{
+            direction: "rtl",
+            position: "static",
+            minWidth: { xs: 205, sm: 220 },
+            width: { xs: 205, sm: 220 },
+            flexShrink: 0,
+            scrollSnapAlign: "start",
+          }}
+        />
+        <FloatingStatCard
+          title="الاختبارات المباعة"
+          value="134"
+          unit="اختبارًا"
+          change="-24%"
+          positive={false}
+          sx={{
+            direction: "rtl",
+            position: "static",
+            minWidth: { xs: 205, sm: 220 },
+            width: { xs: 205, sm: 220 },
+            flexShrink: 0,
+            scrollSnapAlign: "start",
+          }}
+        />
+        <FloatingStatCard
+          title="صافي الأرباح"
+          value="67000"
+          unit="ليرة سورية"
+          change="+20%"
+          sx={{
+            direction: "rtl",
+            position: "static",
+            minWidth: { xs: 205, sm: 220 },
+            width: { xs: 205, sm: 220 },
+            flexShrink: 0,
+            scrollSnapAlign: "start",
+          }}
+        />
+      </Box>
+
+      <Box
+        sx={{
+          display: { xs: "none", lg: "block" },
+          order: { xs: 1, lg: 2 },
+          position: "relative",
+          height: { xs: 350, md: 382, lg: 392 },
+          overflow: "visible",
+          transform: {
+            xs: "translateX(18px)",
+            md: "translateX(28px)",
+            lg: "translateX(120px)",
+          },
+        }}
+      >
       <Box
         sx={{
           position: "absolute",
@@ -211,7 +289,7 @@ export default function HalfCircleHero() {
         unit="اختبارًا"
         change="+20%"
         sx={{
-          top: 152,
+          top: 137,
           left: { xs: 12, md: 22, lg: 78 },
         }}
       />
@@ -222,7 +300,7 @@ export default function HalfCircleHero() {
         unit="اختبارًا"
         change="+10%"
         sx={{
-          top: 152,
+          top: 137,
           right: { xs: 12, md: 22, lg: 78 },
         }}
       />
@@ -264,6 +342,7 @@ export default function HalfCircleHero() {
           zIndex: 3,
         }}
       />
-    </Box>
+      </Box>
+    </>
   );
 }

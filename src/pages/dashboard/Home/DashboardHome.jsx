@@ -48,7 +48,7 @@ export default function DashboardHome() {
         msOverflowStyle: "none",
       }}
     >
-      <Box ref={section1Ref}>
+      <Box ref={section1Ref} sx={{ flexShrink: 0 }}>
         <HomeSection1 onScrollNext={handleScrollToSection2} />
       </Box>
       <HomeSection2
@@ -56,7 +56,7 @@ export default function DashboardHome() {
         onScrollPrev={handleScrollToSection1}
         onScrollNext={handleScrollToSection3}
       />
-      <Box ref={section3Ref}>
+      <Box ref={section3Ref} sx={{ flexShrink: 0 }}>
         <HomeSection3 />
       </Box>
     </Box>

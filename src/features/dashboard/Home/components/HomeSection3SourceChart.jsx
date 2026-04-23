@@ -72,18 +72,26 @@ export default function HomeSection3SourceChart() {
     <Box
       sx={{
         bgcolor: "#FFFFFF",
-        borderRadius: "20px",
+        borderRadius: { xs: "14px", lg: "20px" },
         border: "1px solid #ECECEC",
         boxShadow: "0 6px 18px rgba(15, 23, 42, 0.06)",
-        px: { xs: 2, md: 3 },
-        py: { xs: 2.5, md: 1 },
-        height:280
+        width: {
+          xs: "clamp(280px, 88vw, 420px)",
+          sm: "clamp(360px, 72vw, 500px)",
+          md: "clamp(420px, 58vw, 560px)",
+          lg: "100%",
+        },
+        px: { xs: 1.1, sm: 1.4, md: 1.8, lg: 3 },
+        py: { xs: 1.2, sm: 1.5, md: 1.7, lg: 1 },
+        minHeight: { xs: "auto", lg: 280 },
+        height: { xs: "auto", lg: 280 },
+        overflow: "hidden",
       }}
     >
       <Typography
         sx={{
           color: "#263238",
-          fontSize: { xs: 24, md: 32 },
+          fontSize: { xs: 17, sm: 19, md: 22, lg: 32 },
           fontWeight: 700,
           textAlign: "right",
         }}
@@ -92,17 +100,17 @@ export default function HomeSection3SourceChart() {
       </Typography>
 
       <Stack
-        direction={{ xs: "column", md: "row" }}
+        direction={{ xs: "column", sm: "row" }}
         alignItems="center"
         justifyContent="space-between"
-        spacing={{ xs: 2.5, md: 3 }}
-        sx={{ mt: 0 }}
+        spacing={{ xs: 1.2, sm: 1.5, md: 2, lg: 3 }}
+        sx={{ mt: { xs: 1, md: 0 }, minWidth: 0 }}
       >
         <Box
           sx={{
             position: "relative",
-            width: { xs: 170, md: 220 },
-            height: { xs: 170, md: 220 },
+            width: { xs: 118, sm: 138, md: 160, lg: 220 },
+            height: { xs: 118, sm: 138, md: 160, lg: 220 },
             flexShrink: 0,
           }}
         >
@@ -195,21 +203,22 @@ export default function HomeSection3SourceChart() {
               pointerEvents: "none",
             }}
           >
-            <Typography sx={{ color: "#263238", fontSize: 22, fontWeight: 700 }}>
+            <Typography sx={{ color: "#263238", fontSize: { xs: 14, sm: 15, md: 17, lg: 22 }, fontWeight: 700 }}>
               {total}
             </Typography>
-            <Typography sx={{ color: "#A1A1A1", fontSize: 16, fontWeight: 500 }}>
+            <Typography sx={{ color: "#A1A1A1", fontSize: { xs: 10, sm: 11, md: 12, lg: 16 }, fontWeight: 500 }}>
               مستخدم
             </Typography>
           </Stack>
         </Box>
 
         <Stack
-          spacing={1.5}
+          spacing={{ xs: 0.6, md: 0.9, lg: 1.5 }}
           sx={{
-            width: { xs: "100%", md: "46%" },
+            width: { xs: "100%", sm: "46%" },
+            minWidth: 0,
           }}
-          gap={3}
+          gap={{ xs: 0.8, md: 1.5, lg: 3 }}
         >
           {[0, 1, 2].map((row) => (
             <Stack
@@ -217,6 +226,7 @@ export default function HomeSection3SourceChart() {
               direction="row"
               justifyContent="space-between"
               alignItems="center"
+              gap={1}
             >
               {[sources[row * 2 + 1], sources[row * 2]].map((item) => (
                 <Stack
@@ -224,13 +234,13 @@ export default function HomeSection3SourceChart() {
                   direction="row"
                   spacing={0.5}
                   alignItems="center"
-                  sx={{ minWidth: 110 }}
+                  sx={{ minWidth: { xs: 70, sm: 78, md: 88, lg: 110 } }}
                 >
                   <FiberManualRecordRoundedIcon
-                    sx={{ fontSize: 14, color: item.color }}
+                    sx={{ fontSize: { xs: 8, sm: 9, md: 11, lg: 14 }, color: item.color }}
                   />
                   <Typography
-                    sx={{ color: "#263238", fontSize: 16, fontWeight: 500 }}
+                    sx={{ color: "#263238", fontSize: { xs: 10, sm: 11, md: 13, lg: 16 }, fontWeight: 500 }}
                   >
                     {item.label}
                   </Typography>

@@ -58,7 +58,7 @@ export default function HomeSection3Header() {
         sx={{
           width: { xs: "100%", md: "auto" },
           justifyContent: { sm: "flex-end" },
-          alignItems: { xs: "flex-start", sm: "center" },
+          alignItems: { xs: "flex-end", sm: "center" },
         }}
         gap={2}
       >

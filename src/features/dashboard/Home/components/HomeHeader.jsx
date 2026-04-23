@@ -10,6 +10,7 @@ import {
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import HomeThemeSwitch from "./HomeThemeSwitch";
 import ProfileModal from "../../profile/components/ProfileModal";
+import NotificationsSlide from "./NotificationsSlide";
 
 function HeaderAction({ children, sx }) {
   return (
@@ -34,7 +35,8 @@ function HeaderAction({ children, sx }) {
 }
 
 export default function HomeHeader() {
-  const [ isProfileOpen,setIsProfileOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   return (
     <>
@@ -125,7 +127,10 @@ export default function HomeHeader() {
                 },
               }}
             >
-              <IconButton sx={{ color: "#1F2937" }}>
+              <IconButton
+                onClick={() => setIsNotificationsOpen(true)}
+                sx={{ color: "#1F2937" }}
+              >
                 <NotificationsNoneOutlinedIcon sx={{ fontSize: 24 }} />
               </IconButton>
             </Badge>
@@ -133,7 +138,10 @@ export default function HomeHeader() {
         </Stack>
       </Box>
       <ProfileModal open={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
-
+      <NotificationsSlide
+        open={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
+      />
     </>
   );
 }

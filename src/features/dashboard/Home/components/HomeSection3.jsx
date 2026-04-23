@@ -24,6 +24,7 @@ export default function HomeSection3() {
           gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" },
           gap: 2.5,
           alignItems: "stretch",
+          justifyItems: { xs: "start", lg: "stretch" },
         }}
       >
        

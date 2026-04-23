@@ -7,7 +7,7 @@ import HalfCircleHero from "./HalfCircleHero";
 
 function SideMetric({ title, value }) {
   return (
-    <Box sx={{ textAlign: "right" }}>
+    <Box sx={{ textAlign: "right", width: "100%" }}>
       <Typography
         sx={{
           color: "#263238",
@@ -15,6 +15,7 @@ function SideMetric({ title, value }) {
           fontWeight: 600,
           lineHeight: 1.5,
           whiteSpace: "pre-line",
+          width: "100%",
         }}
       >
         {title}
@@ -26,8 +27,8 @@ function SideMetric({ title, value }) {
           fontSize: { xs: 24, md: 28 },
           fontWeight: 700,
           lineHeight: 1,
-          textAlign:"end",
-          ml:2
+          textAlign: { xs: "right", lg: "left" },
+          width: "100%",
         }}
       >
         {value}
@@ -39,8 +40,8 @@ function SideMetric({ title, value }) {
           fontSize: { xs: 13, md: 14 },
           fontWeight: 500,
           lineHeight: 1,
-           textAlign:"end",
-          ml:2
+          textAlign: { xs: "right", lg: "left" },
+          width: "100%",
         }}
       >
         ليرة سورية
@@ -51,7 +52,7 @@ function SideMetric({ title, value }) {
 
 export default function HalfCircleSales({ onScrollPrev, onScrollNext }) {
   return (
-    <Box sx={{ mt: 4 }}>
+    <Box sx={{ mt: 4, mb: { xs: 4, md: 3, lg: 0 } }}>
       <Box
         sx={{
           width: "100%",
@@ -63,10 +64,29 @@ export default function HalfCircleSales({ onScrollPrev, onScrollNext }) {
           alignItems: "start",
         }}
       >
-        <Stack spacing={4} sx={{ pt: { lg: 2 }, order: { xs: 2, lg: 3 } }}>
-          <SideMetric title={"متوسط الربح\nبالشهر"} value="170" />
-          <Box sx={{ width: 95, borderTop: "1px solid #DFDFDF" }} />
-          <SideMetric title={"متوسط المبيعات\nبالشهر"} value="2700" />
+        <Stack
+          spacing={4}
+          sx={{
+            pt: { lg: 2 },
+            order: { xs: 2, lg: 3 },
+            width: { xs: "100%", lg: "auto" },
+            alignItems: "flex-end",
+          }}
+        >
+          <Box sx={{ order: { xs: 3, lg: 1 }, width: "100%" }}>
+            <SideMetric title={"متوسط الربح\nبالشهر"} value="170" />
+          </Box>
+          <Box
+            sx={{
+              width: 95,
+              borderTop: "1px solid #DFDFDF",
+              order: 2,
+              alignSelf: { xs: "flex-start", lg: "flex-end" },
+            }}
+          />
+          <Box sx={{ order: { xs: 1, lg: 3 }, width: "100%" }}>
+            <SideMetric title={"متوسط المبيعات\nبالشهر"} value="2700" />
+          </Box>
         </Stack>
 
         <HalfCircleHero />
@@ -83,39 +103,39 @@ export default function HalfCircleSales({ onScrollPrev, onScrollNext }) {
           sx={{
             position: "absolute",
             left: { xs: 12, md: 50 },
-            bottom: { xs: -16, md: 10 },
+            bottom: { xs: -22, md: 10 },
             zIndex: 4,
           }}
           gap={1}
         >
-        <IconButton
-          onClick={onScrollNext}
-          sx={{
-            width: 36,
-            height: 36,
-            borderRadius: "8px",
-            border: "1px solid #DFDFDF",
-            bgcolor: "#FFFFFF",
-            boxShadow: "0 4px 10px rgba(15, 23, 42, 0.06)",
-            color: "#263238",
-          }}
-        >
-          <KeyboardArrowDownRoundedIcon sx={{ fontSize: 28 }} />
-        </IconButton>
-        <IconButton
-          onClick={onScrollPrev}
-          sx={{
-            width: 36,
-            height: 36,
-            borderRadius: "8px",
-            border: "1px solid #DFDFDF",
-            bgcolor: "#FFFFFF",
-            boxShadow: "0 4px 10px rgba(15, 23, 42, 0.06)",
-            color: "#263238",
-          }}
-        >
-          <KeyboardArrowUpRoundedIcon sx={{ fontSize: 28 }} />
-        </IconButton>
+          <IconButton
+            onClick={onScrollNext}
+            sx={{
+              width: 36,
+              height: 36,
+              borderRadius: "8px",
+              border: "1px solid #DFDFDF",
+              bgcolor: "#FFFFFF",
+              boxShadow: "0 4px 10px rgba(15, 23, 42, 0.06)",
+              color: "#263238",
+            }}
+          >
+            <KeyboardArrowDownRoundedIcon sx={{ fontSize: 28 }} />
+          </IconButton>
+          <IconButton
+            onClick={onScrollPrev}
+            sx={{
+              width: 36,
+              height: 36,
+              borderRadius: "8px",
+              border: "1px solid #DFDFDF",
+              bgcolor: "#FFFFFF",
+              boxShadow: "0 4px 10px rgba(15, 23, 42, 0.06)",
+              color: "#263238",
+            }}
+          >
+            <KeyboardArrowUpRoundedIcon sx={{ fontSize: 28 }} />
+          </IconButton>
         </Stack>
       </Box>
     </Box>

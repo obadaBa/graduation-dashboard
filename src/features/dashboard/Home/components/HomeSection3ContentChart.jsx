@@ -57,23 +57,30 @@ export default function HomeSection3ContentChart() {
       sx={{
         mt: 2.5,
         bgcolor: "#FFFFFF",
-        borderRadius: "20px",
+        borderRadius: { xs: "14px", lg: "20px" },
         border: "1px solid #ECECEC",
         boxShadow: "0 6px 18px rgba(15, 23, 42, 0.06)",
-        px: { xs: 2, md: 3 },
-        py: { xs: 2, md: 2.25 },
+        width: {
+          xs: "clamp(280px, 88vw, 420px)",
+          sm: "clamp(360px, 72vw, 500px)",
+          md: "clamp(420px, 58vw, 620px)",
+          lg: "100%",
+        },
+        px: { xs: 1.1, sm: 1.4, md: 1.8, lg: 3 },
+        py: { xs: 1.2, sm: 1.5, md: 1.8, lg: 2.25 },
+        overflow: "hidden",
       }}
     >
       <Stack
         direction={{ xs: "column", md: "row" }}
         justifyContent="space-between"
         alignItems={{ xs: "flex-start", md: "center" }}
-        spacing={1.5}
+        spacing={{ xs: 1, lg: 1.5 }}
       >
         <Typography
           sx={{
             color: "#111827",
-            fontSize: { xs: 24, md: 26 },
+            fontSize: { xs: 17, sm: 19, md: 22, lg: 26 },
             fontWeight: 700,
             textAlign: "right",
           }}
@@ -81,29 +88,39 @@ export default function HomeSection3ContentChart() {
           أداء نشر المحتوى السنوي
         </Typography>
 
-        <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems="center" flexWrap="wrap">
+        <Stack
+          direction="row"
+          spacing={{ xs: 1.2, md: 1.8, lg: 3 }}
+          alignItems="center"
+          flexWrap="wrap"
+        >
           <Stack direction="row" spacing={0.5} alignItems="center">
-            <FiberManualRecordRoundedIcon sx={{ color: "#10B981", fontSize: 16 }} />
-            <Typography sx={{ color: "#263238", fontSize: { xs: 18, md: 20 }, fontWeight: 500 }}>
+            <FiberManualRecordRoundedIcon sx={{ color: "#10B981", fontSize: { xs: 10, md: 13, lg: 16 } }} />
+            <Typography sx={{ color: "#263238", fontSize: { xs: 11, md: 14, lg: 20 }, fontWeight: 500 }}>
               التفاعلات على المحتوى
             </Typography>
           </Stack>
 
           <Stack direction="row" spacing={0.5} alignItems="center">
-            <FiberManualRecordRoundedIcon sx={{ color: "#4D8BFF", fontSize: 16 }} />
-            <Typography sx={{ color: "#263238", fontSize: { xs: 18, md: 20 }, fontWeight: 500 }}>
+            <FiberManualRecordRoundedIcon sx={{ color: "#4D8BFF", fontSize: { xs: 10, md: 13, lg: 16 } }} />
+            <Typography sx={{ color: "#263238", fontSize: { xs: 11, md: 14, lg: 20 }, fontWeight: 500 }}>
               المحتوى المنشور
             </Typography>
           </Stack>
         </Stack>
       </Stack>
 
-      <Box sx={{ mt: 1.75, overflowX: "auto", overflowY: "hidden" }}>
-        <Box sx={{ minWidth: 1040, position: "relative" }}>
+      <Box sx={{ mt: { xs: 1, lg: 1.75 }, overflow: "hidden" }}>
+        <Box sx={{ width: "100%", position: "relative" }}>
           <Box
             component="svg"
             viewBox={`0 0 ${plotWidth + rightAxisGap + 40} ${chartHeight + 73}`}
-            sx={{ width: "100%", height: "auto", display: "block" }}
+            preserveAspectRatio="none"
+            sx={{
+              width: "100%",
+              height: { xs: 165, sm: 185, md: 205, lg: "auto" },
+              display: "block",
+            }}
           >
             <g transform="translate(26 10)">
               {yTicks.map((tick) => {

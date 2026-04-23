@@ -13,8 +13,10 @@ const HomeSection2 = forwardRef(function HomeSection2(
       sx={{
         minHeight: "100vh",
         width: "100%",
+        flexShrink: 0,
         px: { xs: 1.5, md: 3 },
-        py: 2,
+        pt: 2,
+        pb: { xs: 10, md: 7, lg: 2 },
       }}
     >
       <HomeSection2Header />
