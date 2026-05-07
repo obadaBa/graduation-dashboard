@@ -46,7 +46,7 @@ export default function DashboardLayout() {
         </Fab>
       )}
 
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box component="main" sx={{ flexGrow: 1, minWidth: 0 }}>
         <Outlet />
       </Box>
     </Box>
