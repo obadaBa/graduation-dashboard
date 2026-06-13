@@ -3,16 +3,17 @@ import TestCard from "./TestCard";
 import TestsEmptyState from "./TestsEmptyState";
 import { TEST_STATUSES } from "../tests.constants";
 
-function BoardColumn({ title, count, color, cards, showEmptyState }) {
+function BoardColumn({ title, count, color, cards, showEmptyState, isLast }) {
   return (
     <Box
       sx={{
         width: "100%",
         minWidth: 0,
+        minHeight: 0,
         height: "100%",
         px: { xs: 0.5, sm: 0.75, lg: 1 },
         pt: 1,
-        borderLeft: "2px dashed #D8D8D8",
+        borderLeft: isLast ? "1px solid #D8D8D8" : "2px dashed #D8D8D8",
         bgcolor: "#F7F7F7",
       }}
     >
@@ -59,6 +60,7 @@ function BoardColumn({ title, count, color, cards, showEmptyState }) {
         alignItems="center"
         sx={{
           mt: 1,
+          minHeight: 0,
           height: "calc(100% - 34px)",
           overflowY: "auto",
           overflowX: "hidden",
@@ -100,8 +102,8 @@ export default function TestsBoard({ dayData }) {
     <Box
       sx={{
         mt: 2,
-        flex: 1,
-        minHeight: 0,
+        flex: "0 0 auto",
+        height: { xs: 460, md: 500, lg: 476 }, 
         width: { xs: 1104, md: 1152, lg: "100%" },
         minWidth: { xs: 1104, md: 1152, lg: 0 },
         overflow: "hidden",
@@ -110,6 +112,7 @@ export default function TestsBoard({ dayData }) {
         "&::-webkit-scrollbar": {
           display: "none",
         },
+       
       }}
     >
       <Box
@@ -118,8 +121,9 @@ export default function TestsBoard({ dayData }) {
           width: "100%",
           height: "100%",
           border: "1px solid #D7D7D7",
+          borderRadius: "16px",
           bgcolor: "#F7F7F7",
-          overflowY: "auto",
+          overflowY: "hidden",
           overflowX: "hidden",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
@@ -133,6 +137,7 @@ export default function TestsBoard({ dayData }) {
             minWidth: 0,
             width: "100%",
             height: "100%",
+            minHeight: 0,
             display: "grid",
             gridTemplateColumns: "repeat(6, minmax(0, 1fr))",
           }}
@@ -144,13 +149,14 @@ export default function TestsBoard({ dayData }) {
               <BoardColumn
                 key={column.id}
                 title={column.title}
-                color={column.color}
-                count={cards.length}
-                cards={cards}
-                showEmptyState={isEmptyDay && index === 0}
-              />
-            );
-          })}
+              color={column.color}
+              count={cards.length}
+              cards={cards}
+              showEmptyState={isEmptyDay && index === 0}
+              isLast={index === TEST_STATUSES.length - 1}
+            />
+          );
+        })}
         </Box>
       </Box>
     </Box>

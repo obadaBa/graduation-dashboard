@@ -21,6 +21,15 @@ const DashboardTests = lazy(() =>
 const DashboardContent = lazy(() =>
   import("../../pages/dashboard/Content/DashboardContent"),
 );
+const ContentDetails = lazy(() =>
+  import("../../pages/dashboard/Content/ContentDetails"),
+);
+const UserProfile = lazy(() =>
+  import("../../features/dashboard/Content/userProfile/UserProfile"),
+);
+const TestDetails = lazy(() =>
+  import("../../features/dashboard/Content/testDetails/TestDetails"),
+);
 const DashboardUsers = lazy(() =>
   import("../../pages/dashboard/Users/DashboardUsers"),
 );
@@ -89,5 +98,17 @@ export const router = createBrowserRouter([
         element: suspenseWrapper(<DashboardCustomization />),
       },
     ],
+  },
+  {
+    path: "/content/:contentId",
+    element: suspenseWrapper(<ContentDetails />),
+  },
+  {
+    path: "/user-profile/:userId",
+    element: suspenseWrapper(<UserProfile />),
+  },
+  {
+    path: "/test-details/:testId",
+    element: suspenseWrapper(<TestDetails />),
   },
 ]);

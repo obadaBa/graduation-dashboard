@@ -2,11 +2,58 @@ import { Box, Stack, Typography } from "@mui/material";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import BrushRoundedIcon from "@mui/icons-material/BrushRounded";
 
-export default function TicketCard() {
+const defaultTicket = {
+  title: "\u062c\u0644\u0633\u0629 \u0627\u0645\u062a\u062d\u0627\u0646\u064a\u0629 \u0623\u0648\u0644\u0649",
+  difficulty: "\u0635\u0639\u0628",
+  difficultyColor: "#FF7373",
+  description:
+    "\u0647\u0630\u0647 \u0627\u0644\u0623\u0633\u0626\u0644\u0629 \u062a\u0633\u0627\u0639\u062f\u0643 \u0639\u0644\u0649 \u0627\u0644\u062e\u0648\u0636 \u0641\u064a \u0645\u0627\u062f\u0629 \u062e\u0648\u0627\u0631\u0632\u0645\u064a\u0627\u062a \u0627\u0644\u0628\u062d\u062b \u0627\u0644\u0630\u0643\u064a\u0629 \u0648\u0628\u0643\u0644 \u062b\u0642\u0629 \u0648\u0627\u0644\u062a\u0642\u062f\u0645 \u0644\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0648\u0646\u064a\u0644 \u0623\u0639\u0644\u0649 \u0627\u0644\u062f\u0631\u062c\u0627\u062a \u0628\u0633\u0647\u0648\u0644\u0629 \u0645\u0637\u0644\u0642\u0629",
+  price: "180",
+  currency: "\u0644\u064a\u0631\u0629 \u0633\u0648\u0631\u064a\u0629",
+  rating: "3.2",
+  questionsCount: "89",
+  questionsLabel: "\u0633\u0624\u0627\u0644",
+  duration: "5",
+  durationLabel: "\u064a\u0648\u0645",
+  tags: ["# \u0639\u0644\u0648\u0645 \u0623\u0633\u0627\u0633\u064a\u0629", "# \u0628\u0631\u0645\u062c\u0629", "..."],
+};
+
+export default function TicketCard({
+  title = defaultTicket.title,
+  difficulty = defaultTicket.difficulty,
+  difficultyColor = defaultTicket.difficultyColor,
+  description = defaultTicket.description,
+  price = defaultTicket.price,
+  currency = defaultTicket.currency,
+  rating = defaultTicket.rating,
+  questionsCount = defaultTicket.questionsCount,
+  questionsLabel = defaultTicket.questionsLabel,
+  duration = defaultTicket.duration,
+  durationLabel = defaultTicket.durationLabel,
+  tags = defaultTicket.tags,
+  onClick,
+  sx,
+}) {
   const edgeCuts = [34, 104, 174, 244, 314, 384];
+  const isClickable = typeof onClick === "function";
+
+  const handleKeyDown = (event) => {
+    if (!isClickable) {
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onClick(event);
+    }
+  };
 
   return (
     <Box
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role={isClickable ? "button" : undefined}
+      tabIndex={isClickable ? 0 : undefined}
       sx={{
         position: "relative",
         borderRadius: { xs: "16px", sm: "20px", lg: "22px" },
@@ -18,6 +65,8 @@ export default function TicketCard() {
         mx: "auto",
         overflow: "visible",
         boxShadow: "0 4px 14px rgba(15, 23, 42, 0.05)",
+        cursor: isClickable ? "pointer" : "default",
+        ...sx,
       }}
     >
       <Box
@@ -139,21 +188,35 @@ export default function TicketCard() {
             alignItems: "flex-end",
           }}
         >
-          <Typography sx={{ color: "#263238", fontSize: { xs: 14, sm: 17, lg: 18 }, fontWeight: 700, mt: { xs: 1, lg: 2 } }}>
-            180
+          <Typography
+            sx={{
+              color: "#263238",
+              fontSize: { xs: 14, sm: 17, lg: 18 },
+              fontWeight: 700,
+              mt: { xs: 1, lg: 2 },
+            }}
+          >
+            {price}
           </Typography>
           <Typography sx={{ color: "#A1A1A1", fontSize: { xs: 10, sm: 10, lg: 12 }, fontWeight: 500 }}>
-            ليرة سورية
+            {currency}
           </Typography>
-          <Typography sx={{ mt: { xs: 1.4, sm: 1.5, lg: 2.6 }, color: "#263238", fontSize: { xs: 12, sm: 14, lg: 15 }, fontWeight: 700 }}>
-            التقييم
+          <Typography
+            sx={{
+              mt: { xs: 1.4, sm: 1.5, lg: 2.6 },
+              color: "#263238",
+              fontSize: { xs: 12, sm: 14, lg: 15 },
+              fontWeight: 700,
+            }}
+          >
+            {"\u0627\u0644\u062a\u0642\u064a\u064a\u0645"}
           </Typography>
           <Stack direction="row" spacing={0.4} alignItems="center" sx={{ mb: { xs: 0.6, lg: 2 } }} gap={0}>
             <Typography sx={{ color: "#8A8A8A", fontSize: { xs: 10, sm: 10, lg: 12 }, fontWeight: 600 }}>
-              3.2
+              {rating}
             </Typography>
             <Typography sx={{ color: "#F5C542", fontSize: { xs: 14, sm: 15, lg: 18 }, fontWeight: 700 }}>
-              ★
+              {"\u2605"}
             </Typography>
           </Stack>
         </Box>
@@ -186,19 +249,19 @@ export default function TicketCard() {
 
           <Stack direction="row" justifyContent="space-between" alignItems="center" gap={0.6}>
             <Typography sx={{ color: "#4D8BFF", fontSize: { xs: 10.5, sm: 15, lg: 16 }, fontWeight: 700 }}>
-              جلسة امتحانية أولى
+              {title}
             </Typography>
             <Box
               sx={{
                 px: { xs: 0.55, lg: 1.05 },
                 py: { xs: 0.2, lg: 0.32 },
                 borderRadius: "8px",
-                bgcolor: "#FF7373",
+                bgcolor: difficultyColor,
                 flexShrink: 0,
               }}
             >
               <Typography sx={{ color: "#FFFFFF", fontSize: { xs: 8.5, lg: 12 }, fontWeight: 700 }}>
-                صعب
+                {difficulty}
               </Typography>
             </Box>
           </Stack>
@@ -213,7 +276,7 @@ export default function TicketCard() {
               textAlign: "right",
             }}
           >
-            هذه الأسئلة تساعدك على الخوض في مادة خوارزميات البحث الذكية وبكل ثقة والتقدم للامتحان ونيل أعلى الدرجات بسهولة مطلقة
+            {description}
           </Typography>
 
           <Stack
@@ -223,7 +286,7 @@ export default function TicketCard() {
             sx={{ mt: { xs: 0.45, lg: 1.1 }, gap: { xs: 0.45, lg: 1 } }}
           >
             <Stack direction="row" spacing={0.4} gap={0.45}>
-              {["علوم أساسية #", "برمجة #", "..."].map((chip) => (
+              {tags.map((chip) => (
                 <Box
                   key={chip}
                   sx={{
@@ -231,9 +294,24 @@ export default function TicketCard() {
                     py: { xs: 0.18, lg: 0.3 },
                     borderRadius: "4px",
                     bgcolor: "#4D7EFF",
+                    maxWidth: { xs: 44, sm: 70, lg: 82 },
+                    overflowX: "auto",
+                    overflowY: "hidden",
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    "&::-webkit-scrollbar": {
+                      display: "none",
+                    },
                   }}
                 >
-                  <Typography sx={{ color: "#FFFFFF", fontSize: { xs: 7.6, lg: 11 } }}>
+                  <Typography
+                    sx={{
+                      color: "#FFFFFF",
+                      fontSize: { xs: 7.6, lg: 11 },
+                      whiteSpace: "nowrap",
+                      lineHeight: 1.2,
+                    }}
+                  >
                     {chip}
                   </Typography>
                 </Box>
@@ -241,16 +319,16 @@ export default function TicketCard() {
             </Stack>
 
             <Stack direction="row" spacing={0.8} alignItems="center" gap={{ xs: 0.65, lg: 2 }}>
-              <Stack direction="row" spacing={0.3} alignItems="center">
+              <Stack direction="row" spacing={0.3} alignItems="center" sx={{ flexShrink: 0, whiteSpace: "nowrap" }}>
                 <AccessTimeRoundedIcon sx={{ fontSize: { xs: 12, lg: 20 }, color: "#263238" }} />
-                <Typography sx={{ color: "#263238", fontSize: { xs: 8.8, lg: 14 }, fontWeight: 700 }}>
-                  5 يوم
+                <Typography sx={{ color: "#263238", fontSize: { xs: 8.8, lg: 14 }, fontWeight: 700, whiteSpace: "nowrap" }}>
+                  {`${duration} ${durationLabel}`}
                 </Typography>
               </Stack>
-              <Stack direction="row" spacing={0.3} alignItems="center">
+              <Stack direction="row" spacing={0.3} alignItems="center" sx={{ flexShrink: 0, whiteSpace: "nowrap" }}>
                 <BrushRoundedIcon sx={{ fontSize: { xs: 12, lg: 20 }, color: "#263238" }} />
-                <Typography sx={{ color: "#263238", fontSize: { xs: 8.8, lg: 14 }, fontWeight: 700 }}>
-                  89 سؤال
+                <Typography sx={{ color: "#263238", fontSize: { xs: 8.8, lg: 14 }, fontWeight: 700, whiteSpace: "nowrap" }}>
+                  {`${questionsCount} ${questionsLabel}`}
                 </Typography>
               </Stack>
             </Stack>

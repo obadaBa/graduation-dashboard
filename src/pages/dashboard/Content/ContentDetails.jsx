@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
-import ContentSection1 from "../../../features/dashboard/Content/components/ContentSection1";
+import ContentDetailsView from "../../../features/dashboard/Content/details/components/ContentDetailsView";
 
-export default function DashboardContent() {
+export default function ContentDetails() {
   return (
     <Box
       sx={{
@@ -12,7 +12,7 @@ export default function DashboardContent() {
         pr: { xs: 0, md: 1 },
       }}
     >
-      <ContentSection1 />
+      <ContentDetailsView />
     </Box>
   );
 }
