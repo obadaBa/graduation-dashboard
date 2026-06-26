@@ -2,6 +2,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import MailOutline from "@mui/icons-material/MailOutline";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
+import { useRequestPasswordResetOtpMutation } from "../hooks/useRequestPasswordResetOtpMutation";
 import AuthFormInput from "./AuthFormInput";
 import AuthFormHeader from "./AuthFormHeader";
 import AuthPanelTitle from "./AuthPanelTitle";
@@ -16,19 +17,25 @@ export default function RestPasswordFormPanel() {
   const location = useLocation();
   const fingerIcon = theme.palette.mode === "light" ? fingerLight : fingerDark;
   const indicatorInitialStep = location.state?.fromStep ?? 2;
+  const requestOtpMutation = useRequestPasswordResetOtpMutation({
+    onSuccess: (_, variables) => {
+      navigate("/confarmpassword", {
+        state: {
+          email: variables.email,
+          fromStep: 2,
+          fromVisual: "reset",
+        },
+      });
+    },
+  });
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
     },
   });
 
-  const onSubmit = () => {
-    navigate("/confarmpassword", {
-      state: {
-        fromStep: 2,
-        fromVisual: "reset",
-      },
-    });
+  const onSubmit = (data) => {
+    requestOtpMutation.mutate(data);
   };
 
   return (
@@ -103,6 +110,7 @@ export default function RestPasswordFormPanel() {
 
           <AuthPrimaryButton
             type="submit"
+            disabled={requestOtpMutation.isPending}
             sx={{
               mt: { xs: 8, sm: 9 },
               height: { xs: 56, sm: 58, md: 60 },
@@ -110,7 +118,7 @@ export default function RestPasswordFormPanel() {
               borderRadius: "12px",
             }}
           >
-            إرسال الرابط
+            {requestOtpMutation.isPending ? "جاري الإرسال..." : "إرسال الرابط"}
           </AuthPrimaryButton>
         </Box>
 

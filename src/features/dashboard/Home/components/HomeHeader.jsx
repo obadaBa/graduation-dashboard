@@ -20,8 +20,8 @@ function HeaderAction({ children, sx }) {
         minWidth: 62,
         px: 1.5,
         borderRadius: "999px",
-        border: "1px solid #ECECEC",
-        bgcolor: "#FFFFFF",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.chartBackground,
         boxShadow: "0 4px 14px rgba(15, 23, 42, 0.06)",
         display: "flex",
         alignItems: "center",
@@ -34,9 +34,47 @@ function HeaderAction({ children, sx }) {
   );
 }
 
+function getStoredAuthUser() {
+  try {
+    const rawUser = localStorage.getItem("authUser");
+
+    if (!rawUser) {
+      return null;
+    }
+
+    return JSON.parse(rawUser);
+  } catch {
+    return null;
+  }
+}
+
+function getRoleLabel(role) {
+  if (role === "owner") {
+    return "مالك التطبيق";
+  }
+
+  if (role === "supervisor") {
+    return "مشرف";
+  }
+
+  return "مستخدم النظام";
+}
+
+function getAvatarLetter(name) {
+  if (!name) {
+    return "؟";
+  }
+
+  return name.trim().charAt(0);
+}
+
 export default function HomeHeader() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const authUser = getStoredAuthUser();
+  const userName = authUser?.name || "مستخدم النظام";
+  const userRoleLabel = getRoleLabel(authUser?.role);
+  const avatarLetter = getAvatarLetter(userName);
 
   return (
     <>
@@ -72,38 +110,38 @@ export default function HomeHeader() {
             sx={{
               width: 54,
               height: 54,
-              border: "2px solid #FFFFFF",
+              border: (theme) => `2px solid ${theme.palette.dashboard.chartBorder}`,
               boxShadow: "0 4px 10px rgba(15, 23, 42, 0.08)",
               bgcolor: "#D9D9D9",
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.chartTextPrimary,
               fontSize: 14,
               fontWeight: 700,
             }}
           >
-            م
+            {avatarLetter}
           </Avatar>
           <Box sx={{ textAlign: "right" }}>
             <Typography
               className="profile-name"
               sx={{
-                color: "#263238",
+                color: (theme) => theme.palette.dashboard.textPrimary,
                 fontSize: 18,
                 fontWeight: 700,
                 lineHeight: 1.3,
                 transition: "color 160ms ease",
               }}
             >
-              محمد منصور
+              {userName}
             </Typography>
             <Typography
               sx={{
-                color: "#A1A1A1",
+                color: (theme) => theme.palette.dashboard.textSecondary,
                 fontSize: 13,
                 fontWeight: 500,
                 lineHeight: 1.3,
               }}
             >
-              مالك التطبيق
+              {userRoleLabel}
             </Typography>
           </Box>
         </Stack>
@@ -123,13 +161,13 @@ export default function HomeHeader() {
                   borderRadius: "50%",
                   top: 7,
                   right: 7,
-                  boxShadow: "0 0 0 2px #FFFFFF",
+                  boxShadow: (theme) => `0 0 0 2px ${theme.palette.dashboard.chartBackground}`,
                 },
               }}
             >
               <IconButton
                 onClick={() => setIsNotificationsOpen(true)}
-                sx={{ color: "#1F2937" }}
+                sx={{ color: (theme) => theme.palette.dashboard.chartTextPrimary }}
               >
                 <NotificationsNoneOutlinedIcon sx={{ fontSize: 24 }} />
               </IconButton>

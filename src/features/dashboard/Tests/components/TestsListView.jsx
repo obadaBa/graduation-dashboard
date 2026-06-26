@@ -45,9 +45,9 @@ export default function TestsListView({ dayData }) {
           minWidth: 0,
           minHeight: 0,
           width: { lg: "100%" },
-          border: "1px solid #D7D7D7",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
           borderRadius: "10px",
-          bgcolor: "#F1F1F1",
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           p: 1.2,
           overflow: "auto",
           scrollbarWidth: "none",
@@ -85,15 +85,15 @@ export default function TestsListView({ dayData }) {
         sx={{
           order: { xs: 1, lg: 1 },
           width: { lg: "100%" },
-          border: "1px solid #D7D7D7",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
           borderRadius: "14px",
-          bgcolor: "#FFFFFF",
+          bgcolor: (theme) => theme.palette.dashboard.surface,
           p: 1.5,
         }}
       >
         <Typography
           sx={{
-            color: "#263238",
+            color: (theme) => theme.palette.dashboard.textPrimary,
             fontSize: 20,
             fontWeight: 800,
             textAlign: "right",

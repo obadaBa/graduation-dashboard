@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import BrushRoundedIcon from "@mui/icons-material/BrushRounded";
 
@@ -34,6 +35,16 @@ export default function TicketCard({
   onClick,
   sx,
 }) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+  const chartBackground = theme.palette.dashboard.chartBackground;
+  const textPrimary = theme.palette.dashboard.chartTextPrimary;
+  const textSecondary = theme.palette.dashboard.chartTextSecondary;
+  const borderColor = theme.palette.dashboard.chartBorder;
+  const mutedPanel = isDark ? "#3A3A3A" : "#F6F6F6";
+  const contentPanel = isDark ? "rgba(85, 131, 255, 0.16)" : "#EEF4FF";
+  const cutoutColor = isDark ? "#2F2F2F" : "#FFFFFF";
+
   const edgeCuts = [34, 104, 174, 244, 314, 384];
   const isClickable = typeof onClick === "function";
 
@@ -57,7 +68,7 @@ export default function TicketCard({
       sx={{
         position: "relative",
         borderRadius: { xs: "16px", sm: "20px", lg: "22px" },
-        bgcolor: "#FFFFFF",
+        bgcolor: chartBackground,
         p: { xs: 0.4, sm: 0.7, lg: 0.85 },
         height: { xs: 178, sm: 190, lg: 200 },
         width: "100%",
@@ -88,7 +99,7 @@ export default function TicketCard({
             width: { xs: 30, sm: 40, lg: 56 },
             height: { xs: 30, sm: 38, lg: 48 },
             borderRadius: "50%",
-            bgcolor: "#FFFFFF",
+            bgcolor: cutoutColor,
             boxShadow:
               "inset -5px 0 10px rgba(15, 23, 42, 0.12), 0 3px 10px rgba(15, 23, 42, 0.1)",
           }}
@@ -102,7 +113,7 @@ export default function TicketCard({
             width: { xs: 30, sm: 40, lg: 56 },
             height: { xs: 30, sm: 38, lg: 48 },
             borderRadius: "50%",
-            bgcolor: "#FFFFFF",
+            bgcolor: cutoutColor,
             boxShadow:
               "inset 5px 0 10px rgba(15, 23, 42, 0.12), 0 3px 10px rgba(15, 23, 42, 0.1)",
           }}
@@ -118,7 +129,7 @@ export default function TicketCard({
               width: { xs: 22, sm: 26, lg: 34 },
               height: { xs: 19, sm: 22, lg: 28 },
               borderRadius: "50%",
-              bgcolor: "#FFFFFF",
+              bgcolor: cutoutColor,
               boxShadow:
                 "inset 0 -4px 8px rgba(15, 23, 42, 0.12), 0 3px 10px rgba(15, 23, 42, 0.08)",
             }}
@@ -135,7 +146,7 @@ export default function TicketCard({
               width: { xs: 22, sm: 26, lg: 34 },
               height: { xs: 19, sm: 22, lg: 28 },
               borderRadius: "50%",
-              bgcolor: "#FFFFFF",
+              bgcolor: cutoutColor,
               boxShadow:
                 "inset 0 4px 8px rgba(15, 23, 42, 0.12), 0 -3px 10px rgba(15, 23, 42, 0.08)",
             }}
@@ -153,8 +164,8 @@ export default function TicketCard({
           zIndex: 1,
           overflow: "hidden",
           borderRadius: { xs: "16px", sm: "20px", lg: "22px" },
-          border: "1px solid #EAEAEA",
-          bgcolor: "#FFFFFF",
+          border: `1px solid ${borderColor}`,
+          bgcolor: chartBackground,
           p: { xs: 0.45, sm: 0.65, lg: 0.85 },
           alignItems: "center",
         }}
@@ -177,7 +188,7 @@ export default function TicketCard({
         <Box
           sx={{
             pl: { xs: 0.45, sm: 0.7, lg: 1.15 },
-            bgcolor: "#F6F6F6",
+            bgcolor: mutedPanel,
             borderTopLeftRadius: "11px",
             display: "flex",
             flexDirection: "column",
@@ -190,7 +201,7 @@ export default function TicketCard({
         >
           <Typography
             sx={{
-              color: "#263238",
+              color: textPrimary,
               fontSize: { xs: 14, sm: 17, lg: 18 },
               fontWeight: 700,
               mt: { xs: 1, lg: 2 },
@@ -198,13 +209,13 @@ export default function TicketCard({
           >
             {price}
           </Typography>
-          <Typography sx={{ color: "#A1A1A1", fontSize: { xs: 10, sm: 10, lg: 12 }, fontWeight: 500 }}>
+          <Typography sx={{ color: textSecondary, fontSize: { xs: 10, sm: 10, lg: 12 }, fontWeight: 500 }}>
             {currency}
           </Typography>
           <Typography
             sx={{
               mt: { xs: 1.4, sm: 1.5, lg: 2.6 },
-              color: "#263238",
+              color: textPrimary,
               fontSize: { xs: 12, sm: 14, lg: 15 },
               fontWeight: 700,
             }}
@@ -212,7 +223,7 @@ export default function TicketCard({
             {"\u0627\u0644\u062a\u0642\u064a\u064a\u0645"}
           </Typography>
           <Stack direction="row" spacing={0.4} alignItems="center" sx={{ mb: { xs: 0.6, lg: 2 } }} gap={0}>
-            <Typography sx={{ color: "#8A8A8A", fontSize: { xs: 10, sm: 10, lg: 12 }, fontWeight: 600 }}>
+            <Typography sx={{ color: textSecondary, fontSize: { xs: 10, sm: 10, lg: 12 }, fontWeight: 600 }}>
               {rating}
             </Typography>
             <Typography sx={{ color: "#F5C542", fontSize: { xs: 14, sm: 15, lg: 18 }, fontWeight: 700 }}>
@@ -223,7 +234,7 @@ export default function TicketCard({
 
         <Box
           sx={{
-            bgcolor: "#EEF4FF",
+            bgcolor: contentPanel,
             borderRadius: { xs: "9px", lg: "12px" },
             px: { xs: 0.55, sm: 1.1, lg: 1.4 },
             py: { xs: 0.42, lg: 0.7 },
@@ -242,7 +253,7 @@ export default function TicketCard({
               width: { xs: 22, sm: 30, lg: 40 },
               height: { xs: 22, sm: 30, lg: 40 },
               borderRadius: "50%",
-              bgcolor: "#FFFFFF",
+              bgcolor: cutoutColor,
               zIndex: 2,
             }}
           />
@@ -269,7 +280,7 @@ export default function TicketCard({
           <Typography
             sx={{
               mt: { xs: 0.45, lg: 0.8 },
-              color: "#4B5563",
+              color: textSecondary,
               fontSize: { xs: 9.3, sm: 12, lg: 13 },
               fontWeight: 500,
               lineHeight: { xs: 1.35, lg: 1.6 },
@@ -320,14 +331,14 @@ export default function TicketCard({
 
             <Stack direction="row" spacing={0.8} alignItems="center" gap={{ xs: 0.65, lg: 2 }}>
               <Stack direction="row" spacing={0.3} alignItems="center" sx={{ flexShrink: 0, whiteSpace: "nowrap" }}>
-                <AccessTimeRoundedIcon sx={{ fontSize: { xs: 12, lg: 20 }, color: "#263238" }} />
-                <Typography sx={{ color: "#263238", fontSize: { xs: 8.8, lg: 14 }, fontWeight: 700, whiteSpace: "nowrap" }}>
+                <AccessTimeRoundedIcon sx={{ fontSize: { xs: 12, lg: 20 }, color: textPrimary }} />
+                <Typography sx={{ color: textPrimary, fontSize: { xs: 8.8, lg: 14 }, fontWeight: 700, whiteSpace: "nowrap" }}>
                   {`${duration} ${durationLabel}`}
                 </Typography>
               </Stack>
               <Stack direction="row" spacing={0.3} alignItems="center" sx={{ flexShrink: 0, whiteSpace: "nowrap" }}>
-                <BrushRoundedIcon sx={{ fontSize: { xs: 12, lg: 20 }, color: "#263238" }} />
-                <Typography sx={{ color: "#263238", fontSize: { xs: 8.8, lg: 14 }, fontWeight: 700, whiteSpace: "nowrap" }}>
+                <BrushRoundedIcon sx={{ fontSize: { xs: 12, lg: 20 }, color: textPrimary }} />
+                <Typography sx={{ color: textPrimary, fontSize: { xs: 8.8, lg: 14 }, fontWeight: 700, whiteSpace: "nowrap" }}>
                   {`${questionsCount} ${questionsLabel}`}
                 </Typography>
               </Stack>

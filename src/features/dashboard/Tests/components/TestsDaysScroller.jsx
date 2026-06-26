@@ -3,18 +3,66 @@ import { Box, IconButton, Stack, Typography } from "@mui/material";
 import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 
-export const WEEK_DAYS = ["جمعة", "سبت", "أحد", "إثنين", "ثلاثاء", "أربعاء", "خميس"];
-export const TODAY_DAY_ID = 6;
+const DAY_LABELS = [
+  "الأحد",
+  "الإثنين",
+  "الثلاثاء",
+  "الأربعاء",
+  "الخميس",
+  "الجمعة",
+  "السبت",
+];
 
-export function buildDays() {
-  return Array.from({ length: 35 }, (_, index) => {
-    const date = index + 1;
+const MONTH_LABELS = [
+  "كانون الثاني",
+  "شباط",
+  "آذار",
+  "نيسان",
+  "أيار",
+  "حزيران",
+  "تموز",
+  "آب",
+  "أيلول",
+  "تشرين الأول",
+  "تشرين الثاني",
+  "كانون الأول",
+];
+
+function getStartOfLocalDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function addDays(date, daysCount) {
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + daysCount);
+  return nextDate;
+}
+
+function formatDateId(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+export const TODAY_DAY_ID = formatDateId(getStartOfLocalDay(new Date()));
+
+export function buildDays(baseDate = new Date()) {
+  const today = getStartOfLocalDay(baseDate);
+
+  return Array.from({ length: 29 }, (_, index) => {
+    const offset = index - 14;
+    const date = addDays(today, offset);
 
     return {
-      id: date,
-      day: WEEK_DAYS[index % WEEK_DAYS.length],
-      date,
-      isToday: date === TODAY_DAY_ID,
+      id: formatDateId(date),
+      day: DAY_LABELS[date.getDay()],
+      date: date.getDate(),
+      month: MONTH_LABELS[date.getMonth()],
+      year: date.getFullYear(),
+      isToday: offset === 0,
+      status: offset < 0 ? "past" : offset === 0 ? "today" : "future",
     };
   });
 }
@@ -26,7 +74,8 @@ function DayCard({ day, date, status, isToday, isSelected, onClick }) {
     <Stack
       component="button"
       type="button"
-      onClick={onClick}
+      disabled={isFuture}
+      onClick={isFuture ? undefined : onClick}
       alignItems="center"
       justifyContent="center"
       sx={{
@@ -35,19 +84,36 @@ function DayCard({ day, date, status, isToday, isSelected, onClick }) {
         height: 40,
         borderRadius: "8px",
         border: "1px solid",
-        borderColor: isToday ? "#5583FF" : isFuture ? "#DFDFDF" : "#263238",
-        bgcolor: isToday ? "#EEF2FF" : "#FFFFFF",
-        color: isToday ? "#5583FF" : isFuture ? "#A1A1A1" : "#263238",
+        borderColor: (theme) =>
+          isToday
+            ? theme.palette.dashboard.logoPrimary
+            : isFuture
+              ? theme.palette.dashboard.divider
+              : theme.palette.dashboard.chartBorder,
+        bgcolor: (theme) =>
+          isToday
+            ? theme.palette.dashboard.activeItem.background
+            : theme.palette.dashboard.chartBackground,
+        color: (theme) =>
+          isToday
+            ? theme.palette.dashboard.logoPrimary
+            : isFuture
+              ? theme.palette.dashboard.textSecondary
+              : theme.palette.dashboard.textPrimary,
         boxShadow: isToday
           ? "0 4px 10px rgba(85, 131, 255, 0.12)"
           : isSelected
-            ? "inset 0 0 0 1px #CFCFCF"
+            ? "inset 0 0 0 1px rgba(114, 152, 255, 0.45)"
             : "none",
         userSelect: "none",
         flexShrink: 0,
-        cursor: "pointer",
+        cursor: isFuture ? "not-allowed" : "pointer",
+        opacity: isFuture ? 0.62 : 1,
         font: "inherit",
         p: 0,
+        "&:disabled": {
+          pointerEvents: "none",
+        },
       }}
     >
       <Typography sx={{ fontSize: 10, fontWeight: 700, lineHeight: 1.15 }}>
@@ -74,15 +140,7 @@ export default function TestsDaysScroller({ selectedDayId, onSelectDay }) {
     scrollerRef.current.scrollLeft = Math.max(0, selectedIndex * cardWidth - 280);
   }, [days, selectedDayId]);
 
-  const getDayStatus = (index) => {
-    const todayIndex = days.findIndex((day) => day.isToday);
-
-    if (index < todayIndex) return "past";
-    if (index === todayIndex) return "today";
-    return "future";
-  };
-
-  const selectedDay = days.find((day) => day.id === selectedDayId) ?? days[0];
+  const selectedDay = days.find((day) => day.id === selectedDayId) ?? days[14];
 
   const scrollByCards = (direction) => {
     scrollerRef.current?.scrollBy({
@@ -96,13 +154,13 @@ export default function TestsDaysScroller({ selectedDayId, onSelectDay }) {
       <Typography
         sx={{
           mb: 1.1,
-          color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
           fontSize: { xs: 17, md: 19 },
           fontWeight: 800,
           textAlign: "left",
         }}
       >
-        {selectedDay.day} - {selectedDay.date} مارس
+        {selectedDay.day} - {selectedDay.date} {selectedDay.month} {selectedDay.year}
       </Typography>
 
       <Box
@@ -122,10 +180,10 @@ export default function TestsDaysScroller({ selectedDayId, onSelectDay }) {
             width: 34,
             height: 34,
             borderRadius: "8px",
-            bgcolor: "#FFFFFF",
-            border: "1px solid #ECECEC",
-            boxShadow: "0 4px 12px rgba(15, 23, 42, 0.08)",
-            color: "#263238",
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
+            color: (theme) => theme.palette.dashboard.textPrimary,
             flexShrink: 0,
           }}
         >
@@ -163,12 +221,12 @@ export default function TestsDaysScroller({ selectedDayId, onSelectDay }) {
               gap: 1.6,
             }}
           >
-            {days.map((item, index) => (
+            {days.map((item) => (
               <DayCard
                 key={item.id}
                 day={item.day}
                 date={item.date}
-                status={getDayStatus(index)}
+                status={item.status}
                 isToday={item.isToday}
                 isSelected={item.id === selectedDayId}
                 onClick={() => onSelectDay(item.id)}
@@ -183,10 +241,10 @@ export default function TestsDaysScroller({ selectedDayId, onSelectDay }) {
             width: 34,
             height: 34,
             borderRadius: "8px",
-            bgcolor: "#FFFFFF",
-            border: "1px solid #ECECEC",
-            boxShadow: "0 4px 12px rgba(15, 23, 42, 0.08)",
-            color: "#263238",
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
+            color: (theme) => theme.palette.dashboard.textPrimary,
             flexShrink: 0,
           }}
         >

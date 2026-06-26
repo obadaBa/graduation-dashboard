@@ -4,8 +4,10 @@ import { useTheme } from "@mui/material/styles";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { Outlet } from "react-router";
 import DashboardDrawer from "../components/DashboardDrawer";
+import { useTestManagementRealtime } from "../Tests/hooks/useTestManagementRealtime";
 
 export default function DashboardLayout() {
+  useTestManagementRealtime();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = useState(false);

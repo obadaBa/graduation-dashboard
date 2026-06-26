@@ -2,14 +2,7 @@ import { useMemo, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import FiberManualRecordRoundedIcon from "@mui/icons-material/FiberManualRecordRounded";
 
-const sources = [
-  { label: "فيسبوك", color: "#4D8BFF", value: 450 },
-  { label: "لينكد ان", color: "#8F80FF", value: 390 },
-  { label: "إنستغرام", color: "#8E64D8", value: 420 },
-  { label: "أصدقاء", color: "#9B58B5", value: 380 },
-  { label: "عائلة", color: "#B04DA8", value: 410 },
-  { label: "غير ذلك", color: "#E8E8E8", value: 350 },
-];
+const sourceColors = ["#4D8BFF", "#8F80FF", "#8E64D8", "#9B58B5", "#B04DA8", "#E8E8E8"];
 
 function polarToCartesian(cx, cy, radius, angle) {
   const radians = (angle - 90) * (Math.PI / 180);
@@ -26,15 +19,34 @@ function describeArc(cx, cy, radius, startAngle, endAngle) {
   return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`;
 }
 
-export default function HomeSection3SourceChart() {
-  const [hoveredArc, setHoveredArc] = useState(null);
+function normalizeSources(discoverySources) {
+  return (discoverySources?.sources || []).map((source, index) => ({
+    label: source.label,
+    color: sourceColors[index] || "#E8E8E8",
+    value: source.users_count || 0,
+  }));
+}
 
-  const total = useMemo(
-    () => sources.reduce((sum, item) => sum + item.value, 0),
-    []
+export default function HomeSection3SourceChart({ discoverySources }) {
+  const [hoveredArc, setHoveredArc] = useState(null);
+  const sources = useMemo(
+    () => normalizeSources(discoverySources),
+    [discoverySources],
   );
 
+  const total = useMemo(() => {
+    if (typeof discoverySources?.total_users_count === "number") {
+      return discoverySources.total_users_count;
+    }
+
+    return sources.reduce((sum, item) => sum + item.value, 0);
+  }, [discoverySources, sources]);
+
   const arcs = useMemo(() => {
+    if (!sources.length || total <= 0) {
+      return [];
+    }
+
     const startAngle = -32;
     const gapAngle = 18;
     const usableSweep = 360 - gapAngle * sources.length;
@@ -51,7 +63,7 @@ export default function HomeSection3SourceChart() {
       currentAngle += segmentAngle + gapAngle;
       return arc;
     });
-  }, [total]);
+  }, [sources, total]);
 
   const tooltipStyle = useMemo(() => {
     if (!hoveredArc) {
@@ -71,9 +83,9 @@ export default function HomeSection3SourceChart() {
   return (
     <Box
       sx={{
-        bgcolor: "#FFFFFF",
+        bgcolor: (theme) => theme.palette.dashboard.chartBackground,
         borderRadius: { xs: "14px", lg: "20px" },
-        border: "1px solid #ECECEC",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
         boxShadow: "0 6px 18px rgba(15, 23, 42, 0.06)",
         width: {
           xs: "clamp(280px, 88vw, 420px)",
@@ -90,7 +102,7 @@ export default function HomeSection3SourceChart() {
     >
       <Typography
         sx={{
-          color: "#263238",
+          color: (theme) => theme.palette.dashboard.chartTextPrimary,
           fontSize: { xs: 17, sm: 19, md: 22, lg: 32 },
           fontWeight: 700,
           textAlign: "right",
@@ -170,8 +182,8 @@ export default function HomeSection3SourceChart() {
                   px: 1,
                   py: 0.75,
                   borderRadius: "16px",
-                  bgcolor: "#FFFFFF",
-                  border: "1px solid #D5D5D5",
+                  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+                  border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
                   boxShadow: "0 4px 12px rgba(15, 23, 42, 0.16)",
                 }}
                 gap={1}
@@ -184,10 +196,10 @@ export default function HomeSection3SourceChart() {
                     bgcolor: hoveredArc.color,
                   }}
                 />
-                <Typography sx={{ color: "#263238", fontSize: 13, fontWeight: 700 }}>
+                <Typography sx={{ color: (theme) => theme.palette.dashboard.chartTextPrimary, fontSize: 13, fontWeight: 700 }}>
                   {hoveredArc.value}
                 </Typography>
-                <Typography sx={{ color: "#7C7C7C", fontSize: 12, fontWeight: 500 }}>
+                <Typography sx={{ color: (theme) => theme.palette.dashboard.chartTextSecondary, fontSize: 12, fontWeight: 500 }}>
                   مستخدم
                 </Typography>
               </Stack>
@@ -203,10 +215,10 @@ export default function HomeSection3SourceChart() {
               pointerEvents: "none",
             }}
           >
-            <Typography sx={{ color: "#263238", fontSize: { xs: 14, sm: 15, md: 17, lg: 22 }, fontWeight: 700 }}>
+            <Typography sx={{ color: (theme) => theme.palette.dashboard.chartTextPrimary, fontSize: { xs: 14, sm: 15, md: 17, lg: 22 }, fontWeight: 700 }}>
               {total}
             </Typography>
-            <Typography sx={{ color: "#A1A1A1", fontSize: { xs: 10, sm: 11, md: 12, lg: 16 }, fontWeight: 500 }}>
+            <Typography sx={{ color: (theme) => theme.palette.dashboard.chartTextSecondary, fontSize: { xs: 10, sm: 11, md: 12, lg: 16 }, fontWeight: 500 }}>
               مستخدم
             </Typography>
           </Stack>
@@ -220,7 +232,7 @@ export default function HomeSection3SourceChart() {
           }}
           gap={{ xs: 0.8, md: 1.5, lg: 3 }}
         >
-          {[0, 1, 2].map((row) => (
+          {Array.from({ length: Math.ceil(sources.length / 2) }, (_, row) => (
             <Stack
               key={row}
               direction="row"
@@ -228,7 +240,7 @@ export default function HomeSection3SourceChart() {
               alignItems="center"
               gap={1}
             >
-              {[sources[row * 2 + 1], sources[row * 2]].map((item) => (
+              {[sources[row * 2 + 1], sources[row * 2]].filter(Boolean).map((item) => (
                 <Stack
                   key={item.label}
                   direction="row"
@@ -240,7 +252,7 @@ export default function HomeSection3SourceChart() {
                     sx={{ fontSize: { xs: 8, sm: 9, md: 11, lg: 14 }, color: item.color }}
                   />
                   <Typography
-                    sx={{ color: "#263238", fontSize: { xs: 10, sm: 11, md: 13, lg: 16 }, fontWeight: 500 }}
+                    sx={{ color: (theme) => theme.palette.dashboard.chartTextPrimary, fontSize: { xs: 10, sm: 11, md: 13, lg: 16 }, fontWeight: 500 }}
                   >
                     {item.label}
                   </Typography>

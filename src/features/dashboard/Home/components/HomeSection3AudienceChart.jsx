@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import ManOutlinedIcon from "@mui/icons-material/ManOutlined";
 import Woman2OutlinedIcon from "@mui/icons-material/Woman2Outlined";
 
@@ -18,6 +19,11 @@ function arcPath(cx, cy, radius, startAngle, endAngle) {
 }
 
 function GaugeMeter({ color, value, label, count, icon }) {
+  const theme = useTheme();
+  const textPrimary = theme.palette.dashboard.chartTextPrimary;
+  const textSecondary = theme.palette.dashboard.chartTextSecondary;
+  const gridColor = theme.palette.dashboard.chartGrid;
+
   const angle = -120 + (240 * value) / 100;
   const needle = polarToCartesian(132, 128, 76, angle);
 
@@ -25,7 +31,7 @@ function GaugeMeter({ color, value, label, count, icon }) {
     <Box sx={{ flex: "1 1 0", minWidth: 0 }}>
       <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center">
         {icon}
-        <Typography sx={{ color: "#263238", fontSize: { xs: 13, sm: 15, md: 17, lg: 20 }, fontWeight: 700 }}>
+        <Typography sx={{ color: textPrimary, fontSize: { xs: 13, sm: 15, md: 17, lg: 20 }, fontWeight: 700 }}>
           {count}
         </Typography>
       </Stack>
@@ -33,7 +39,7 @@ function GaugeMeter({ color, value, label, count, icon }) {
       <Typography
         sx={{
           mt: 0.35,
-          color: "#8A8A8A",
+          color: textSecondary,
           fontSize: { xs: 10, sm: 12, md: 13, lg: 15 },
           fontWeight: 500,
           textAlign: "center",
@@ -51,7 +57,7 @@ function GaugeMeter({ color, value, label, count, icon }) {
           <path
             d={arcPath(132, 128, 102, -120, 120)}
             fill="none"
-            stroke="#ECECEC"
+            stroke={gridColor}
             strokeWidth="18"
             strokeLinecap="round"
           />
@@ -65,7 +71,7 @@ function GaugeMeter({ color, value, label, count, icon }) {
           <path
             d={arcPath(132, 128, 82, -120, 120)}
             fill="none"
-            stroke="#DADADA"
+            stroke={gridColor}
             strokeWidth="2"
             opacity="0.9"
           />
@@ -74,18 +80,18 @@ function GaugeMeter({ color, value, label, count, icon }) {
             y1="128"
             x2={needle.x}
             y2={needle.y}
-            stroke="#263238"
+            stroke={textPrimary}
             strokeWidth="2.5"
             strokeLinecap="round"
           />
-          <circle cx="132" cy="128" r="5" fill="#263238" />
+          <circle cx="132" cy="128" r="5" fill={textPrimary} />
         </Box>
       </Box>
 
       <Typography
         sx={{
           mt: { xs: -1, md: -1.3 },
-          color: "#263238",
+          color: textPrimary,
           fontSize: { xs: 11, sm: 13, md: 15, lg: 17 },
           fontWeight: 700,
           textAlign: "center",
@@ -97,13 +103,18 @@ function GaugeMeter({ color, value, label, count, icon }) {
   );
 }
 
-export default function HomeSection3AudienceChart() {
+export default function HomeSection3AudienceChart({ gender }) {
+  const femaleCount = gender?.female?.count || 0;
+  const femalePercentage = Number(gender?.female?.percentage || 0).toFixed(2);
+  const maleCount = gender?.male?.count || 0;
+  const malePercentage = Number(gender?.male?.percentage || 0).toFixed(2);
+
   return (
     <Box
       sx={{
-        bgcolor: "#FFFFFF",
+        bgcolor: (theme) => theme.palette.dashboard.chartBackground,
         borderRadius: { xs: "14px", lg: "20px" },
-        border: "1px solid #ECECEC",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
         boxShadow: "0 6px 18px rgba(15, 23, 42, 0.06)",
         width: {
           xs: "clamp(280px, 88vw, 420px)",
@@ -127,17 +138,17 @@ export default function HomeSection3AudienceChart() {
       >
         <GaugeMeter
           color="#FF4F9A"
-          value={60}
-          count={2400}
+          value={femalePercentage}
+          count={femaleCount}
           label="عدد الإناث"
-          icon={<Woman2OutlinedIcon sx={{ color: "#263238", fontSize: { xs: 15, md: 18, lg: 24 } }} />}
+          icon={<Woman2OutlinedIcon sx={{ color: (theme) => theme.palette.dashboard.chartTextPrimary, fontSize: { xs: 15, md: 18, lg: 24 } }} />}
         />
         <GaugeMeter
           color="#5A9CF8"
-          value={40}
-          count={1800}
+          value={malePercentage}
+          count={maleCount}
           label="عدد الذكور"
-          icon={<ManOutlinedIcon sx={{ color: "#263238", fontSize: { xs: 15, md: 18, lg: 24 } }} />}
+          icon={<ManOutlinedIcon sx={{ color: (theme) => theme.palette.dashboard.chartTextPrimary, fontSize: { xs: 15, md: 18, lg: 24 } }} />}
         />
       </Stack>
     </Box>

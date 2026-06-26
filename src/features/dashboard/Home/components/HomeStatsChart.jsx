@@ -1,66 +1,84 @@
 import { useState } from "react";
 import {
   Box,
-  Button,
   MenuItem,
   Select,
   Stack,
   Typography,
 } from "@mui/material";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import { useHomeYearlyTestActivityQuery } from "../hooks/useHomeYearlyTestActivityQuery";
+import HomeStatsExportButton from "./HomeStatsExportButton";
 
-const labels = [
-  "كانون\nالثاني",
-  "شباط",
-  "آذار",
-  "نيسان",
-  "أيار",
-  "حزيران",
-  "تموز",
-  "آب",
-  "أيلول",
-  "تشرين\nالأول",
-  "تشرين\nالثاني",
-  "كانون\nالأول",
-];
-
-const testsSeries = {
-  key: "tests",
-  label: "عدد الاختبارات",
-  color: "#5583FF",
-  values: [600, 300, 900, 1100, 600, 300, 250, 1100, 300, 600, 900, 900],
+const monthLabels = {
+  1: "كانون\nالثاني",
+  2: "شباط",
+  3: "آذار",
+  4: "نيسان",
+  5: "أيار",
+  6: "حزيران",
+  7: "تموز",
+  8: "آب",
+  9: "أيلول",
+  10: "تشرين\nالأول",
+  11: "تشرين\nالثاني",
+  12: "كانون\nالأول",
 };
 
-const stackedSeries = [
-  {
-    key: "downloads",
-    label: "تنزيلات",
-    color: "#FFD248",
-    values: [180, 180, 320, 0, 60, 180, 0, 0, 170, 340, 0, 0],
-  },
-  {
-    key: "comments",
-    label: "تعليقات",
-    color: "#12B981",
-    values: [850, 0, 0, 120, 120, 0, 0, 0, 820, 0, 0, 350],
-  },
-  {
-    key: "likes",
-    label: "اعجاب",
-    color: "#FF2C6D",
-    values: [978, 500, 350, 350, 200, 500, 350, 0, 500, 0, 0, 0],
-  },
-];
+const fallbackMonths = Array.from({ length: 12 }, (_, index) => ({
+  month_no: index + 1,
+  published_tests_count: 0,
+  likes_count: 0,
+  reviews_count: 0,
+  downloads_count: 0,
+}));
 
-const stackedTotals = labels.map((_, monthIndex) =>
-  stackedSeries.reduce((sum, item) => sum + item.values[monthIndex], 0),
-);
-const dataMax = Math.max(
-  ...testsSeries.values,
-  ...stackedTotals,
-);
-const maxValue = Math.ceil(dataMax / 200) * 200;
-const yTicks = Array.from({ length: maxValue / 200 + 1 }, (_, index) => index * 200);
+function buildChartData(apiData) {
+  const year = apiData?.year || new Date().getFullYear();
+  const monthsByNumber = new Map(
+    (apiData?.months || []).map((month) => [month.month_no, month]),
+  );
+
+  const normalizedMonths = fallbackMonths.map((month) => ({
+    ...month,
+    ...(monthsByNumber.get(month.month_no) || {}),
+  }));
+
+  const labels = normalizedMonths.map((month) => monthLabels[month.month_no]);
+  const testsSeries = {
+    key: "tests",
+    label: "عدد الاختبارات",
+    color: "#5583FF",
+    values: normalizedMonths.map((month) => month.published_tests_count || 0),
+  };
+  const stackedSeries = [
+    {
+      key: "downloads",
+      label: "عدد التنزيلات",
+      color: "#FFD248",
+      values: normalizedMonths.map((month) => month.downloads_count || 0),
+    },
+    {
+      key: "reviews",
+      label: "عدد التعليقات",
+      color: "#12B981",
+      values: normalizedMonths.map((month) => month.reviews_count || 0),
+    },
+    {
+      key: "likes",
+      label: "عدد الاعجابات",
+      color: "#FF2C6D",
+      values: normalizedMonths.map((month) => month.likes_count || 0),
+    },
+  ];
+
+  return {
+    year,
+    labels,
+    testsSeries,
+    stackedSeries,
+  };
+}
 
 function LegendItem({ color, label }) {
   return (
@@ -75,7 +93,7 @@ function LegendItem({ color, label }) {
       />
       <Typography
         sx={{
-          color: "#3B3B3B",
+          color: (theme) => theme.palette.dashboard.chartTextPrimary,
           fontSize: 14,
           fontWeight: 500,
           lineHeight: 1,
@@ -129,7 +147,7 @@ function StackedTooltip({ values }) {
             >
               <Typography
                 sx={{
-                  color: "#7A7A7A",
+                  color: (theme) => theme.palette.dashboard.chartTextSecondary,
                   fontSize: 13,
                   fontWeight: 500,
                   lineHeight: 1,
@@ -149,7 +167,7 @@ function StackedTooltip({ values }) {
                 />
                 <Typography
                   sx={{
-                    color: "#263238",
+                    color: (theme) => theme.palette.dashboard.chartTextPrimary,
                     fontSize: 16,
                     fontWeight: 700,
                     lineHeight: 1,
@@ -167,6 +185,20 @@ function StackedTooltip({ values }) {
 
 export default function HomeStatsChart() {
   const [hoveredBar, setHoveredBar] = useState(null);
+  const yearlyActivityQuery = useHomeYearlyTestActivityQuery();
+  const chartData = buildChartData(yearlyActivityQuery.data?.data);
+  const { year, labels, testsSeries, stackedSeries } = chartData;
+
+  const stackedTotals = labels.map((_, monthIndex) =>
+    stackedSeries.reduce((sum, item) => sum + item.values[monthIndex], 0),
+  );
+  const dataMax = Math.max(1, ...testsSeries.values, ...stackedTotals);
+  const tickStep = dataMax <= 100 ? 20 : dataMax <= 500 ? 100 : 200;
+  const maxValue = Math.ceil(dataMax / tickStep) * tickStep;
+  const yTicks = Array.from(
+    { length: Math.floor(maxValue / tickStep) + 1 },
+    (_, index) => index * tickStep,
+  );
 
   return (
     <>
@@ -182,36 +214,25 @@ export default function HomeStatsChart() {
         }}
         gap={2}
       >
-        <Button
-          variant="contained"
-          sx={{
-            height: 42,
-            px: 3,
-            borderRadius: "12px",
-            bgcolor: "#5583FF",
-            boxShadow: "0 4px 14px rgba(85, 131, 255, 0.28)",
-            fontSize: 16,
-            fontWeight: 600,
-            "&:hover": {
-              bgcolor: "#5583FF",
-            },
-          }}
-        >
-          تصدير المخطط
-        </Button>
+        <HomeStatsExportButton
+          year={year}
+          testsSeries={testsSeries}
+          stackedSeries={stackedSeries}
+        />
 
         <Select
-          value="current-year"
+          value={String(year)}
           size="small"
+          disabled
           IconComponent={KeyboardArrowDownRoundedIcon}
           sx={{
             minWidth: 116,
             height: 42,
             borderRadius: "12px",
-            bgcolor: "#FFFFFF",
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
             boxShadow: "0 4px 14px rgba(15, 23, 42, 0.06)",
             ".MuiOutlinedInput-notchedOutline": {
-              borderColor: "#ECECEC",
+              borderColor: (theme) => theme.palette.dashboard.chartBorder,
             },
             ".MuiSelect-select": {
               py: 1,
@@ -221,6 +242,12 @@ export default function HomeStatsChart() {
               fontSize: 15,
               fontWeight: 600,
             },
+            ".MuiSelect-select.Mui-disabled": {
+              WebkitTextFillColor: "#5583FF",
+            },
+            "&.Mui-disabled": {
+              opacity: 1,
+            },
             ".MuiSvgIcon-root": {
               left: 10,
               right: "auto",
@@ -228,15 +255,15 @@ export default function HomeStatsChart() {
             },
           }}
         >
-          <MenuItem value="current-year">السنة الحالية</MenuItem>
+          <MenuItem value={String(year)}>{year}</MenuItem>
         </Select>
       </Stack>
 
       <Box
         sx={{
-          bgcolor: "#FFFFFF",
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           borderRadius: "16px",
-          border: "1px solid #ECECEC",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
           boxShadow: "0 4px 14px rgba(15, 23, 42, 0.04)",
           px: { xs: 1.5, md: 3 },
           py: { xs: 2, md: 2.5 },
@@ -251,7 +278,7 @@ export default function HomeStatsChart() {
         >
           <Typography
             sx={{
-              color: "#121212",
+              color: (theme) => theme.palette.dashboard.chartTextPrimary,
               fontSize: { xs: 22, md: 24 },
               fontWeight: 700,
               lineHeight: 1.2,
@@ -281,6 +308,7 @@ export default function HomeStatsChart() {
             gridTemplateColumns: "1fr 44px",
             gap: 1.5,
             minHeight: 300,
+            opacity: yearlyActivityQuery.isLoading ? 0.75 : 1,
           }}
         >
           <Box sx={{ position: "relative", height: 300 }}>
@@ -292,7 +320,7 @@ export default function HomeStatsChart() {
                   right: 0,
                   left: 0,
                   bottom: `${(tick / maxValue) * 100}%`,
-                  borderTop: "1px solid #ECECEC",
+                  borderTop: (theme) => `1px solid ${theme.palette.dashboard.chartGrid}`,
                 }}
               />
             ))}
@@ -315,23 +343,20 @@ export default function HomeStatsChart() {
                   color: item.color,
                   value: item.values[monthIndex],
                 }));
-
                 const stackedTotal = stackedValues.reduce(
                   (sum, item) => sum + item.value,
                   0,
                 );
-
                 const stackedHovered =
                   hoveredBar?.type === "stacked" &&
                   hoveredBar?.monthIndex === monthIndex;
-
                 const testsHovered =
                   hoveredBar?.type === "tests" &&
                   hoveredBar?.monthIndex === monthIndex;
 
                 return (
                   <Stack
-                    key={label}
+                    key={`${label}-${monthIndex}`}
                     spacing={1}
                     alignItems="center"
                     justifyContent="flex-end"
@@ -364,11 +389,7 @@ export default function HomeStatsChart() {
                         }}
                         onMouseEnter={() => {
                           if (testsSeries.values[monthIndex] > 0) {
-                            setHoveredBar({
-                              type: "tests",
-                              monthIndex,
-                              value: testsSeries.values[monthIndex],
-                            });
+                            setHoveredBar({ type: "tests", monthIndex });
                           }
                         }}
                         onMouseLeave={() => setHoveredBar(null)}
@@ -422,10 +443,7 @@ export default function HomeStatsChart() {
                         }}
                         onMouseEnter={() => {
                           if (stackedTotal > 0) {
-                            setHoveredBar({
-                              type: "stacked",
-                              monthIndex,
-                            });
+                            setHoveredBar({ type: "stacked", monthIndex });
                           }
                         }}
                         onMouseLeave={() => setHoveredBar(null)}
@@ -440,9 +458,7 @@ export default function HomeStatsChart() {
                               borderRadius:
                                 index === stackedValues.length - 1
                                   ? "2px 2px 0 0"
-                                  : index === 0
-                                    ? "0"
-                                    : "0",
+                                  : "0",
                             }}
                           />
                         ))}
@@ -453,7 +469,7 @@ export default function HomeStatsChart() {
 
                     <Typography
                       sx={{
-                        color: "#4B5563",
+                        color: (theme) => theme.palette.dashboard.chartTextSecondary,
                         fontSize: { xs: 11, md: 13 },
                         fontWeight: 500,
                         textAlign: "center",
@@ -478,7 +494,7 @@ export default function HomeStatsChart() {
               <Typography
                 key={tick}
                 sx={{
-                  color: "#7A7A7A",
+                  color: (theme) => theme.palette.dashboard.chartTextSecondary,
                   fontSize: 14,
                   fontWeight: 500,
                   lineHeight: 1,

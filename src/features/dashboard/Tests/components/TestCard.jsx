@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import { useNavigate } from "react-router";
 
 const sizeStyles = {
   default: {
@@ -42,6 +43,7 @@ const sizeStyles = {
 };
 
 export default function TestCard({ compact = false, number = 180, test, fluid = false }) {
+  const navigate = useNavigate();
   const size = compact ? sizeStyles.compact : sizeStyles.default;
   const card = {
     number,
@@ -67,8 +69,15 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
         width: compact && fluid ? "100%" : size.width,
         maxWidth: "100%",
         borderRadius: size.radius,
-        border: size.border,
-        bgcolor: "#FFFFFF",
+        border: (theme) =>
+          compact
+            ? `1px solid ${theme.palette.dashboard.chartBorder}`
+            : `3px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.surface,
+        boxShadow: (theme) =>
+          theme.palette.mode === "dark"
+            ? "0 8px 18px rgba(0, 0, 0, 0.22)"
+            : "none",
         overflow: "hidden",
         direction: "rtl",
         flexShrink: 0,
@@ -81,12 +90,12 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
         sx={{
           height: size.headerHeight,
           px: size.px,
-          borderBottom: "1px solid #E2E2E2",
+          borderBottom: (theme) => `1px solid ${theme.palette.dashboard.divider}`,
         }}
       >
         <Typography
           sx={{
-            color: "#5583FF",
+            color: (theme) => theme.palette.dashboard.logoPrimary,
             fontSize: compact ? 16 : 36,
             fontWeight: 700,
             lineHeight: 1,
@@ -97,11 +106,14 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
 
         <Stack direction="row" alignItems="center" spacing={0.5} gap={0.5}>
           <CalendarMonthOutlinedIcon
-            sx={{ color: "#8A8A8A", fontSize: compact ? 12 : 28 }}
+            sx={{
+              color: (theme) => theme.palette.dashboard.textSecondary,
+              fontSize: compact ? 12 : 28,
+            }}
           />
           <Typography
             sx={{
-              color: "#8A8A8A",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: compact ? 7.5 : 20,
               fontWeight: 600,
               lineHeight: 1,
@@ -123,7 +135,7 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
       >
         <Typography
           sx={{
-            color: "#263238",
+            color: (theme) => theme.palette.dashboard.textPrimary,
             fontSize: size.title,
             fontWeight: 800,
             lineHeight: 1.2,
@@ -135,12 +147,13 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
         <Typography
           sx={{
             mt: compact ? 0.7 : 1.6,
-            mx: "auto",
+           
             maxWidth: compact ? 135 : 340,
-            color: "#8A8A8A",
+            color: (theme) => theme.palette.dashboard.textSecondary,
             fontSize: size.desc,
             fontWeight: 500,
             lineHeight: 1.45,
+            textAlign: "right",
           }}
         >
           {card.description}
@@ -149,7 +162,7 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
         <Stack
           direction="row"
           alignItems="center"
-          justifyContent="center"
+          justifyContent="flex-start"
           spacing={compact ? 0.35 : 1.3}
           gap={compact ? 0.35 : 1.3}
           sx={{ mt: compact ? 1.1 : 3 }}
@@ -163,8 +176,8 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
                   tag === "..." ? (compact ? 22 : 46) : compact ? 47 : 104,
                 px: compact ? 0.35 : 1.4,
                 borderRadius: compact ? "3px" : "6px",
-                bgcolor: "#EEF2FF",
-                color: "#5583FF",
+                bgcolor: (theme) => theme.palette.dashboard.activeItem.background,
+                color: (theme) => theme.palette.dashboard.logoPrimary,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -186,7 +199,11 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
         >
           <Box sx={{ flex: 1, textAlign: "center" }}>
             <Typography
-              sx={{ color: "#263238", fontSize: size.label, fontWeight: 800 }}
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: size.label,
+                fontWeight: 800,
+              }}
             >
               {card.levelLabel}
             </Typography>
@@ -203,19 +220,27 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
           </Box>
 
           <Box
-            sx={{ width: "1px", height: compact ? 28 : 46, bgcolor: "#DFDFDF" }}
+            sx={{
+              width: "1px",
+              height: compact ? 28 : 46,
+              bgcolor: (theme) => theme.palette.dashboard.divider,
+            }}
           />
 
           <Box sx={{ flex: 1, textAlign: "center" }}>
             <Typography
-              sx={{ color: "#263238", fontSize: size.label, fontWeight: 800 }}
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: size.label,
+                fontWeight: 800,
+              }}
             >
               {card.questionsLabel}
             </Typography>
             <Typography
               sx={{
                 mt: 0.4,
-                color: "#8A8A8A",
+                color: (theme) => theme.palette.dashboard.textSecondary,
                 fontSize: size.value,
                 fontWeight: 700,
               }}
@@ -225,12 +250,20 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
           </Box>
 
           <Box
-            sx={{ width: "1px", height: compact ? 28 : 46, bgcolor: "#DFDFDF" }}
+            sx={{
+              width: "1px",
+              height: compact ? 28 : 46,
+              bgcolor: (theme) => theme.palette.dashboard.divider,
+            }}
           />
 
           <Box sx={{ flex: 1, textAlign: "center" }}>
             <Typography
-              sx={{ color: "#263238", fontSize: size.label, fontWeight: 800 }}
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: size.label,
+                fontWeight: 800,
+              }}
             >
               {card.ratingLabel}
             </Typography>
@@ -247,7 +280,7 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
               />
               <Typography
                 sx={{
-                  color: "#8A8A8A",
+                  color: (theme) => theme.palette.dashboard.textSecondary,
                   fontSize: size.value,
                   fontWeight: 700,
                 }}
@@ -266,22 +299,23 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
         sx={{
           minHeight: size.footerHeight,
           px: size.px,
-          borderTop: "1px solid #E2E2E2",
+          borderTop: (theme) => `1px solid ${theme.palette.dashboard.divider}`,
         }}
       >
         <Button
           variant="contained"
+          onClick={() => navigate(`/test-details/${card.id ?? card.number}`)}
           sx={{
             minWidth: size.buttonWidth,
             height: size.buttonHeight,
             borderRadius: compact ? "4px" : "7px",
-            bgcolor: "#5583FF",
+            bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
             boxShadow: "none",
             color: "#FFFFFF",
             fontSize: size.buttonFont,
             fontWeight: 800,
             "&:hover": {
-              bgcolor: "#5583FF",
+              bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
               boxShadow: "none",
             },
           }}
@@ -292,7 +326,7 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
         <Box sx={{ textAlign: "left", direction: "rtl" }}>
           <Typography
             sx={{
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: size.price,
               fontWeight: 800,
               lineHeight: 1,
@@ -303,7 +337,7 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
           <Typography
             sx={{
               mt: 0.4,
-              color: "#8A8A8A",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: compact ? 8 : 17,
               fontWeight: 500,
               lineHeight: 1,

@@ -1,9 +1,11 @@
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { showErrorToast } from "../../../shared/lib/Tost/toastService";
+import { useResetPasswordMutation } from "../hooks/useResetPasswordMutation";
 import AuthFormHeader from "./AuthFormHeader";
 import AuthFormInput from "./AuthFormInput";
 import AuthPanelTitle from "./AuthPanelTitle";
@@ -15,10 +17,18 @@ import keyDark from "../Assets/keydark.svg";
 export default function CreateNewPasswordFormPanel() {
   const theme = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
+  const email = location.state?.email || "";
+  const otpCode = location.state?.otpCode || "";
   const keyIcon = theme.palette.mode === "light" ? keyLight : keyDark;
   const indicatorInitialStep = location.state?.fromStep ?? 0;
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const resetPasswordMutation = useResetPasswordMutation({
+    onSuccess: () => {
+      navigate("/login", { replace: true });
+    },
+  });
   const { control, handleSubmit } = useForm({
     defaultValues: {
       password: "",
@@ -26,8 +36,24 @@ export default function CreateNewPasswordFormPanel() {
     },
   });
 
+  useEffect(() => {
+    if (!email || !otpCode) {
+      navigate("/restpassword", { replace: true });
+    }
+  }, [email, navigate, otpCode]);
+
   const onSubmit = (data) => {
-    console.log("create new password form", data);
+    if (data.password !== data.confirmPassword) {
+      showErrorToast("كلمة المرور وتأكيد كلمة المرور غير متطابقين");
+      return;
+    }
+
+    resetPasswordMutation.mutate({
+      email,
+      otpCode,
+      password: data.password,
+      passwordConfirmation: data.confirmPassword,
+    });
   };
 
   return (
@@ -59,9 +85,9 @@ export default function CreateNewPasswordFormPanel() {
       >
         <AuthFormHeader
           showBackButton
-          backLabel="العودة إلى تسجيل الدخول"
+          backLabel="العودة إلى تأكيد الرمز"
           backTo="/confarmpassword"
-          backState={{ fromStep: 0 }}
+          backState={{ email, fromStep: 1 }}
         />
 
         <Box
@@ -142,7 +168,9 @@ export default function CreateNewPasswordFormPanel() {
                   setShowConfirmPassword((currentValue) => !currentValue)
                 }
                 aria-label={
-                  showConfirmPassword ? "إخفاء تأكيد كلمة المرور" : "إظهار تأكيد كلمة المرور"
+                  showConfirmPassword
+                    ? "إخفاء تأكيد كلمة المرور"
+                    : "إظهار تأكيد كلمة المرور"
                 }
                 sx={{
                   p: 0,
@@ -158,6 +186,7 @@ export default function CreateNewPasswordFormPanel() {
 
           <AuthPrimaryButton
             type="submit"
+            disabled={resetPasswordMutation.isPending}
             sx={{
               mt: { xs: 6, sm: 7 },
               height: { xs: 56, sm: 58, md: 60 },
@@ -165,7 +194,7 @@ export default function CreateNewPasswordFormPanel() {
               borderRadius: "12px",
             }}
           >
-            تأكيد الإدخال
+            {resetPasswordMutation.isPending ? "جاري الحفظ..." : "تأكيد الإدخال"}
           </AuthPrimaryButton>
         </Box>
 

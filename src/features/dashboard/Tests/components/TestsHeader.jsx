@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import TestsSubmissionsModal from "./TestsSubmissionsModal";
 
 export default function TestsHeader() {
@@ -12,12 +12,12 @@ export default function TestsHeader() {
           width: "100%",
           display: "flex",
           alignItems: { xs: "flex-start", md: "flex-start" },
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           flexDirection: { xs: "column", md: "row-reverse" },
           gap: 2,
         }}
       >
-        <Stack
+        {/* <Stack
           component="button"
           type="button"
           onClick={() => setIsSubmissionsOpen(true)}
@@ -62,7 +62,7 @@ export default function TestsHeader() {
 
           <Typography
             sx={{
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: 15,
               fontWeight: 700,
               lineHeight: 1,
@@ -70,19 +70,22 @@ export default function TestsHeader() {
           >
             قائمة المشاركات
           </Typography>
-        </Stack>
+        </Stack> */}
 
         <Box sx={{ textAlign: "right" }}>
           <Typography
             sx={{
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: { xs: 28, md: 34 },
               fontWeight: 800,
               lineHeight: 1.25,
             }}
           >
             طلبات مراجعة
-            <Box component="span" sx={{ color: "#5583FF" }}>
+            <Box
+              component="span"
+              sx={{ color: (theme) => theme.palette.dashboard.logoPrimary }}
+            >
               {" "}الاختبارات
             </Box>
           </Typography>
@@ -90,7 +93,7 @@ export default function TestsHeader() {
           <Typography
             sx={{
               mt: 1.4,
-              color: "#A1A1A1",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: { xs: 14, md: 17 },
               fontWeight: 500,
               lineHeight: 1.7,

@@ -1,5 +1,20 @@
 import { Box, Stack, Typography } from "@mui/material";
 
+const monthLabels = {
+  1: "كانون الثاني",
+  2: "شباط",
+  3: "آذار",
+  4: "نيسان",
+  5: "أيار",
+  6: "حزيران",
+  7: "تموز",
+  8: "آب",
+  9: "أيلول",
+  10: "تشرين الأول",
+  11: "تشرين الثاني",
+  12: "كانون الأول",
+};
+
 function RankingItem({ rank, month, value, unit }) {
   return (
     <Stack
@@ -23,7 +38,7 @@ function RankingItem({ rank, month, value, unit }) {
 
       <Typography
         sx={{
-          color: "#263238",
+          color: (theme) => theme.palette.dashboard.chartTextPrimary,
           fontSize: { xs: 11.5, sm: 16, lg: 18 },
           fontWeight: 600,
           whiteSpace: "nowrap",
@@ -33,10 +48,10 @@ function RankingItem({ rank, month, value, unit }) {
       </Typography>
 
       <Stack direction="row" spacing={0.6} alignItems="baseline">
-        <Typography sx={{ color: "#263238", fontSize: { xs: 11.5, sm: 15, lg: 16 }, fontWeight: 700 }}>
+        <Typography sx={{ color: (theme) => theme.palette.dashboard.chartTextPrimary, fontSize: { xs: 11.5, sm: 15, lg: 16 }, fontWeight: 700 }}>
           {value}
         </Typography>
-        <Typography sx={{ color: "#8A8A8A", fontSize: { xs: 9.5, sm: 13, lg: 14 }, fontWeight: 500 }}>
+        <Typography sx={{ color: (theme) => theme.palette.dashboard.chartTextSecondary, fontSize: { xs: 9.5, sm: 13, lg: 14 }, fontWeight: 500 }}>
           {unit}
         </Typography>
       </Stack>
@@ -82,8 +97,8 @@ function ResponsiveCard({ children, isScrollableItem = false, sx }) {
         flexShrink: isScrollableItem ? 0 : 1,
         justifySelf: "center",
         borderRadius: { xs: "14px", sm: "16px", lg: 0 },
-        border: { xs: "1px solid #ECECEC", lg: 0 },
-        bgcolor: "#FFFFFF",
+        border: (theme) => ({ xs: `1px solid ${theme.palette.dashboard.chartBorder}`, lg: 0 }),
+        bgcolor: (theme) => theme.palette.dashboard.chartBackground,
         boxShadow: { xs: "0 4px 14px rgba(15, 23, 42, 0.05)", lg: "none" },
         p: { xs: 1, sm: 2, lg: 0 },
         ...sx,
@@ -99,7 +114,7 @@ function RankingCard({ title, subtitle, children, sx }) {
     <ResponsiveCard
       isScrollableItem
       sx={{
-        borderLeft: { lg: "1px solid #DFDFDF" },
+        borderLeft: (theme) => ({ lg: `1px solid ${theme.palette.dashboard.chartBorder}` }),
         pl: { lg: 2 },
         display: "flex",
         flexDirection: "column",
@@ -109,7 +124,7 @@ function RankingCard({ title, subtitle, children, sx }) {
     >
       <Typography
         sx={{
-          color: "#263238",
+          color: (theme) => theme.palette.dashboard.chartTextPrimary,
           fontSize: { xs: 11.5, sm: 16, lg: 18 },
           fontWeight: 700,
           textAlign: "right",
@@ -134,15 +149,28 @@ function RankingCard({ title, subtitle, children, sx }) {
   );
 }
 
-export default function HomeSection2BottomCard({ ticketCard }) {
+function mapMonthName(monthNo) {
+  return monthLabels[monthNo] || "-";
+}
+
+export default function HomeSection2BottomCard({
+  ticketCard,
+  topMonthsBySoldPurchases = [],
+  topMonthsByPlatformProfit = [],
+  mostPurchasedTest,
+  formatCurrency,
+}) {
   return (
     <Box
       sx={{
         mt: { xs: 2, lg: 0 },
         transform: { xs: "none", lg: "translateY(-28px)" },
         borderRadius: { xs: 0, lg: "18px" },
-        border: { xs: 0, lg: "1px solid #ECECEC" },
-        bgcolor: { xs: "transparent", lg: "#FFFFFF" },
+        border: (theme) => ({ xs: 0, lg: `1px solid ${theme.palette.dashboard.chartBorder}` }),
+        bgcolor: (theme) => ({
+          xs: "transparent",
+          lg: theme.palette.dashboard.chartBackground,
+        }),
         boxShadow: { xs: "none", lg: "0 4px 14px rgba(15, 23, 42, 0.05)" },
         px: { xs: 0, lg: 2.5 },
         py: { xs: 0, lg: 2.3 },
@@ -175,15 +203,27 @@ export default function HomeSection2BottomCard({ ticketCard }) {
           }}
         >
           <RankingCard title="الأشهر الأكثر مبيعاً" subtitle="للاختبارات" sx={{ scrollSnapAlign: "start" }}>
-            <RankingItem rank={1} month="نيسان" value="134" unit="اختباراً" />
-            <RankingItem rank={2} month="أيار" value="78" unit="اختباراً" />
-            <RankingItem rank={3} month="كانون الثاني" value="24" unit="اختباراً" />
+            {topMonthsBySoldPurchases.map((item, index) => (
+              <RankingItem
+                key={`${item.month_no}-${index}`}
+                rank={index + 1}
+                month={mapMonthName(item.month_no)}
+                value={item.sold_purchase_count}
+                unit="اختباراً"
+              />
+            ))}
           </RankingCard>
 
           <RankingCard title="الأشهر الأكثر تحقيقاً للربح" subtitle="من الاختبارات" sx={{ scrollSnapAlign: "start" }}>
-            <RankingItem rank={1} month="نيسان" value="2400" unit="ل.س" />
-            <RankingItem rank={2} month="أيار" value="1500" unit="ل.س" />
-            <RankingItem rank={3} month="كانون الثاني" value="800" unit="ل.س" />
+            {topMonthsByPlatformProfit.map((item, index) => (
+              <RankingItem
+                key={`${item.month_no}-${index}`}
+                rank={index + 1}
+                month={mapMonthName(item.month_no)}
+                value={formatCurrency(item.platform_net_profit_amount)}
+                unit="ل.س"
+              />
+            ))}
           </RankingCard>
         </Box>
 
@@ -214,10 +254,10 @@ export default function HomeSection2BottomCard({ ticketCard }) {
               </Typography>
             </Box>
             <Stack direction="row" spacing={0.75} alignItems="baseline">
-              <Typography sx={{ color: "#263238", fontSize: { xs: 13, lg: 18 }, fontWeight: 700 }}>
-                230
+              <Typography sx={{ color: (theme) => theme.palette.dashboard.chartTextPrimary, fontSize: { xs: 13, lg: 18 }, fontWeight: 700 }}>
+                {mostPurchasedTest?.purchase_count || 0}
               </Typography>
-              <Typography sx={{ color: "#6B7280", fontSize: { xs: 11, lg: 16 }, fontWeight: 500 }}>
+              <Typography sx={{ color: (theme) => theme.palette.dashboard.chartTextSecondary, fontSize: { xs: 11, lg: 16 }, fontWeight: 500 }}>
                 مرة
               </Typography>
             </Stack>

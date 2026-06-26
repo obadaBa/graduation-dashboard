@@ -11,7 +11,23 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
-export default function ContentFilterBar() {
+const SORT_OPTIONS = [
+  { value: "latest", label: "الأحدث" },
+  { value: "id", label: "حسب الرقم" },
+  { value: "type", label: "حسب النوع" },
+  { value: "most_liked", label: "الأكثر إعجاباً" },
+  { value: "new", label: "الجديد" },
+  { value: "approved", label: "الموافق عليه" },
+  { value: "reported", label: "المبلغ عنه" },
+];
+
+export default function ContentFilterBar({
+  sortBy,
+  onSortChange,
+  searchValue,
+  onSearchChange,
+  onClearSearch,
+}) {
   return (
     <Box
       sx={{
@@ -30,6 +46,8 @@ export default function ContentFilterBar() {
         sx={{ width: "100%" }}
       >
         <TextField
+          value={searchValue}
+          onChange={(event) => onSearchChange?.(event.target.value)}
           size="small"
           placeholder="البحث عن محتوى"
           sx={{
@@ -71,8 +89,16 @@ export default function ContentFilterBar() {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
+                  onClick={onClearSearch}
+                  disabled={!searchValue}
+                  aria-label="مسح البحث"
                   size="small"
-                  sx={{ color: "#8A8A8A", width: 24, height: 24 }}
+                  sx={{
+                    color: "#8A8A8A",
+                    width: 24,
+                    height: 24,
+                    visibility: searchValue ? "visible" : "hidden",
+                  }}
                 >
                   <CloseRoundedIcon sx={{ fontSize: 17 }} />
                 </IconButton>
@@ -82,11 +108,12 @@ export default function ContentFilterBar() {
         />
 
         <Select
-          value="default"
+          value={sortBy}
+          onChange={(event) => onSortChange?.(event.target.value)}
           size="small"
           IconComponent={KeyboardArrowDownRoundedIcon}
           sx={{
-            width: { xs: "100%", sm: 120 },
+            width: { xs: "100%", sm: 150 },
             height: 38,
             borderRadius: "999px",
             bgcolor: "#FFFFFF",
@@ -110,9 +137,11 @@ export default function ContentFilterBar() {
             },
           }}
         >
-          <MenuItem value="default">الترتيب حسب</MenuItem>
-          <MenuItem value="newest">الأحدث</MenuItem>
-          <MenuItem value="oldest">الأقدم</MenuItem>
+          {SORT_OPTIONS.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
         </Select>
       </Stack>
     </Box>

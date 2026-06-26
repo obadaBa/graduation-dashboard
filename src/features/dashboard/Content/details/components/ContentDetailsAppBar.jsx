@@ -1,19 +1,37 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import { Box, Button, Stack } from "@mui/material";
 import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import WidgetsOutlinedIcon from "@mui/icons-material/WidgetsOutlined";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import ViewAgendaOutlinedIcon from "@mui/icons-material/ViewAgendaOutlined";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import ApproveTestConfirmationModal from "../../../Tests/testDetails/components/ApproveTestConfirmationModal";
+import DeleteTestConfirmationModal from "../../../Tests/testDetails/components/DeleteTestConfirmationModal";
+import { useApproveLibraryMaterialMutation } from "../../hooks/useApproveLibraryMaterialMutation";
+import { useDeleteLibraryMaterialMutation } from "../../hooks/useDeleteLibraryMaterialMutation";
+
+function createIdempotencyKey() {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
 
 function GhostIconButton({
   children,
   color,
   borderColor,
   bgcolor = "#FFFFFF",
+  onClick,
+  disabled = false,
 }) {
   return (
     <Button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
       sx={{
         minWidth: 48,
         width: 48,
@@ -27,6 +45,12 @@ function GhostIconButton({
           bgcolor,
           borderColor,
         },
+        "&.Mui-disabled": {
+          bgcolor,
+          color,
+          borderColor,
+          opacity: 0.55,
+        },
       }}
     >
       {children}
@@ -37,6 +61,7 @@ function GhostIconButton({
 function TabAction({ label, icon, active = false, onClick }) {
   return (
     <Button
+      type="button"
       onClick={onClick}
       startIcon={icon}
       sx={{
@@ -63,126 +88,212 @@ function TabAction({ label, icon, active = false, onClick }) {
   );
 }
 
-export default function ContentDetailsAppBar({ activeTab, onTabChange }) {
+export default function ContentDetailsAppBar({
+  contentId,
+  activeTab,
+  onTabChange,
+}) {
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteReason, setDeleteReason] = useState("");
+  const navigate = useNavigate();
+  const approveMutation = useApproveLibraryMaterialMutation(contentId);
+  const deleteMutation = useDeleteLibraryMaterialMutation(contentId);
+  const isActionPending = approveMutation.isPending || deleteMutation.isPending;
+
+  const handleApprove = () => {
+    if (!contentId || isActionPending) {
+      return;
+    }
+
+    setIsApproveModalOpen(true);
+  };
+
+  const handleConfirmApprove = () => {
+    if (!contentId || isActionPending) {
+      return;
+    }
+
+    approveMutation.mutate(
+      {
+        contentId,
+        idempotencyKey: createIdempotencyKey(),
+      },
+      {
+        onSuccess: () => {
+          setIsApproveModalOpen(false);
+        },
+      },
+    );
+  };
+
+  const handleCloseApproveModal = () => {
+    if (!approveMutation.isPending) {
+      setIsApproveModalOpen(false);
+    }
+  };
+
+  const handleDelete = () => {
+    if (!contentId || isActionPending) {
+      return;
+    }
+
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    const reason = deleteReason.trim();
+
+    if (!contentId || !reason || isActionPending) {
+      return;
+    }
+
+    deleteMutation.mutate(
+      {
+        contentId,
+        reason,
+        idempotencyKey: createIdempotencyKey(),
+      },
+      {
+        onSuccess: () => {
+          setIsDeleteModalOpen(false);
+          setDeleteReason("");
+          navigate("/dashboard/content", { replace: true });
+        },
+      },
+    );
+  };
+
+  const handleCloseDeleteModal = () => {
+    if (deleteMutation.isPending) {
+      return;
+    }
+
+    setIsDeleteModalOpen(false);
+    setDeleteReason("");
+  };
+
   return (
-    <Box
-      sx={{
-        mt: 2.5,
-        width: "100%",
-        minHeight: 68,
-        borderRadius: "14px",
-        bgcolor: "#FFFFFF",
-        px: 2,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        direction: "rtl",
-      }}
-    >
-      <Stack
-        direction="row-reverse"
-        alignItems="center"
+    <>
+      <Box
         sx={{
-          minHeight: 46,
-          border: "1px solid #EBEBEB",
-          overflow: "hidden",
+          mt: 2.5,
+          width: "100%",
+          minHeight: 68,
+          borderRadius: "14px",
           bgcolor: "#FFFFFF",
-          p: 0.6,
+          px: { xs: 1, md: 2 },
+          py: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: { xs: "wrap", lg: "nowrap" },
+          gap: 1.5,
+          direction: "rtl",
         }}
       >
-        <Box sx={{ px: 1.2 }}>
-          <Button
-            startIcon={<AutoAwesomeRoundedIcon sx={{ fontSize: 18 }} />}
-            sx={{
-              minWidth: 140,
-              height: 32,
-              px: 1.5,
-              borderRadius: "8px",
-              color: "#FFFFFF",
-              background: "linear-gradient(90deg, #8ED8FF 0%, #DDEEA2 100%)",
-              boxShadow: "0 6px 12px rgba(151, 200, 245, 0.22)",
-              "&:hover": {
-                background: "linear-gradient(90deg, #8ED8FF 0%, #DDEEA2 100%)",
-              },
-              "& .MuiButton-startIcon": {
-                marginInlineStart: 0,
-                marginInlineEnd: "6px",
-              },
-            }}
-          >
-            <Typography sx={{ fontSize: 12, fontWeight: 700 }}>
-              مساعد الذكاء الاصطناعي
-            </Typography>
-          </Button>
-        </Box>
-
-        <Box
+        <Stack
+          direction="row-reverse"
+          alignItems="center"
           sx={{
-            width: "2px",
-            height: 48,
-            mx: 0.6,
-            background:
-              "repeating-linear-gradient(to bottom, #D9D9D9 0 6px, transparent 6px 11px)",
+            minHeight: 46,
+            flex: { xs: "1 1 100%", lg: "0 1 auto" },
+            border: "1px solid #EBEBEB",
+            overflow: "hidden",
+            bgcolor: "#FFFFFF",
+            p: 0.6,
           }}
-        />
+        >
+          <TabAction
+            label="سجل الحالة"
+            icon={<ViewAgendaOutlinedIcon sx={{ fontSize: 22 }} />}
+            active={activeTab === "status"}
+            onClick={() => onTabChange("status")}
+          />
 
-        <TabAction
-          label="سجل الحالة"
-          icon={<ViewAgendaOutlinedIcon sx={{ fontSize: 22 }} />}
-          active={activeTab === "status"}
-          onClick={() => onTabChange("status")}
-        />
+          <TabAction
+            label="سجل الإبلاغات"
+            icon={<FlagOutlinedIcon sx={{ fontSize: 22 }} />}
+            active={activeTab === "creations"}
+            onClick={() => onTabChange("creations")}
+          />
 
-        <TabAction
-          label="سجل الإبداعات"
-          icon={<FlagOutlinedIcon sx={{ fontSize: 22 }} />}
-          active={activeTab === "creations"}
-          onClick={() => onTabChange("creations")}
-        />
+          <TabAction
+            label="نظرة عامة"
+            icon={<WidgetsOutlinedIcon sx={{ fontSize: 22 }} />}
+            active={activeTab === "overview"}
+            onClick={() => onTabChange("overview")}
+          />
+        </Stack>
 
-        <TabAction
-          label="نظرة عامة"
-          icon={<WidgetsOutlinedIcon sx={{ fontSize: 22 }} />}
-          active={activeTab === "overview"}
-          onClick={() => onTabChange("overview")}
-        />
-      </Stack>
+        <Stack
+          direction="row-reverse"
+          alignItems="center"
+          spacing={1.2}
+          sx={{ px: { xs: 0, md: 1.4 }, flexShrink: 0 }}
+          gap={1}
+        >
+          <GhostIconButton
+            color="#3FD547"
+            borderColor="#3FD547"
+            onClick={handleApprove}
+            disabled={isActionPending}
+          >
+            <CheckBoxRoundedIcon sx={{ fontSize: 26 }} />
+          </GhostIconButton>
 
-      <Stack
-        direction="row-reverse"
-        alignItems="center"
-        spacing={1.2}
-        sx={{ px: 1.4 }}
-        gap={1}
-      >
-        <GhostIconButton color="#3FD547" borderColor="#3FD547">
-          <CheckBoxRoundedIcon sx={{ fontSize: 26 }} />
-        </GhostIconButton>
+          <GhostIconButton
+            color="#FF6A64"
+            borderColor="#FF6A64"
+            onClick={handleDelete}
+            disabled={isActionPending}
+          >
+            <DeleteOutlineRoundedIcon sx={{ fontSize: 26 }} />
+          </GhostIconButton>
+        </Stack>
 
-        <GhostIconButton color="#FF6A64" borderColor="#FF6A64">
-          <DeleteOutlineRoundedIcon sx={{ fontSize: 26 }} />
-        </GhostIconButton>
-      </Stack>
-
-      <Button
-        sx={{
-          minWidth: 132,
-          height: 36,
-          px: 2,
-          marginInlineStart: "auto",
-          borderRadius: "8px",
-          bgcolor: "#5C84FF",
-          color: "#FFFFFF",
-          fontSize: 18,
-          fontWeight: 700,
-          boxShadow: "0 8px 16px rgba(92, 132, 255, 0.28)",
-          "&:hover": {
+        <Button
+          type="button"
+          sx={{
+            minWidth: 132,
+            height: 36,
+            px: 2,
+            marginInlineStart: { xs: 0, lg: "auto" },
+            borderRadius: "8px",
             bgcolor: "#5C84FF",
-          },
-        }}
-      >
-        تنزيل المحتوى
-      </Button>
-    </Box>
+            color: "#FFFFFF",
+            fontSize: 18,
+            fontWeight: 700,
+            boxShadow: "0 8px 16px rgba(92, 132, 255, 0.28)",
+            "&:hover": {
+              bgcolor: "#5C84FF",
+            },
+          }}
+        >
+          تنزيل المحتوى
+        </Button>
+      </Box>
+
+      <ApproveTestConfirmationModal
+        open={isApproveModalOpen}
+        onClose={handleCloseApproveModal}
+        onConfirm={handleConfirmApprove}
+        isPending={approveMutation.isPending}
+        title="هل أنت متأكد من الموافقة على نشر هذا المحتوى؟"
+        description="في حال الموافقة سيظهر هذا المحتوى للعامة داخل تطبيق الموبايل وسيستطيع المستخدمون تصفحه والتفاعل معه."
+        pendingLabel="جاري الموافقة..."
+      />
+      <DeleteTestConfirmationModal
+        open={isDeleteModalOpen}
+        reason={deleteReason}
+        onReasonChange={setDeleteReason}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        isPending={deleteMutation.isPending}
+        title="هل أنت متأكد من حذف هذا المحتوى؟"
+        description="في حال الموافقة فإن المحتوى لن يظهر مرة أخرى للمستخدمين، وسيتم تحديث حالته ضمن سجلات المحتوى."
+        placeholder="ادخل سبب اختيارك لحذف هذا المحتوى ..."
+      />
+    </>
   );
 }

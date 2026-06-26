@@ -2,7 +2,10 @@ import { useMemo, useState } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "react-router";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { queryClient } from "../shared/lib/queryClient";
+import { TestAiEvaluationProvider } from "../features/dashboard/Tests/context/TestAiEvaluationContext";
 import { router } from "./router/routes";
 import { ColorModeContext } from "./theme/colorModeContext";
 import { createAppTheme } from "./theme/theme";
@@ -35,9 +38,16 @@ function App() {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <div dir="rtl">
-            <RouterProvider router={router} />
-          </div>
+          <TestAiEvaluationProvider
+            onOpenResult={(testId) =>
+              router.navigate(`/test-details/${testId}?aiEvaluation=open`)
+            }
+          >
+            <div dir="rtl">
+              <RouterProvider router={router} />
+            </div>
+          </TestAiEvaluationProvider>
+          <ToastContainer />
         </ThemeProvider>
       </ColorModeContext.Provider>
     </QueryClientProvider>

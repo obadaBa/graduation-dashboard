@@ -1,14 +1,20 @@
 import {
   Box,
-  Button,
   MenuItem,
   Select,
   Stack,
   Typography,
 } from "@mui/material";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import HomeLibraryStatsExportButton from "./HomeLibraryStatsExportButton";
 
-export default function HomeSection3Header() {
+export default function HomeSection3Header({
+  selectedYear,
+  onYearChange,
+  availableYears,
+  libraryStats,
+  isLoading,
+}) {
   return (
     <Box
       sx={{
@@ -23,7 +29,7 @@ export default function HomeSection3Header() {
       <Box sx={{ textAlign: "right" }}>
         <Typography
           sx={{
-            color: "#263238",
+            color: (theme) => theme.palette.dashboard.textPrimary,
             fontSize: { xs: 28, md: 38 },
             fontWeight: 700,
             lineHeight: 1.25,
@@ -39,7 +45,7 @@ export default function HomeSection3Header() {
         <Typography
           sx={{
             mt: 1,
-            color: "#A1A1A1",
+            color: (theme) => theme.palette.dashboard.textSecondary,
             fontSize: { xs: 15, md: 18 },
             fontWeight: 500,
             lineHeight: 1.7,
@@ -62,36 +68,25 @@ export default function HomeSection3Header() {
         }}
         gap={2}
       >
-        <Button
-          variant="contained"
-          sx={{
-            height: 42,
-            px: 3,
-            borderRadius: "12px",
-            bgcolor: "#5583FF",
-            boxShadow: "0 4px 14px rgba(85, 131, 255, 0.28)",
-            fontSize: 16,
-            fontWeight: 600,
-            "&:hover": {
-              bgcolor: "#5583FF",
-            },
-          }}
-        >
-          تصدير البيانات
-        </Button>
+        <HomeLibraryStatsExportButton
+          year={selectedYear}
+          libraryStats={libraryStats}
+          disabled={isLoading}
+        />
 
         <Select
-          value="current-year"
+          value={selectedYear}
+          onChange={(event) => onYearChange?.(Number(event.target.value))}
           size="small"
           IconComponent={KeyboardArrowDownRoundedIcon}
           sx={{
             minWidth: 132,
             height: 42,
             borderRadius: "12px",
-            bgcolor: "#FFFFFF",
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
             boxShadow: "0 4px 14px rgba(15, 23, 42, 0.06)",
             ".MuiOutlinedInput-notchedOutline": {
-              borderColor: "#ECECEC",
+              borderColor: (theme) => theme.palette.dashboard.chartBorder,
             },
             ".MuiSelect-select": {
               py: 1,
@@ -108,7 +103,11 @@ export default function HomeSection3Header() {
             },
           }}
         >
-          <MenuItem value="current-year">السنة الحالية</MenuItem>
+          {availableYears.map((year) => (
+            <MenuItem key={year} value={year}>
+              {year}
+            </MenuItem>
+          ))}
         </Select>
       </Stack>
     </Box>

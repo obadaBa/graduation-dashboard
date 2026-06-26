@@ -22,7 +22,7 @@ function SubmissionSection({ title, count, color, cards }) {
       <Box
         sx={{
           borderRadius: "12px",
-          bgcolor: "#F7F8FC",
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           borderRight: `6px solid ${color}`,
           display: "flex",
           alignItems: "self-end",
@@ -34,7 +34,7 @@ function SubmissionSection({ title, count, color, cards }) {
       >
         <Typography
           sx={{
-            color: "#263238",
+            color: (theme) => theme.palette.dashboard.textPrimary,
             fontSize: 16,
             fontWeight: 800,
             writingMode: "vertical-rl",
@@ -115,7 +115,10 @@ export default function TestsSubmissionsModal({ open, onClose }) {
       slotProps={{
         backdrop: {
           sx: {
-            bgcolor: "rgba(255, 255, 255, 0.34)",
+            bgcolor: (theme) =>
+              theme.palette.mode === "dark"
+                ? "rgba(8, 10, 14, 0.62)"
+                : "rgba(255, 255, 255, 0.34)",
             backdropFilter: "blur(8px)",
           },
         },
@@ -142,7 +145,7 @@ export default function TestsSubmissionsModal({ open, onClose }) {
               sx={{
                 width: "100%",
                 minHeight: 620,
-                bgcolor: "#FFFFFF",
+                bgcolor: (theme) => theme.palette.dashboard.surface,
                 borderRadius: "18px",
                 boxShadow: "0 18px 50px rgba(15, 23, 42, 0.18)",
                 overflow: "hidden",
@@ -163,16 +166,23 @@ export default function TestsSubmissionsModal({ open, onClose }) {
                     right: 0,
                     bottom: 0,
                     height: "3px",
-                    backgroundImage:
-                      "repeating-linear-gradient(to left, #CFCFCF 0 18px, transparent 18px 29px)",
+                    backgroundImage: (theme) =>
+                      `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 29px)`,
                   },
                 }}
               >
                 <Typography
-                  sx={{ color: "#263238", fontSize: 19, fontWeight: 800 }}
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    fontSize: 19,
+                    fontWeight: 800,
+                  }}
                 >
                   قائمة المشاركات
-                  <Box component="span" sx={{ color: "#5583FF" }}>
+                  <Box
+                    component="span"
+                    sx={{ color: (theme) => theme.palette.dashboard.logoPrimary }}
+                  >
                     {" "}للاختبارات
                   </Box>
                 </Typography>
@@ -183,10 +193,13 @@ export default function TestsSubmissionsModal({ open, onClose }) {
                     width: 34,
                     height: 34,
                     borderRadius: "6px",
-                    border: "1px solid #DFDFDF",
-                    color: "#263238",
-                    bgcolor: "#FFFFFF",
-                    "&:hover": { bgcolor: "#F8F8F8" },
+                    border: (theme) =>
+                      `1px solid ${theme.palette.dashboard.divider}`,
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+                    "&:hover": {
+                      bgcolor: (theme) => theme.palette.dashboard.hoverItem.background,
+                    },
                   }}
                 >
                   <CloseRoundedIcon sx={{ fontSize: 22 }} />

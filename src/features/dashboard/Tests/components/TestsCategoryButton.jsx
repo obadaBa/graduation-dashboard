@@ -17,8 +17,14 @@ export default function TestsCategoryButton({
         height: 56,
         px: 2,
         borderRadius: "12px",
-        border: active ? "2px solid #5583FF" : "1px solid #DFDFDF",
-        bgcolor: "#FFFFFF",
+        border: (theme) =>
+          active
+            ? `2px solid ${theme.palette.dashboard.logoPrimary}`
+            : `1px solid ${theme.palette.dashboard.divider}`,
+        bgcolor: (theme) =>
+          active
+            ? theme.palette.dashboard.activeItem.background
+            : theme.palette.dashboard.chartBackground,
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
@@ -28,7 +34,13 @@ export default function TestsCategoryButton({
     >
       <Stack direction="row" alignItems="center" spacing={1} gap={1}>
         <Box sx={{ width: 12, height: 12, borderRadius: "50%", bgcolor: color }} />
-        <Typography sx={{ color: "#263238", fontSize: 16, fontWeight: 800 }}>
+        <Typography
+          sx={{
+            color: (theme) => theme.palette.dashboard.textPrimary,
+            fontSize: 16,
+            fontWeight: 800,
+          }}
+        >
           {title}
         </Typography>
       </Stack>
@@ -39,7 +51,12 @@ export default function TestsCategoryButton({
           height: 16,
           px: 0.8,
           borderRadius: "999px",
-          bgcolor: active ? "#5583FF" : "#B8B8B8",
+          bgcolor: (theme) =>
+            active
+              ? theme.palette.dashboard.logoPrimary
+              : theme.palette.mode === "dark"
+                ? "#4B5563"
+                : "#B8B8B8",
           color: "#FFFFFF",
           fontSize: 11,
           fontWeight: 800,

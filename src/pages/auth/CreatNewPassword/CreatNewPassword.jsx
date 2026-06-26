@@ -19,7 +19,7 @@ export default function CreatNewPassword() {
         title="الخطوة الثالثة"
         description={"يجب أن تكون كلمة المرور الجديدة\nمختلفة عن السابقة"}
         backgroundDecoration={sectionDecoration}
-         illustrationSx={{ transform: "scale(1.3)" }}
+        illustrationSx={{ transform: "scale(1.3)" }}
       />
       <CreateNewPasswordFormPanel />
     </AuthPageLayout>

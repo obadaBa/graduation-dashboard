@@ -1,7 +1,10 @@
 import { Box, Button, Typography, useTheme } from "@mui/material";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
 import usePersistentCountdown from "../../../shared/hooks/usePersistentCountdown";
+import { useResendPasswordResetOtpMutation } from "../hooks/useResendPasswordResetOtpMutation";
+import { useVerifyPasswordResetOtpMutation } from "../hooks/useVerifyPasswordResetOtpMutation";
 import AuthFormHeader from "./AuthFormHeader";
 import AuthOtpInputs from "./AuthOtpInputs";
 import AuthPanelTitle from "./AuthPanelTitle";
@@ -10,34 +13,64 @@ import AuthStepIndicator from "./AuthStepIndicator";
 import emailLight from "../Assets/email.svg";
 import emailDark from "../Assets/emaildark.svg";
 
+const otpFields = ["digit1", "digit2", "digit3", "digit4", "digit5", "digit6"];
+
+function buildOtpCode(data) {
+  return otpFields.map((field) => data[field] || "").join("");
+}
+
 export default function ConfirmPasswordFormPanel() {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+  const email = location.state?.email || "";
   const emailIcon = theme.palette.mode === "light" ? emailLight : emailDark;
   const indicatorInitialStep = location.state?.fromStep ?? 1;
-  const { formattedTime } = usePersistentCountdown({
+  const { formattedTime, restart } = usePersistentCountdown({
     storageKey: "confirm-password-countdown",
     durationInSeconds: 300,
   });
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      digit1: "",
-      digit2: "",
-      digit3: "",
-      digit4: "",
-      digit5: "",
-      digit6: "",
+  const verifyOtpMutation = useVerifyPasswordResetOtpMutation({
+    onSuccess: (_, variables) => {
+      navigate("/creatnewpassword", {
+        state: {
+          email: variables.email,
+          otpCode: variables.otpCode,
+          fromStep: 1,
+        },
+      });
     },
   });
+  const resendOtpMutation = useResendPasswordResetOtpMutation({
+    onSuccess: () => {
+      restart();
+    },
+  });
+  const { control, handleSubmit } = useForm({
+    defaultValues: otpFields.reduce((values, field) => ({ ...values, [field]: "" }), {}),
+  });
+
+  useEffect(() => {
+    if (!email) {
+      navigate("/restpassword", { replace: true });
+    }
+  }, [email, navigate]);
 
   const onSubmit = (data) => {
-    console.log("confirm password form", data);
-    navigate("/creatnewpassword", {
-      state: {
-        fromStep: 1,
-      },
+    const otpCode = buildOtpCode(data);
+
+    verifyOtpMutation.mutate({
+      email,
+      otpCode,
     });
+  };
+
+  const handleResendOtp = () => {
+    if (!email) {
+      return;
+    }
+
+    resendOtpMutation.mutate({ email });
   };
 
   return (
@@ -71,7 +104,7 @@ export default function ConfirmPasswordFormPanel() {
           showBackButton
           backLabel="العودة إلى تسجيل الدخول"
           backTo="/restpassword"
-          backState={{ fromStep: 1, fromVisual: "confirm" }}
+          backState={{ email, fromStep: 1, fromVisual: "confirm" }}
         />
 
         <Box
@@ -120,10 +153,11 @@ export default function ConfirmPasswordFormPanel() {
             </Typography>
           </Box>
 
-          <AuthOtpInputs control={control} />
+          <AuthOtpInputs control={control} names={otpFields} />
 
           <AuthPrimaryButton
             type="submit"
+            disabled={verifyOtpMutation.isPending}
             sx={{
               mt: { xs: 8, sm: 9 },
               height: { xs: 56, sm: 58, md: 60 },
@@ -131,7 +165,7 @@ export default function ConfirmPasswordFormPanel() {
               borderRadius: "12px",
             }}
           >
-            تأكيد الإدخال
+            {verifyOtpMutation.isPending ? "جاري التحقق..." : "تأكيد الإدخال"}
           </AuthPrimaryButton>
 
           <Box
@@ -155,6 +189,8 @@ export default function ConfirmPasswordFormPanel() {
             <Button
               type="button"
               variant="text"
+              disabled={resendOtpMutation.isPending}
+              onClick={handleResendOtp}
               sx={{
                 p: 0,
                 minWidth: "auto",
@@ -166,7 +202,7 @@ export default function ConfirmPasswordFormPanel() {
                 },
               }}
             >
-              إعادة إرسال الرمز
+              {resendOtpMutation.isPending ? "جاري الإرسال..." : "إعادة إرسال الرمز"}
             </Button>
           </Box>
         </Box>

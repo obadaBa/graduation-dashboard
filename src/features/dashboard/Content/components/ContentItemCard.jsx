@@ -1,159 +1,152 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
+import { Box, Stack, Typography } from "@mui/material";
 
-function PreviewSheet({ imageSrc, title }) {
+function createFallbackPreview(type) {
+  const isImage = type === "صورة";
+  const label = isImage ? "IMAGE" : "DOCUMENT";
+  const accent = isImage ? "#E8F1FF" : "#F1EAFF";
+
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="240" height="200" viewBox="0 0 240 200">
+      <rect width="240" height="200" rx="18" fill="#fff"/>
+      <rect x="16" y="14" width="208" height="172" rx="14" fill="${accent}" stroke="#B9C5D8" stroke-width="2"/>
+      <rect x="38" y="36" width="164" height="18" rx="7" fill="#fff" opacity=".9"/>
+      <rect x="38" y="68" width="118" height="10" rx="5" fill="#AFC0D8"/>
+      <rect x="38" y="88" width="164" height="10" rx="5" fill="#C7D3E4"/>
+      <rect x="38" y="108" width="142" height="10" rx="5" fill="#C7D3E4"/>
+      <rect x="38" y="136" width="70" height="28" rx="8" fill="#5583FF"/>
+      <text x="120" y="49" text-anchor="middle" font-size="11" font-family="Arial" font-weight="700" fill="#40516B">${label}</text>
+    </svg>
+  `;
+
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+function PreviewSheet({ imageSrc, title, type }) {
+  const fallbackSrc = useMemo(() => createFallbackPreview(type), [type]);
+  const [source, setSource] = useState(imageSrc || fallbackSrc);
+
+  useEffect(() => {
+    setSource(imageSrc || fallbackSrc);
+  }, [fallbackSrc, imageSrc]);
+
   return (
     <Box
+      component="img"
+      src={source}
+      alt={title}
+      onError={() => setSource(fallbackSrc)}
       sx={{
-        width: { xs: 96, md: 112 },
-        height: { xs: 92, md: 108 },
-        borderRadius: "22px",
-        border: "2px solid #8C8C8C",
-        bgcolor: "#FFFDF8",
-        overflow: "hidden",
-       
-        boxShadow: "0 8px 18px rgba(15, 23, 42, 0.08)",
-        flexShrink: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        width: { xs: 104, md: 112 },
+        height: { xs: 94, md: 108 },
+        borderRadius: "10px",
+        border: "1px solid #D5D9E0",
+        bgcolor: "#FFFFFF",
+        objectFit: "cover",
+        display: "block",
+        boxShadow: "0 5px 14px rgba(15, 23, 42, 0.08)",
       }}
-    >
-      {imageSrc ? (
-        <Box
-          component="img"
-          src={imageSrc}
-          alt={title}
-          sx={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-          }}
-        />
-      ) : (
-        <Stack alignItems="center" spacing={0.8} sx={{ color: "#9E9E9E" }}>
-          <ImageOutlinedIcon sx={{ fontSize: 38 }} />
-          <Typography sx={{ fontSize: 12, fontWeight: 700 }}>
-            لا يوجد صورة
-          </Typography>
-        </Stack>
-      )}
-    </Box>
+    />
   );
 }
 
-export default function ContentItemCard({
-  item = {
-    type: "صورة",
-    title: "وثيقة صبغي حيوي",
-    description: "تحتوي هذه الصورة على طريقة تكاثر الصبغيات في أجسام الحيوانات",
-    tags: ["# علوم اساسية", "# برمجة"],
-    duration: "15 س",
-    imageSrc: "",
-  },
-  onClick = undefined,
-}) {
+export default function ContentItemCard({ item, onClick }) {
+  const tags = item?.tags || [];
+
   return (
     <Box
       onClick={onClick}
       sx={{
-        mt: 1.4,
-        width: "92%",
-        mr: "auto",
+        width: "100%",
+        minHeight: 148,
         borderBottom: "1px solid #ECECEC",
-        pb: 1.4,
+        py: 1.5,
         cursor: onClick ? "pointer" : "default",
+        direction: "rtl",
       }}
     >
       <Box
         sx={{
-          direction: "rtl",
-          display: "flex",
-          flexDirection: { xs: "column", md: "row-reverse" },
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "104px minmax(0, 1fr)",
+            md: "112px minmax(0, 1fr) 72px",
+          },
           alignItems: "center",
-          gap: { xs: 2.2, md: 3.5 },
+          columnGap: { xs: 1.5, md: 2 },
         }}
       >
-       
+        <PreviewSheet
+          imageSrc={item?.imageSrc}
+          title={item?.title}
+          type={item?.type}
+        />
 
-        <Box sx={{ flex: 1, minWidth: 0, textAlign: { xs: "center", md: "right" } }}>
-          <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              justifyContent: { xs: "center", md: "flex-end" },
-              mb: 1.2,
-            }}
-          >
-            <Box
-              sx={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minWidth: 70,
-                height: 24,
-                px: 1.4,
-                borderRadius: "6px",
-                bgcolor: "#8D5AE7",
-                color: "#FFFFFF",
-                fontSize: 13,
-                fontWeight: 700,
-              }}
-            >
-              {item.type}
-            </Box>
-          </Box>
-
+        <Box sx={{ minWidth: 0, textAlign: "right" }}>
           <Typography
             sx={{
               color: "#263238",
-              fontSize: { xs: 22, md: 26 },
+              fontSize: { xs: 15, md: 17 },
               fontWeight: 800,
-              lineHeight: 1.25,
+              lineHeight: 1.4,
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 2,
+              overflow: "hidden",
             }}
           >
-            {item.title}
+            {item?.title}
           </Typography>
 
           <Typography
             sx={{
-              mt: 0.55,
-              color: "#A1A1A1",
-              fontSize: { xs: 14, md: 15 },
-              fontWeight: 600,
+              mt: 0.6,
+              color: "#929292",
+              fontSize: { xs: 11, md: 12 },
+              fontWeight: 500,
               lineHeight: 1.55,
-              maxWidth: 500,
-              mx: { xs: "auto", md: 0 },
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 2,
+              overflow: "hidden",
             }}
           >
-            {item.description}
+            {item?.description}
           </Typography>
 
           <Stack
-            direction={{ xs: "column-reverse", md: "row" }}
-            alignItems={{ xs: "center", md: "center" }}
+            direction="row"
+            alignItems="center"
             justifyContent="space-between"
-            sx={{ mt: 1.4, gap: { xs: 1.1, md: 1.5 } }}
+            gap={1}
+            sx={{ mt: 1.15, minWidth: 0 }}
           >
-            <Stack direction="row-reverse" spacing={1.2} gap={1.2} flexWrap="wrap">
-              {item.tags.map((tag) => (
+            <Stack
+              direction="row"
+              gap={0.65}
+              sx={{ minWidth: 0, overflow: "hidden" }}
+            >
+              {tags.slice(0, 2).map((tag) => (
                 <Box
                   key={tag}
                   sx={{
-                    minWidth: 64,
-                    height: 24,
-                    px: 1,
-                    borderRadius: "6px",
+                    maxWidth: 120,
+                    height: 22,
+                    px: 0.9,
+                    borderRadius: "5px",
                     bgcolor: "#EEF2FF",
                     color: "#5583FF",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: 13,
+                    fontSize: 10,
                     fontWeight: 700,
                     whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                 >
                   {tag}
@@ -161,24 +154,53 @@ export default function ContentItemCard({
               ))}
             </Stack>
 
-            <Stack direction="row-reverse" alignItems="center" spacing={0.7} gap={0.7}>
-              <AccessTimeRoundedIcon sx={{ color: "#263238", fontSize: 22 }} />
-              <Typography sx={{ color: "#666666", fontSize: 15, fontWeight: 700 }}>
-                {item.duration}
+            <Stack
+              direction="row"
+              alignItems="center"
+              gap={0.45}
+              sx={{ flexShrink: 0 }}
+            >
+              <AccessTimeRoundedIcon sx={{ color: "#59636B", fontSize: 16 }} />
+              <Typography
+                sx={{ color: "#777777", fontSize: 10, fontWeight: 700 }}
+              >
+                {item?.duration}
               </Typography>
             </Stack>
           </Stack>
         </Box>
-         <Box
-         sx={{
-            display: "flex",
+
+        <Box
+          sx={{
+            display: { xs: "none", md: "flex" },
+            alignSelf: "start",
             justifyContent: "center",
-            flexShrink: 0,
-            width: { xs: "100%", md: "auto" },
-            mt: { xs: 0, md: 4 },
+            pt: 0.7,
           }}
         >
-          <PreviewSheet imageSrc={item.imageSrc} title={item.title} />
+          <Box
+            sx={{
+              minWidth: 54,
+              height: 22,
+              px: 0.9,
+              borderRadius: "5px",
+              bgcolor: item?.type === "صورة" ? "#8D5AE7" : "#5583FF",
+              color: "#FFFFFF",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 0.4,
+              fontSize: 10,
+              fontWeight: 800,
+            }}
+          >
+            {item?.type === "صورة" ? (
+              <ImageOutlinedIcon sx={{ fontSize: 13 }} />
+            ) : (
+              <DescriptionOutlinedIcon sx={{ fontSize: 13 }} />
+            )}
+            {item?.type || "محتوى"}
+          </Box>
         </Box>
       </Box>
     </Box>

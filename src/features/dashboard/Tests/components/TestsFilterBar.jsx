@@ -15,7 +15,14 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import ListRoundedIcon from "@mui/icons-material/ListRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
-export default function TestsFilterBar({ viewMode, onViewModeChange }) {
+export default function TestsFilterBar({
+  viewMode,
+  onViewModeChange,
+  titleSearch,
+  onTitleSearchChange,
+  sortBy,
+  onSortByChange,
+}) {
   return (
     <Box
       sx={{
@@ -37,24 +44,26 @@ export default function TestsFilterBar({ viewMode, onViewModeChange }) {
       >
         <TextField
           size="small"
+          value={titleSearch}
+          onChange={(event) => onTitleSearchChange?.(event.target.value)}
           placeholder="البحث عن الاختبارات"
           sx={{
             width: { xs: "100%", sm: 360, md: 470 },
             "& .MuiOutlinedInput-root": {
               height: 38,
               borderRadius: "999px",
-              bgcolor: "#FFFFFF",
-              boxShadow: "0 4px 14px rgba(15, 23, 42, 0.06)",
-              color: "#263238",
+              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+              boxShadow: (theme) => theme.palette.dashboard.shadow,
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: 13,
               fontWeight: 500,
               pr: 0.6,
               pl: 0.8,
               "& fieldset": {
-                borderColor: "#ECECEC",
+                borderColor: (theme) => theme.palette.dashboard.chartBorder,
               },
               "&:hover fieldset": {
-                borderColor: "#ECECEC",
+                borderColor: (theme) => theme.palette.dashboard.chartBorder,
               },
               "&.Mui-focused fieldset": {
                 borderColor: "#5583FF",
@@ -63,7 +72,7 @@ export default function TestsFilterBar({ viewMode, onViewModeChange }) {
             "& input": {
               textAlign: "right",
               "&::placeholder": {
-                color: "#A1A1A1",
+                color: (theme) => theme.palette.dashboard.textSecondary,
                 opacity: 1,
               },
             },
@@ -71,14 +80,25 @@ export default function TestsFilterBar({ viewMode, onViewModeChange }) {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchRoundedIcon sx={{ color: "#8A8A8A", fontSize: 20 }} />
+                <SearchRoundedIcon
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                    fontSize: 20,
+                  }}
+                />
               </InputAdornment>
             ),
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
                   size="small"
-                  sx={{ color: "#8A8A8A", width: 24, height: 24 }}
+                  onClick={() => onTitleSearchChange?.("")}
+                  disabled={!titleSearch}
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                    width: 24,
+                    height: 24,
+                  }}
                 >
                   <CloseRoundedIcon sx={{ fontSize: 17 }} />
                 </IconButton>
@@ -88,23 +108,24 @@ export default function TestsFilterBar({ viewMode, onViewModeChange }) {
         />
 
         <Select
-          value="default"
+          value={sortBy}
+          onChange={(event) => onSortByChange?.(event.target.value)}
           size="small"
           IconComponent={KeyboardArrowDownRoundedIcon}
           sx={{
             width: { xs: "100%", sm: 130 },
             height: 38,
             borderRadius: "999px",
-            bgcolor: "#FFFFFF",
-            boxShadow: "0 4px 14px rgba(15, 23, 42, 0.06)",
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
             ".MuiOutlinedInput-notchedOutline": {
-              borderColor: "#ECECEC",
+              borderColor: (theme) => theme.palette.dashboard.chartBorder,
             },
             ".MuiSelect-select": {
               py: 0.8,
               pr: 2,
               pl: 4,
-              color: "#8A8A8A",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 13,
               fontWeight: 600,
               textAlign: "right",
@@ -112,13 +133,15 @@ export default function TestsFilterBar({ viewMode, onViewModeChange }) {
             ".MuiSvgIcon-root": {
               left: 11,
               right: "auto",
-              color: "#8A8A8A",
+              color: (theme) => theme.palette.dashboard.textSecondary,
             },
           }}
         >
           <MenuItem value="default">الترتيب حسب</MenuItem>
-          <MenuItem value="newest">الأحدث</MenuItem>
-          <MenuItem value="oldest">الأقدم</MenuItem>
+          <MenuItem value="price">السعر</MenuItem>
+          <MenuItem value="created_at">تاريخ الإنشاء</MenuItem>
+          <MenuItem value="difficulty_level">الصعوبة</MenuItem>
+          <MenuItem value="question_count">عدد الأسئلة</MenuItem>
         </Select>
       </Stack>
 
@@ -130,23 +153,25 @@ export default function TestsFilterBar({ viewMode, onViewModeChange }) {
           height: 38,
           p: 1,
           alignItems: "center",
-          bgcolor: "#FFFFFF",
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           borderRadius: "8px",
-          boxShadow: "0 4px 14px rgba(15, 23, 42, 0.06)",
+          boxShadow: (theme) => theme.palette.dashboard.shadow,
           "& .MuiToggleButtonGroup-grouped": {
             minWidth: 58,
             borderRadius: "6px !important",
             border: "1px solid transparent !important",
             fontSize: 13,
             fontWeight: 600,
+            color: (theme) => theme.palette.dashboard.textSecondary,
             gap: 0.5,
             px: 1,
             "&.Mui-selected": {
-              border: "1px solid #5583FF !important",
-              color: "#5583FF",
-              bgcolor: "#FFFFFF",
+              border: (theme) =>
+                `1px solid ${theme.palette.dashboard.logoPrimary} !important`,
+              color: (theme) => theme.palette.dashboard.logoPrimary,
+              bgcolor: (theme) => theme.palette.dashboard.activeItem.background,
               "&:hover": {
-                bgcolor: "#FFFFFF",
+                bgcolor: (theme) => theme.palette.dashboard.activeItem.background,
               },
             },
           },

@@ -19,7 +19,7 @@ export default function HomeSection1({ onScrollNext }) {
         <Box sx={{ textAlign: "right" }}>
           <Typography
             sx={{
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: { xs: 28, md: 38 },
               fontWeight: 700,
               lineHeight: 1.35,
@@ -35,7 +35,7 @@ export default function HomeSection1({ onScrollNext }) {
               lineHeight: 1.1,
             }}
           >
-            <Box component="span" sx={{ color: "#263238" }}>
+            <Box component="span" sx={{ color: (theme) => theme.palette.dashboard.textPrimary }}>
               تطبيق{" "}
             </Box>
             <Box component="span" sx={{ color: "#5583FF" }}>
@@ -46,7 +46,7 @@ export default function HomeSection1({ onScrollNext }) {
           <Typography
             sx={{
               mt: 1.5,
-              color: "#A1A1A1",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: { xs: 15, md: 18 },
               fontWeight: 500,
               lineHeight: 1.7,
@@ -70,10 +70,10 @@ export default function HomeSection1({ onScrollNext }) {
               width: 34,
               height: 34,
               borderRadius: "8px",
-              border: "1px solid #DFDFDF",
-              bgcolor: "#FFFFFF",
+              border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
               boxShadow: "0 4px 10px rgba(15, 23, 42, 0.06)",
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.chartTextPrimary,
               zIndex: 2,
             }}
           >

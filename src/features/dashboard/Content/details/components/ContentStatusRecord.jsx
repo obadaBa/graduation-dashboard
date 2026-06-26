@@ -1,301 +1,407 @@
-import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
-import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
-import ReportGmailerrorredRoundedIcon from "@mui/icons-material/ReportGmailerrorredRounded";
 import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
 import OutlinedFlagRoundedIcon from "@mui/icons-material/OutlinedFlagRounded";
-import { useState } from "react";
+import ReportGmailerrorredRoundedIcon from "@mui/icons-material/ReportGmailerrorredRounded";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { useLibraryMaterialStatusHistoryQuery } from "../../hooks/useLibraryMaterialStatusHistoryQuery";
 
-const previousStatuses = [
-  {
-    id: 1,
-    key: "approved",
-    label: "تم الموافقة عليه",
-    time: "5 يوم",
-    icon: <CheckBoxRoundedIcon sx={{ fontSize: 18, color: "#32D74B" }} />,
-  },
-  {
-    id: 2,
-    key: "new",
-    label: "جديد",
-    time: "5 يوم",
+const defaultAvatar =
+  "http://localhost/storage/defaults/default-avatar.svg";
+
+function getStatusPresentation(status = "") {
+  if (status.includes("الموافقة")) {
+    return {
+      color: "#32D74B",
+      background: "rgba(50, 215, 75, 0.08)",
+      icon: <CheckBoxRoundedIcon sx={{ fontSize: 18, color: "#32D74B" }} />,
+    };
+  }
+
+  if (status.includes("مبلغ")) {
+    return {
+      color: "#A66BFF",
+      background: "rgba(166, 107, 255, 0.08)",
+      icon: (
+        <ReportGmailerrorredRoundedIcon
+          sx={{ fontSize: 18, color: "#A66BFF" }}
+        />
+      ),
+    };
+  }
+
+  return {
+    color: "#5C84FF",
+    background: "rgba(92, 132, 255, 0.08)",
     icon: <OutlinedFlagRoundedIcon sx={{ fontSize: 18, color: "#5C84FF" }} />,
-  },
-];
+  };
+}
 
-function StatusItem({ label, time, icon, active = false, onClick }) {
+function StatusItem({ history, active, onClick }) {
+  const presentation = getStatusPresentation(history.status);
+
   return (
     <Box
+      component="button"
+      type="button"
       onClick={onClick}
       sx={{
-        minHeight: 44,
-        borderRadius: "10px",
-        border: `1px solid ${active ? "#A66BFF" : "#E5E5E5"}`,
-        bgcolor: active ? "#F8F1FF" : "#FFFFFF",
+        width: "100%",
+        minHeight: 46,
+        borderRadius: "8px",
+        border: (theme) =>
+          `1px solid ${
+            active ? presentation.color : theme.palette.dashboard.chartBorder
+          }`,
+        bgcolor: active
+          ? presentation.background
+          : (theme) => theme.palette.dashboard.chartBackground,
         px: 1.5,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         gap: 1.2,
         cursor: "pointer",
+        font: "inherit",
       }}
     >
-      <Stack direction="row-reverse" spacing={0.85} alignItems="center">
-        {icon}
-        <Typography sx={{ color: "#263238", fontSize: 16, fontWeight: 700 }}>
-          {label}
-        </Typography>
-      </Stack>
-
-      <Stack direction="row-reverse" spacing={0.45} alignItems="center">
-        <Typography sx={{ color: "#8F8F8F", fontSize: 13, fontWeight: 500 }}>
-          {time}
-        </Typography>
-        <AccessTimeRoundedIcon sx={{ fontSize: 15, color: "#4B4B4B" }} />
-      </Stack>
-    </Box>
-  );
-}
-
-function ReportedDetails() {
-  return (
-    <>
-      <Typography
-        sx={{
-          mt: 2.1,
-          color: "#8F8F8F",
-          fontSize: 17,
-          fontWeight: 500,
-          lineHeight: 1.7,
-          whiteSpace: "normal",
-          wordBreak: "break-word",
-        }}
-      >
-        هذا الاختبار ينتهك سياسة الخصوصية ويجب اتخاذ إجراء مناسب بحقه ويتم ذلك من خلال تاب
-        سجل الإبلاغات والوجود ضمن نفس هذه الصفحة
-      </Typography>
-
-      <Box
-        sx={{
-          mt: 2.15,
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 2,
-        }}
-      >
-        <Button
-          startIcon={<ReplyRoundedIcon sx={{ fontSize: 18 }} />}
+      <Stack direction="row" gap={0.8} alignItems="center">
+        {presentation.icon}
+        <Typography
           sx={{
-            minWidth: 94,
-            height: 31,
-            px: 1.45,
-            borderRadius: "999px",
-            bgcolor: "#5C84FF",
-            color: "#FFFFFF",
-            fontSize: 12,
+            color: (theme) => theme.palette.dashboard.textPrimary,
+            fontSize: 15,
             fontWeight: 700,
-            boxShadow: "0 6px 14px rgba(92, 132, 255, 0.24)",
-            "&:hover": {
-              bgcolor: "#5C84FF",
-            },
-            "& .MuiButton-startIcon": {
-              marginInlineStart: 0,
-              marginInlineEnd: "4px",
-            },
           }}
         >
-          التوجه إليها
-        </Button>
-
-        <Stack direction="row-reverse" spacing={0.9} alignItems="center">
-          <Typography sx={{ color: "#263238", fontSize: 17, fontWeight: 500 }}>
-            21\03\2026 - الساعة 14:00
-          </Typography>
-          <AccessTimeRoundedIcon sx={{ fontSize: 22, color: "#263238" }} />
-        </Stack>
-      </Box>
-    </>
-  );
-}
-
-function ApprovedDetails() {
-  return (
-    <Box
-      sx={{
-        mt: 2.4,
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 2,
-      }}
-    >
-      
-
-      <Stack direction="row-reverse" spacing={1.1} alignItems="center" gap={1}>
-        
-        <Box sx={{ textAlign: "right" }}>
-          <Typography sx={{ color: "#263238", fontSize: 20, fontWeight: 800 }}>
-            محمد منصور
-          </Typography>
-          <Typography sx={{ color: "#9A9A9A", fontSize: 15, fontWeight: 500 }}>
-            صانع التطبيق
-          </Typography>
-        </Box>
-        <Avatar
-          src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80"
-          alt="محمد منصور"
-          sx={{ width: 48, height: 48, borderRadius: "10px" }}
-        />
-      </Stack>
-      <Stack direction="row-reverse" spacing={0.9} alignItems="center">
-        <Typography sx={{ color: "#263238", fontSize: 17, fontWeight: 500 }}>
-          21\03\2026 - الساعة 14:00
+          {history.status}
         </Typography>
-        <AccessTimeRoundedIcon sx={{ fontSize: 22, color: "#263238" }} />
+      </Stack>
+
+      <Stack direction="row" gap={0.45} alignItems="center">
+        <AccessTimeRoundedIcon
+          sx={{
+            fontSize: 15,
+            color: (theme) => theme.palette.dashboard.textSecondary,
+          }}
+        />
+        <Typography
+          sx={{
+            color: (theme) => theme.palette.dashboard.textSecondary,
+            fontSize: 12,
+            fontWeight: 500,
+          }}
+        >
+          {history.entered_at}
+        </Typography>
       </Stack>
     </Box>
   );
 }
 
-function NewDetails() {
+function StatusDetails({ history, onNavigateReports }) {
+  const details = history?.details || {};
+  const actor = details.actor;
+  const message = details.reason || details.note;
+  const isReported = history?.status?.includes("مبلغ");
+
   return (
-    <>
+    <Stack spacing={2.2}>
       <Typography
         sx={{
-          mt: 2.1,
-          color: "#8F8F8F",
-          fontSize: 17,
-          fontWeight: 500,
-          lineHeight: 1.75,
-          whiteSpace: "normal",
-          wordBreak: "break-word",
+          color: (theme) => theme.palette.dashboard.textPrimary,
+          fontSize: 24,
+          fontWeight: 900,
         }}
       >
-        المحتوى ما زال جديداً ولم يتم اتخاذ أي إجراء مناسب له، يجب عليك أيضاً المشرف أن تقوم
-        بقبول هذا المحتوى او حذفه إن كان يخالف معايير خصوصية التطبيق بشكل مباشر
+        تفاصيل الحالة
       </Typography>
 
-      <Stack
-        direction="row-reverse"
-        spacing={0.9}
-        alignItems="center"
-        justifyContent="flex-end"
-        sx={{ mt: 2.35 }}
-      >
-        <Typography sx={{ color: "#263238", fontSize: 17, fontWeight: 500 }}>
-          21\03\2026 - الساعة 14:00
+      {actor && (
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          gap={2}
+        >
+          <Stack direction="row" gap={1} alignItems="center">
+            <Avatar
+              src={actor.avatar_url || defaultAvatar}
+              alt={actor.name}
+              sx={{ width: 50, height: 50, borderRadius: "9px" }}
+            />
+            <Box>
+              <Typography
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textPrimary,
+                  fontSize: 18,
+                  fontWeight: 800,
+                }}
+              >
+                {actor.name}
+              </Typography>
+              <Typography
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textSecondary,
+                  fontSize: 13,
+                  fontWeight: 500,
+                }}
+              >
+                {actor.role === "supervisor" ? "مشرف" : actor.role}
+              </Typography>
+            </Box>
+          </Stack>
+
+          <Stack direction="row" gap={0.7} alignItems="center">
+            <AccessTimeRoundedIcon
+              sx={{
+                fontSize: 20,
+                color: (theme) => theme.palette.dashboard.textPrimary,
+              }}
+            />
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 15,
+                fontWeight: 600,
+                direction: "ltr",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {details.decision_at || history?.entered_at}
+            </Typography>
+          </Stack>
+        </Stack>
+      )}
+
+      {message && (
+        <Typography
+          sx={{
+            color: (theme) => theme.palette.dashboard.textSecondary,
+            fontSize: 16,
+            fontWeight: 500,
+            lineHeight: 1.8,
+          }}
+        >
+          {message}
         </Typography>
-        <AccessTimeRoundedIcon sx={{ fontSize: 22, color: "#263238" }} />
-      </Stack>
-    </>
+      )}
+
+      {!actor && (
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          gap={2}
+          flexWrap="wrap"
+        >
+            {isReported && (
+            <Button
+              onClick={onNavigateReports}
+              startIcon={<ArrowBackRoundedIcon sx={{ fontSize: 16 }} />}
+              sx={{
+                minWidth: 104,
+                height: 32,
+                px: 1.5,
+                borderRadius: "999px",
+                bgcolor: "#5C84FF",
+                color: "#FFFFFF",
+                fontSize: 12,
+                fontWeight: 700,
+                boxShadow: "0 5px 12px rgba(92, 132, 255, 0.25)",
+                "&:hover": { bgcolor: "#4D75EB" },
+                "& .MuiButton-startIcon": {
+                  marginInlineStart: 0,
+                  marginInlineEnd: "4px",
+                },
+              }}
+            >
+              التوجه إليها
+            </Button>
+          )}
+          <Stack direction="row" gap={0.7} alignItems="center">
+            <AccessTimeRoundedIcon
+              sx={{
+                fontSize: 20,
+                color: (theme) => theme.palette.dashboard.textPrimary,
+              }}
+            />
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 15,
+                fontWeight: 600,
+                direction: "ltr",
+              }}
+            >
+              {details.decision_at || history?.entered_at}
+            </Typography>
+          </Stack>
+
+        
+        </Stack>
+      )}
+    </Stack>
   );
 }
 
-export default function ContentStatusRecord() {
-  const [selectedStatus, setSelectedStatus] = useState("reported");
+export default function ContentStatusRecord({ contentId, onNavigateReports }) {
+  const [selectedHistoryId, setSelectedHistoryId] = useState(null);
+  const statusQuery = useLibraryMaterialStatusHistoryQuery(contentId);
+  const statusHistory = statusQuery.data?.data?.status_history;
+  const histories = Array.isArray(statusHistory)
+    ? statusHistory
+    : statusHistory?.items || [];
+  const currentHistory = histories[0];
+  const previousHistories = histories.slice(1);
+  const selectedHistory =
+    histories.find((history) => history.id === selectedHistoryId) ||
+    currentHistory;
+
+  useEffect(() => {
+    if (currentHistory && selectedHistoryId === null) {
+      setSelectedHistoryId(currentHistory.id);
+    }
+  }, [currentHistory, selectedHistoryId]);
 
   return (
     <Box
       sx={{
-        mt: 2.8,
+        mt: 1.2,
         width: "100%",
-        minHeight: 560,
-        borderRadius: "18px",
-        border: "1px solid #EAEAEA",
-        bgcolor: "#FFFFFF",
-        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+        height: "calc(100vh - 315px)",
+        minHeight: 430,
+        borderRadius: "10px",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.surface,
+        boxShadow: (theme) => theme.palette.dashboard.shadow,
         px: { xs: 2, md: 3 },
-        py: { xs: 2, md: 3 },
+        py: { xs: 2.2, md: 2.6 },
         direction: "rtl",
+        overflowY: "auto",
+        overflowX: "hidden",
+        scrollbarWidth: "thin",
+        scrollbarColor: "#D0D5DD transparent",
+        "&::-webkit-scrollbar": { width: 5 },
+        "&::-webkit-scrollbar-track": { bgcolor: "transparent" },
+        "&::-webkit-scrollbar-thumb": {
+          borderRadius: 999,
+          bgcolor: "#D0D5DD",
+        },
       }}
     >
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-          gap: { xs: 3, md: 4 },
-          alignItems: "start",
-          width: "100%",
-        }}
-      >
-        <Box sx={{ width: "100%" }}>
-          <Typography
+      {statusQuery.isLoading ? (
+        <Box
+          sx={{
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <CircularProgress size={32} />
+        </Box>
+      ) : currentHistory ? (
+        <Box
+          sx={{
+            minHeight: "100%",
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+            gap: { xs: 3, md: 4 },
+          }}
+        >
+          <Box
             sx={{
-              color: "#263238",
-              fontSize: 24,
-              fontWeight: 900,
-              textAlign: "right",
-              mb: 1.8,
+              minHeight: 0,
+              overflow: "visible",
+              bgcolor: "transparent",
             }}
           >
-            الحالة الحالية
-          </Typography>
+            <Typography
+              sx={{
+                mb: 1.8,
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 24,
+                fontWeight: 900,
+              }}
+            >
+              الحالة الحالية
+            </Typography>
 
-          <StatusItem
-            label="مبلغ عنه"
-            time="5 يوم"
-            active={selectedStatus === "reported"}
-            onClick={() => setSelectedStatus("reported")}
-            icon={<ReportGmailerrorredRoundedIcon sx={{ fontSize: 18, color: "#A66BFF" }} />}
-          />
+            <StatusItem
+              history={currentHistory}
+              active={selectedHistory?.id === currentHistory.id}
+              onClick={() => setSelectedHistoryId(currentHistory.id)}
+            />
+
+            {previousHistories.length > 0 && (
+              <>
+                <Box
+                  sx={{
+                    my: 2.15,
+                    height: 0.0005,
+                    bgcolor: (theme) => theme.palette.dashboard.divider,
+                  }}
+                />
+                <Typography
+                  sx={{
+                    mb: 1.8,
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    fontSize: 24,
+                    fontWeight: 900,
+                  }}
+                >
+                  الحالات السابقة
+                </Typography>
+                <Stack spacing={1.2}>
+                  {previousHistories.map((history) => (
+                    <StatusItem
+                      key={history.id}
+                      history={history}
+                      active={selectedHistory?.id === history.id}
+                      onClick={() => setSelectedHistoryId(history.id)}
+                    />
+                  ))}
+                </Stack>
+              </>
+            )}
+          </Box>
 
           <Box
             sx={{
-              mt: 2.15,
-              mb: 2.15,
-              height: "1px",
-              bgcolor: "#ECECEC",
-            }}
-          />
-
-          <Typography
-            sx={{
-              color: "#263238",
-              fontSize: 24,
-              fontWeight: 900,
-              textAlign: "right",
-              mb: 1.8,
+              minHeight: 0,
+              overflow: "visible",
+              bgcolor: "transparent",
+              pt: { md: 1 },
             }}
           >
-            الحالات السابقة
-          </Typography>
-
-          <Stack spacing={1.4}>
-            {previousStatuses.map((status) => (
-              <StatusItem
-                key={status.id}
-                label={status.label}
-                time={status.time}
-                icon={status.icon}
-                active={selectedStatus === status.key}
-                onClick={() => setSelectedStatus(status.key)}
-              />
-            ))}
-          </Stack>
+            <StatusDetails
+              history={selectedHistory}
+              onNavigateReports={onNavigateReports}
+            />
+          </Box>
         </Box>
-
-        <Box
+      ) : (
+        <Typography
           sx={{
-            width: "100%",
-            pt: { xs: 0, md: 1.2 },
+            py: 6,
+            textAlign: "center",
+            color: (theme) => theme.palette.dashboard.textSecondary,
+            fontSize: 16,
+            fontWeight: 700,
           }}
         >
-          <Typography sx={{ color: "#263238", fontSize: 24, fontWeight: 900 }}>
-            تفاصيل الحالة
-          </Typography>
-
-          {selectedStatus === "approved" ? (
-            <ApprovedDetails />
-          ) : selectedStatus === "new" ? (
-            <NewDetails />
-          ) : (
-            <ReportedDetails />
-          )}
-        </Box>
-      </Box>
+          لا يوجد سجل حالات لعرضه
+        </Typography>
+      )}
     </Box>
   );
 }

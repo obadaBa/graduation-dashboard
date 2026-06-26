@@ -1,0 +1,21 @@
+import { useQuery } from "@tanstack/react-query";
+import { getTestAiEvaluationStatus } from "../Api/tests.api";
+
+const TERMINAL_STATUSES = new Set(["completed", "failed"]);
+
+export function useTestAiEvaluationStatusQuery(
+  evaluationRequestId,
+  enabled = true,
+) {
+  return useQuery({
+    queryKey: ["tests", "ai-evaluation", evaluationRequestId],
+    queryFn: () => getTestAiEvaluationStatus(evaluationRequestId),
+    enabled: Boolean(evaluationRequestId) && enabled,
+    refetchInterval: (query) => {
+      const status = query.state.data?.data?.status?.toLowerCase();
+
+      return TERMINAL_STATUSES.has(status) ? false : 2000;
+    },
+    retry: 1,
+  });
+}

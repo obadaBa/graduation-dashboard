@@ -2,6 +2,19 @@ import { Box, Stack, Typography } from "@mui/material";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import TrendingDownRoundedIcon from "@mui/icons-material/TrendingDownRounded";
 
+function formatCurrency(value) {
+  const numericValue = Number(value || 0);
+  return numericValue.toLocaleString("en-US", {
+    maximumFractionDigits: 0,
+  });
+}
+
+function formatChange(change) {
+  const numericValue = Number(change || 0);
+  const sign = numericValue > 0 ? "+" : "";
+  return `${sign}${numericValue}%`;
+}
+
 function FloatingStatCard({ title, value, unit, change, positive = true, sx }) {
   return (
     <Box
@@ -11,16 +24,16 @@ function FloatingStatCard({ title, value, unit, change, positive = true, sx }) {
         px: 2,
         py: 1.5,
         borderRadius: "14px",
-        bgcolor: "#FFFFFF",
+        bgcolor: (theme) => theme.palette.dashboard.chartBackground,
         boxShadow: "0 4px 16px rgba(15, 23, 42, 0.12)",
-        border: "1px solid #ECECEC",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
         zIndex: 2,
         ...sx,
       }}
     >
       <Typography
         sx={{
-          color: "#263238",
+          color: (theme) => theme.palette.dashboard.chartTextPrimary,
           fontSize: { xs: 16, md: 18 },
           fontWeight: 600,
           lineHeight: 1.2,
@@ -33,7 +46,7 @@ function FloatingStatCard({ title, value, unit, change, positive = true, sx }) {
       <Typography
         sx={{
           mt: 1,
-          color: "#263238",
+          color: (theme) => theme.palette.dashboard.chartTextPrimary,
           fontSize: { xs: 22, md: 24 },
           fontWeight: 700,
           lineHeight: 1,
@@ -51,7 +64,7 @@ function FloatingStatCard({ title, value, unit, change, positive = true, sx }) {
       >
         <Typography
           sx={{
-            color: "#A1A1A1",
+            color: (theme) => theme.palette.dashboard.chartTextSecondary,
             fontSize: 12,
             fontWeight: 500,
             lineHeight: 1,
@@ -92,7 +105,20 @@ function FloatingStatCard({ title, value, unit, change, positive = true, sx }) {
   );
 }
 
-export default function HalfCircleHero() {
+export default function HalfCircleHero({ summary }) {
+  const grossSalesAmount = formatCurrency(summary?.gross_sales_amount?.value);
+  const soldPurchaseCount = summary?.sold_purchase_count?.value || 0;
+  const soldPurchaseChange =
+    summary?.sold_purchase_count?.change_percentage_from_previous_year || 0;
+  const platformNetProfit = formatCurrency(
+    summary?.platform_net_profit_amount?.value,
+  );
+  const platformProfitChange =
+    summary?.platform_net_profit_amount?.change_percentage_from_previous_year || 0;
+  const usersProfitAmount = formatCurrency(summary?.users_profit_amount?.value);
+  const usersProfitChange =
+    summary?.users_profit_amount?.change_percentage_from_previous_year || 0;
+
   return (
     <>
       <Box
@@ -110,7 +136,7 @@ export default function HalfCircleHero() {
           gap: 1.5,
           width: "100%",
           minWidth: 0,
-          maxWidth: { xs: "calc(100vw - 24px)", sm:  "calc(100vw - 24px)" },
+          maxWidth: { xs: "calc(100vw - 24px)", sm: "calc(100vw - 24px)" },
           justifySelf: "stretch",
           overflowX: "auto",
           overflowY: "hidden",
@@ -128,9 +154,9 @@ export default function HalfCircleHero() {
       >
         <FloatingStatCard
           title="المبيعات الكلية"
-          value="245,000"
+          value={grossSalesAmount}
           unit="ليرة سورية"
-          change="+10%"
+          change={formatChange(0)}
           sx={{
             direction: "rtl",
             position: "static",
@@ -142,10 +168,10 @@ export default function HalfCircleHero() {
         />
         <FloatingStatCard
           title="الاختبارات المباعة"
-          value="134"
-          unit="اختبارًا"
-          change="-24%"
-          positive={false}
+          value={soldPurchaseCount}
+          unit="اختباراً"
+          change={formatChange(soldPurchaseChange)}
+          positive={soldPurchaseChange >= 0}
           sx={{
             direction: "rtl",
             position: "static",
@@ -157,9 +183,10 @@ export default function HalfCircleHero() {
         />
         <FloatingStatCard
           title="صافي الأرباح"
-          value="67000"
+          value={platformNetProfit}
           unit="ليرة سورية"
-          change="+20%"
+          change={formatChange(platformProfitChange)}
+          positive={platformProfitChange >= 0}
           sx={{
             direction: "rtl",
             position: "static",
@@ -185,163 +212,165 @@ export default function HalfCircleHero() {
           },
         }}
       >
-      <Box
-        sx={{
-          position: "absolute",
-          left: "50%",
-          top: 112,
-          transform: "translateX(-50%)",
-          width: { xs: 530, md: 690, lg: 820 },
-          height: { xs: 175, md: 220, lg: 248 },
-          overflow: "hidden",
-        }}
-      >
         <Box
           sx={{
             position: "absolute",
             left: "50%",
-            top: 0,
+            top: 112,
             transform: "translateX(-50%)",
             width: { xs: 530, md: 690, lg: 820 },
-            height: { xs: 530, md: 690, lg: 820 },
+            height: { xs: 175, md: 220, lg: 248 },
+            overflow: "hidden",
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              left: "50%",
+              top: 0,
+              transform: "translateX(-50%)",
+              width: { xs: 530, md: 690, lg: 820 },
+              height: { xs: 530, md: 690, lg: 820 },
+              borderRadius: "50%",
+              border: "3px solid #4D8BFF",
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              left: "50%",
+              top: 38,
+              transform: "translateX(-50%)",
+              width: { xs: 416, md: 540, lg: 742 },
+              height: { xs: 416, md: 540, lg: 692 },
+              borderRadius: "50%",
+              background:
+                "linear-gradient(260deg, #4791FF 0%, #6DA8FF 10%, #FFFFFF 100%)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              pb: { xs: 40, md: 72, lg: 54 },
+            }}
+          >
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.chartTextPrimary,
+                fontSize: { xs: 22, md: 35 },
+                fontFamily: '"El Messiri", sans-serif',
+                fontWeight: 500,
+                lineHeight: 1.5,
+              }}
+            >
+              المبيعات الكلية
+            </Typography>
+            <Stack
+              direction="row"
+              spacing={1.25}
+              alignItems="baseline"
+              sx={{ mt: 1 }}
+              gap={1}
+            >
+              <Typography
+                sx={{
+                  color: (theme) => theme.palette.dashboard.chartTextPrimary,
+                  fontSize: { xs: 54, md: 50 },
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {grossSalesAmount}
+              </Typography>
+              <Typography
+                sx={{
+                  color: "#8B7A61",
+                  fontSize: { xs: 20, md: 28 },
+                  fontWeight: 700,
+                  lineHeight: 1.1,
+                }}
+              >
+                ليرة سورية
+              </Typography>
+            </Stack>
+          </Box>
+        </Box>
+
+        <FloatingStatCard
+          title="الاختبارات المباعة"
+          value={soldPurchaseCount}
+          unit="اختباراً"
+          change={formatChange(soldPurchaseChange)}
+          positive={soldPurchaseChange >= 0}
+          sx={{
+            top: -8,
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        />
+
+        <FloatingStatCard
+          title="صافي الأرباح"
+          value={platformNetProfit}
+          unit="ليرة سورية"
+          change={formatChange(platformProfitChange)}
+          positive={platformProfitChange >= 0}
+          sx={{
+            top: 137,
+            left: { xs: 12, md: 22, lg: 78 },
+          }}
+        />
+
+        <FloatingStatCard
+          title="أرباح المستخدمين"
+          value={usersProfitAmount}
+          unit="ليرة سورية"
+          change={formatChange(usersProfitChange)}
+          positive={usersProfitChange >= 0}
+          sx={{
+            top: 137,
+            right: { xs: 12, md: 22, lg: 78 },
+          }}
+        />
+
+        <Box
+          sx={{
+            position: "absolute",
+            top: 104,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 18,
+            height: 18,
             borderRadius: "50%",
-            border: "3px solid #4D8BFF",
+            bgcolor: "#4D8BFF",
+            zIndex: 3,
           }}
         />
         <Box
           sx={{
             position: "absolute",
-            left: "50%",
-            top: 38,
-            transform: "translateX(-50%)",
-            width: { xs: 416, md: 540, lg: 742 },
-            height: { xs: 416, md: 540, lg: 692 },
+            top: 248,
+            left: { xs: 62, md: 76, lg: 166 },
+            width: 18,
+            height: 18,
             borderRadius: "50%",
-            background:
-              "linear-gradient(260deg, #4791FF 0%, #6DA8FF 10%, #FFFFFF 100%)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            pb: { xs: 40, md: 72, lg: 54 },
+            bgcolor: "#4D8BFF",
+            zIndex: 3,
           }}
-        >
-          <Typography
-            sx={{
-              color: "#1F2A37",
-              fontSize: { xs: 22, md: 35 },
-              fontFamily: '"El Messiri", sans-serif',
-              fontWeight: 500,
-              lineHeight: 1.5,
-            }}
-          >
-            المبيعات الكلية
-          </Typography>
-          <Stack
-            direction="row"
-            spacing={1.25}
-            alignItems="baseline"
-            sx={{ mt: 1 }}
-            gap={1}
-          >
-            <Typography
-              sx={{
-                color: "#1F2A37",
-                fontSize: { xs: 54, md: 50 },
-                fontWeight: 700,
-                lineHeight: 1,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              245,000
-            </Typography>
-            <Typography
-              sx={{
-                color: "#8B7A61",
-                fontSize: { xs: 20, md: 28 },
-                fontWeight: 700,
-                lineHeight: 1.1,
-              }}
-            >
-              ليرة سورية
-            </Typography>
-          </Stack>
-        </Box>
-      </Box>
-
-      <FloatingStatCard
-        title="الاختبارات المباعة"
-        value="134"
-        unit="اختبارًا"
-        change="-24%"
-        positive={false}
-        sx={{
-          top: -8,
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      />
-
-      <FloatingStatCard
-        title="صافي الأرباح"
-        value="67000"
-        unit="اختبارًا"
-        change="+20%"
-        sx={{
-          top: 137,
-          left: { xs: 12, md: 22, lg: 78 },
-        }}
-      />
-
-      <FloatingStatCard
-        title="أرباح المستخدمين"
-        value="178000"
-        unit="اختبارًا"
-        change="+10%"
-        sx={{
-          top: 137,
-          right: { xs: 12, md: 22, lg: 78 },
-        }}
-      />
-
-      <Box
-        sx={{
-          position: "absolute",
-          top: 104,
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: 18,
-          height: 18,
-          borderRadius: "50%",
-          bgcolor: "#4D8BFF",
-          zIndex: 3,
-        }}
-      />
-      <Box
-        sx={{
-          position: "absolute",
-          top: 248,
-          left: { xs: 62, md: 76, lg: 166 },
-          width: 18,
-          height: 18,
-          borderRadius: "50%",
-          bgcolor: "#4D8BFF",
-          zIndex: 3,
-        }}
-      />
-      <Box
-        sx={{
-          position: "absolute",
-          top: 248,
-          right: { xs: 62, md: 76, lg: 164 },
-          width: 18,
-          height: 18,
-          borderRadius: "50%",
-          bgcolor: "#4D8BFF",
-          zIndex: 3,
-        }}
-      />
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            top: 248,
+            right: { xs: 62, md: 76, lg: 164 },
+            width: 18,
+            height: 18,
+            borderRadius: "50%",
+            bgcolor: "#4D8BFF",
+            zIndex: 3,
+          }}
+        />
       </Box>
     </>
   );

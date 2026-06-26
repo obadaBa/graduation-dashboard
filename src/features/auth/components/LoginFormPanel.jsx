@@ -5,6 +5,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { useLoginMutation } from "../hooks/useLoginMutation";
 import AuthFormHeader from "./AuthFormHeader";
 import AuthFormInput from "./AuthFormInput";
 import AuthPrimaryButton from "./AuthPrimaryButton";
@@ -13,6 +14,9 @@ export default function LoginFormPanel() {
   const theme = useTheme();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const loginMutation = useLoginMutation({
+    onSuccess: () => navigate("/dashboard"),
+  });
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
@@ -21,7 +25,7 @@ export default function LoginFormPanel() {
   });
 
   const onSubmit = (data) => {
-    console.log("login form", data);
+    loginMutation.mutate(data);
   };
 
   return (
@@ -33,7 +37,6 @@ export default function LoginFormPanel() {
         justifyContent: { xs: "center", lg: "flex-start" },
         minHeight: { xs: "100dvh", lg: "100dvh" },
         py: { xs: 2, sm: 3, lg: 0 },
-       
       }}
     >
       <Box
@@ -72,7 +75,7 @@ export default function LoginFormPanel() {
               mb: { xs: 0.75, sm: 1 },
             }}
           >
-            مرحبا بك مجددًا!
+            مرحبا بك مجددا!
           </Typography>
 
           <Typography
@@ -84,7 +87,7 @@ export default function LoginFormPanel() {
               mb: { xs: 1.75, sm: 2.25 },
             }}
           >
-            يرجى تسجيل الدخول لنبدأ سريعًا
+            يرجى تسجيل الدخول لنبدأ سريعا
           </Typography>
 
           <Box
@@ -139,9 +142,7 @@ export default function LoginFormPanel() {
               <IconButton
                 type="button"
                 onClick={() => setShowPassword((show) => !show)}
-                aria-label={
-                  showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"
-                }
+                aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
                 sx={{
                   p: 0,
                   ml: 1,
@@ -176,13 +177,14 @@ export default function LoginFormPanel() {
 
           <AuthPrimaryButton
             type="submit"
+            disabled={loginMutation.isPending}
             sx={{
               mt: { xs: 3, sm: 4 },
               height: { xs: 50, sm: 52, md: 56 },
               fontSize: { xs: "1rem", sm: "1.05rem" },
             }}
           >
-            تأكيد الدخول
+            {loginMutation.isPending ? "جاري تسجيل الدخول..." : "تأكيد الدخول"}
           </AuthPrimaryButton>
         </Box>
       </Box>

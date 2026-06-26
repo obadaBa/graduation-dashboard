@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
-import { alpha, styled, useTheme } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import LayersOutlinedIcon from "@mui/icons-material/LayersOutlined";
@@ -20,7 +20,8 @@ import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import HandymanOutlinedIcon from "@mui/icons-material/HandymanOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import { NavLink, useLocation } from "react-router";
+import { NavLink, useLocation, useNavigate } from "react-router";
+import { useLogoutMutation } from "../../auth/hooks/useLogoutMutation";
 import logolight from "../Assets/logolight.svg";
 import logodark from "../Assets/logodark.svg";
 
@@ -80,18 +81,11 @@ const StyledDrawer = styled(MuiDrawer, {
     overflowX: "hidden",
     backgroundColor: theme.palette.dashboard.drawerBackground,
     color: theme.palette.dashboard.inactiveItem.color,
-    border: `1px solid ${
-      theme.palette.mode === "light"
-        ? "rgba(72, 84, 159, 0.12)"
-        : "rgba(255, 255, 255, 0.12)"
-    }`,
+    border: `1px solid ${theme.palette.dashboard.border}`,
     borderRadius: mobilemode ? "16px 0 0 16px" : "16px",
     height: mobilemode ? "100%" : "calc(100% - 16px)",
     margin: mobilemode ? 0 : "8px",
-    boxShadow:
-      theme.palette.mode === "light"
-        ? "0 6px 18px rgba(29, 41, 57, 0.08)"
-        : "0 6px 18px rgba(0, 0, 0, 0.35)",
+    boxShadow: theme.palette.dashboard.shadow,
     transition: theme.transitions.create(["width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -110,10 +104,10 @@ function DrawerToggle({ open, onClick }) {
         width: 18,
         height: 26,
         borderRadius: "6px",
-        border: `1px solid ${alpha(theme.palette.common.black, 0.14)}`,
+        border: `1px solid ${theme.palette.dashboard.border}`,
         backgroundColor: theme.palette.dashboard.drawerBackground,
         color: theme.palette.dashboard.inactiveItem.color,
-        boxShadow: "0 2px 8px rgba(15, 23, 42, 0.06)",
+        boxShadow: theme.palette.dashboard.shadow,
         padding: 0,
         minWidth: 18,
         zIndex: theme.zIndex.drawer + 2,
@@ -157,7 +151,7 @@ function NavigationItem({ item, open, isActive, onClick }) {
           "&:hover": {
             backgroundColor: isActive
               ? theme.palette.dashboard.activeItem.background
-              : alpha(theme.palette.primary.main, 0.04),
+              : theme.palette.dashboard.hoverItem.background,
           },
           "&::after": isActive
             ? {
@@ -205,7 +199,14 @@ function NavigationItem({ item, open, isActive, onClick }) {
   );
 }
 
-function DrawerContent({ open, logoSrc, pathname, onNavigate }) {
+function DrawerContent({
+  open,
+  logoSrc,
+  pathname,
+  onNavigate,
+  onLogout,
+  isLoggingOut,
+}) {
   const theme = useTheme();
 
   return (
@@ -243,10 +244,10 @@ function DrawerContent({ open, logoSrc, pathname, onNavigate }) {
               lineHeight: 1,
             }}
           >
-            <Box component="span" sx={{ color: "#5583FF" }}>
+            <Box component="span" sx={{ color: theme.palette.dashboard.logoPrimary }}>
               ن
             </Box>
-            <Box component="span" sx={{ color: "#263238" }}>
+            <Box component="span" sx={{ color: theme.palette.dashboard.textPrimary }}>
               يرد
             </Box>
           </Typography>
@@ -276,13 +277,18 @@ function DrawerContent({ open, logoSrc, pathname, onNavigate }) {
       <Box sx={{ mt: "auto", px: open ? 0.25 : 0 }}>
         <ListItem disablePadding>
           <ListItemButton
+            onClick={onLogout}
+            disabled={isLoggingOut}
             sx={{
               minHeight: 44,
               px: open ? 1.5 : 0,
               borderRadius: "10px",
               justifyContent: open ? "space-between" : "center",
               flexDirection: "row",
-              color: "#FF4D4F",
+              color: theme.palette.dashboard.logout.color,
+              "&:hover": {
+                bgcolor: theme.palette.dashboard.logout.background,
+              },
             }}
           >
             <ListItemIcon
@@ -325,9 +331,18 @@ export default function DashboardDrawer({
 }) {
   const theme = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(true);
+  const logoutMutation = useLogoutMutation({
+    onSuccess: () => {
+      navigate("/login", { replace: true });
+    },
+  });
 
   const logoSrc = theme.palette.mode === "light" ? logolight : logodark;
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
 
   if (isMobile) {
     return (
@@ -345,6 +360,8 @@ export default function DashboardDrawer({
           logoSrc={logoSrc}
           pathname={location.pathname}
           onNavigate={onMobileClose}
+          onLogout={handleLogout}
+          isLoggingOut={logoutMutation.isPending}
         />
       </StyledDrawer>
     );
@@ -366,6 +383,8 @@ export default function DashboardDrawer({
           open={open}
           logoSrc={logoSrc}
           pathname={location.pathname}
+          onLogout={handleLogout}
+          isLoggingOut={logoutMutation.isPending}
         />
       </StyledDrawer>
     </Box>

@@ -1,118 +1,93 @@
-import { Avatar, Box, Stack, Typography } from "@mui/material";
-import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
+import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material";
+import { useEffect, useRef } from "react";
+import { useLibraryMaterialReportsQuery } from "../../hooks/useLibraryMaterialReportsQuery";
+import { useTestReportsQuery } from "../../../Tests/hooks/useTestReportsQuery";
 
-const stats = [
-  {
-    id: 1,
-    value: "23",
-    text: "اختبار محتواه مسيء (أخلاقياً - دينياً - اجتماعياً)",
-    color: "#FF6A64",
-  },
-  {
-    id: 2,
-    value: "18",
-    text: "يوجد أخطاء علمية داخل المحتوى",
-    color: "#8A8A8A",
-  },
-  {
-    id: 3,
-    value: "13",
-    text: "محتوى فارغ لا يوجد به معلومات",
-    color: "#8A8A8A",
-  },
-];
+const defaultAvatar =
+  "http://localhost/storage/defaults/User_Avatar_Default.svg";
 
-const reports = [
-  {
-    id: 1,
-    author: "أمل سمير عرفة",
-    tag: "اختبار محتواه مسيء (أخلاقياً - دينياً - اجتماعياً)",
-    description:
-      "اختبار رائع جدا مليء بالمعرفة والأشياء الشيقة والرائعة التي تعطي تجربة حقيقية وواقعية للمستخدم وتجعله يتذكر بطريقة فعالة",
-    date: "2025\\01\\22",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80",
-  },
-  {
-    id: 2,
-    author: "قمر هيثم خلف",
-    tag: "يوجد خطأ في الشرح",
-    description:
-      "اختبار رائع جدا مليء بالمعرفة والأشياء الشيقة والرائعة التي تعطي تجربة حقيقية وواقعية للمستخدم وتجعله يتذكر بطريقة فعالة",
-    date: "2025\\01\\22",
-    avatar:
-      "https://images.unsplash.com/photo-1546961329-78bef0414d7c?auto=format&fit=crop&w=120&q=80",
-  },
-  {
-    id: 3,
-    author: "أمل سمير عرفة",
-    tag: "اختبار محتواه مسيء (أخلاقياً - دينياً - اجتماعياً)",
-    description:
-      "اختبار رائع جدا مليء بالمعرفة والأشياء الشيقة والرائعة التي تعطي تجربة حقيقية وواقعية للمستخدم وتجعله يتذكر بطريقة فعالة",
-    date: "2025\\01\\22",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80",
-  },
-];
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString("en-US");
+}
 
 function ReportCard({ item }) {
+  const reporter = item.reporter || {};
+
   return (
     <Box sx={{ textAlign: "right" }}>
-      <Stack direction="row-reverse" spacing={0.6} alignItems="flex-start" >
-        
-
-        <Box sx={{ flex: 1 }}>
+      <Stack direction="row-reverse" spacing={0.6} alignItems="flex-start">
+        <Box sx={{ flex: 1, minWidth: 0 }}>
           <Stack
-            direction="row-reverse"
-            spacing={0.45}
+            direction="row"
+            spacing={0.6}
             alignItems="center"
             justifyContent="flex-start"
-            sx={{ width: "fit-content" }}
+            sx={{ width: "fit-content", maxWidth: "100%", direction: "rtl" }}
+            gap={1}
           >
-          
-            <Typography sx={{ color: "#263238", fontSize: 18, fontWeight: 800 }}>
-              {item.author}
-            </Typography>
-            <VerifiedRoundedIcon sx={{ fontSize: 15, color: "#5C84FF" }} />
-              <Avatar
-          src={item.avatar}
-          alt={item.author}
-          sx={{ width: 44, height: 44, borderRadius: "10px", flexShrink: 0 }}
-        />
+            <Avatar
+              src={reporter.avatar_url || reporter.avatar || defaultAvatar}
+              alt={reporter.name}
+              sx={{ width: 56, height: 56, borderRadius: "10px", flexShrink: 0 }}
+            />
+            <Stack spacing={0.45} alignItems="flex-start" sx={{ minWidth: 0 }}>
+              <Stack direction="row" alignItems="center" gap={0.5}>
+                <Typography
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    fontSize: 18,
+                    fontWeight: 800,
+                  }}
+                >
+                  {reporter.name}
+                </Typography>
+                {reporter.is_academically_verified && (
+                  <VerifiedRoundedIcon
+                    sx={{ fontSize: 15, color: "#5C84FF" }}
+                  />
+                )}
+              </Stack>
+
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  px: 1.15,
+                  minHeight: 22,
+                  maxWidth: "100%",
+                  borderRadius: "7px",
+                  bgcolor: (theme) =>
+                    theme.palette.dashboard.activeItem.background,
+                  color: "#5C84FF",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  lineHeight: 1.5,
+                  textAlign: "right",
+                }}
+              >
+                {item.reason}
+              </Box>
+            </Stack>
           </Stack>
 
-          <Box
-            sx={{
-              mt: 0.7,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              px: 1.15,
-              minHeight: 22,
-              borderRadius: "7px",
-              bgcolor: "#EEF2FF",
-              color: "#5C84FF",
-              fontSize: 11,
-              fontWeight: 500,
-              lineHeight: 1.2,
-            }}
-          >
-            {item.tag}
-          </Box>
-
-          <Typography
-            sx={{
-              mt: 1,
-              color: "#8F8F8F",
-              fontSize: 15,
-              fontWeight: 500,
-              lineHeight: 1.45,
-              maxWidth: 370,
-            }}
-          >
-            {item.description}
-          </Typography>
+          {item.description && (
+            <Typography
+              sx={{
+                mt: 1,
+                color: (theme) => theme.palette.dashboard.textSecondary,
+                fontSize: 15,
+                fontWeight: 500,
+                lineHeight: 1.45,
+                maxWidth: 430,
+                wordBreak: "break-word",
+              }}
+            >
+              {item.description}
+            </Typography>
+          )}
 
           <Stack
             direction="row-reverse"
@@ -121,10 +96,21 @@ function ReportCard({ item }) {
             justifyContent="flex-start"
             sx={{ mt: 0.9 }}
           >
-            <Typography sx={{ color: "#263238", fontSize: 15, fontWeight: 500 }}>
-              {item.date}
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 15,
+                fontWeight: 500,
+              }}
+            >
+              {item.reported_at}
             </Typography>
-            <AccessTimeRoundedIcon sx={{ fontSize: 17, color: "#263238" }} />
+            <AccessTimeRoundedIcon
+              sx={{
+                fontSize: 17,
+                color: (theme) => theme.palette.dashboard.textPrimary,
+              }}
+            />
           </Stack>
         </Box>
       </Stack>
@@ -132,34 +118,86 @@ function ReportCard({ item }) {
   );
 }
 
-export default function ContentCreationsRecord() {
+export default function ContentCreationsRecord({ testId, contentId }) {
+  const testReportsQuery = useTestReportsQuery(testId, { per_page: 20 });
+  const contentReportsQuery = useLibraryMaterialReportsQuery(contentId, {
+    per_page: 10,
+  });
+  const reportsQuery = contentId ? contentReportsQuery : testReportsQuery;
+  const reportPages = reportsQuery.data?.pages || [];
+  const firstPageData = reportPages[0]?.data || {};
+  const statistics = firstPageData.statistics || {};
+  const reportReasons =
+    statistics.reports_by_reason || statistics.reasons || [];
+  const reports = reportPages.flatMap((page) => {
+    const pageReports = page?.data?.reports;
+    return Array.isArray(pageReports) ? pageReports : pageReports?.items || [];
+  });
+  const scrollContainerRef = useRef(null);
+  const loadMoreRef = useRef(null);
+  const { fetchNextPage, hasNextPage, isFetchingNextPage } = reportsQuery;
+
+  useEffect(() => {
+    const root = scrollContainerRef.current;
+    const target = loadMoreRef.current;
+
+    if (!root || !target || !hasNextPage) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        root,
+        rootMargin: "0px 0px 180px 0px",
+      },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage, reports.length]);
+
   return (
     <Box
       sx={{
-        mt: 2.8,
+        mt: 1.2,
         width: "100%",
-        minHeight: 560,
+        height: "calc(100vh - 315px)",
         borderRadius: "18px",
-        border: "1px solid #EAEAEA",
-        bgcolor: "#FFFFFF",
-        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.surface,
+        boxShadow: (theme) => theme.palette.dashboard.shadow,
         px: { xs: 2, md: 3 },
         py: { xs: 2, md: 3 },
         direction: "rtl",
+        overflow: "hidden",
       }}
     >
       <Box
         sx={{
+          height: "100%",
+          minHeight: 0,
           display: "flex",
           flexDirection: { xs: "column", md: "row-reverse" },
-          alignItems: "flex-start",
+          alignItems: "stretch",
           gap: { xs: 3, md: 4 },
         }}
       >
-        <Box sx={{ width: { xs: "100%", md: "50%" } }}>
+        <Box
+          sx={{
+            width: { xs: "100%", md: "50%" },
+            minHeight: 0,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Typography
             sx={{
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: 23,
               fontWeight: 800,
               textAlign: "right",
@@ -170,10 +208,14 @@ export default function ContentCreationsRecord() {
           </Typography>
 
           <Box
+            ref={scrollContainerRef}
             sx={{
-              maxHeight: { xs: "none", md: 430 },
-              overflowY: { xs: "visible", md: "auto" },
-              pr: { xs: 0, md: 0.5 },
+              flex: 1,
+              minHeight: 0,
+              overflowY: "auto",
+              overflowX: "hidden",
+              pr: 0.5,
+              pb: 3,
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               "&::-webkit-scrollbar": {
@@ -185,11 +227,56 @@ export default function ContentCreationsRecord() {
               {reports.map((report) => (
                 <ReportCard key={report.id} item={report} />
               ))}
+
+              {reportsQuery.isFetchingNextPage && (
+                <Typography
+                  sx={{
+                    py: 1.5,
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textAlign: "center",
+                  }}
+                >
+                  جاري تحميل المزيد...
+                </Typography>
+              )}
+
+              {reportsQuery.isLoading && (
+                <Box sx={{ py: 5, display: "flex", justifyContent: "center" }}>
+                  <CircularProgress size={28} />
+                </Box>
+              )}
+
+              {!reportsQuery.isLoading && reports.length === 0 && (
+                <Typography
+                  sx={{
+                    py: 5,
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                    fontSize: 15,
+                    fontWeight: 700,
+                    textAlign: "center",
+                  }}
+                >
+                  لا توجد إبلاغات لعرضها
+                </Typography>
+              )}
+
+              <Box ref={loadMoreRef} sx={{ height: 1, flexShrink: 0 }} />
             </Stack>
           </Box>
         </Box>
 
-        <Box sx={{ width: { xs: "100%", md: "50%" } }}>
+        <Box
+          sx={{
+            width: { xs: "100%", md: "50%" },
+            minHeight: 0,
+            overflowY: "auto",
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": { display: "none" },
+            pb: 2,
+          }}
+        >
           <Stack
             direction="row-reverse"
             alignItems="center"
@@ -197,7 +284,7 @@ export default function ContentCreationsRecord() {
             sx={{ mb: 2.2 }}
             justifyContent="flex-end"
           >
-             <Box
+            <Box
               sx={{
                 minWidth: 34,
                 height: 24,
@@ -212,36 +299,57 @@ export default function ContentCreationsRecord() {
                 fontWeight: 700,
               }}
             >
-              231
+              {formatNumber(statistics.total_reports_count)}
             </Box>
-            <Typography sx={{ color: "#263238", fontSize: 23, fontWeight: 800 }}>
-              إحصائية الإبداعات
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 23,
+                fontWeight: 800,
+              }}
+            >
+              إحصائية الإبلاغات
             </Typography>
-
-           
           </Stack>
 
           <Stack spacing={1.8}>
-            {stats.map((stat) => (
+            {reportReasons.map((stat, index) => (
               <Box
-                key={stat.id}
+                key={`${stat.reason}-${index}`}
                 sx={{
                   minHeight: 56,
                   borderRadius: "8px",
-                  border: "1px solid #E2E2E2",
-                  bgcolor: "#FFFFFF",
+                  border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+                  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                   px: 2.2,
+                  py: 1,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
                   gap: 2,
                 }}
               >
-                <Typography sx={{ color: "#8F8F8F", fontSize: 16, fontWeight: 500 }}>
-                  {stat.text}
+                <Typography
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                    fontSize: 16,
+                    fontWeight: 500,
+                  }}
+                >
+                  {stat.reason}
                 </Typography>
-                <Typography sx={{ color: stat.color, fontSize: 20, fontWeight: 500 }}>
-                  {stat.value}
+                <Typography
+                  sx={{
+                    color: (theme) =>
+                      index === 0
+                        ? "#FF6A64"
+                        : theme.palette.dashboard.textPrimary,
+                    fontSize: 20,
+                    fontWeight: 600,
+                    flexShrink: 0,
+                  }}
+                >
+                  {formatNumber(stat.reports_count)}
                 </Typography>
               </Box>
             ))}

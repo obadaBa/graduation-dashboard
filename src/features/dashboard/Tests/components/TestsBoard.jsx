@@ -13,8 +13,11 @@ function BoardColumn({ title, count, color, cards, showEmptyState, isLast }) {
         height: "100%",
         px: { xs: 0.5, sm: 0.75, lg: 1 },
         pt: 1,
-        borderLeft: isLast ? "1px solid #D8D8D8" : "2px dashed #D8D8D8",
-        bgcolor: "#F7F7F7",
+        borderLeft: (theme) =>
+          isLast
+            ? `1px solid ${theme.palette.dashboard.divider}`
+            : `2px dashed ${theme.palette.dashboard.divider}`,
+        bgcolor: (theme) => theme.palette.dashboard.chartBackground,
       }}
     >
       <Stack
@@ -28,7 +31,7 @@ function BoardColumn({ title, count, color, cards, showEmptyState, isLast }) {
         <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: color }} />
         <Typography
           sx={{
-            color: "#263238",
+            color: (theme) => theme.palette.dashboard.textPrimary,
             fontSize: 14,
             fontWeight: 800,
             whiteSpace: "nowrap",
@@ -41,7 +44,8 @@ function BoardColumn({ title, count, color, cards, showEmptyState, isLast }) {
             minWidth: 29,
             height: 16,
             borderRadius: "9px",
-            bgcolor: "#B8B8B8",
+            bgcolor: (theme) =>
+              theme.palette.mode === "dark" ? "#4B5563" : "#B8B8B8",
             color: "#FFFFFF",
             fontSize: 13,
             fontWeight: 800,
@@ -120,9 +124,9 @@ export default function TestsBoard({ dayData }) {
           minWidth: 0,
           width: "100%",
           height: "100%",
-          border: "1px solid #D7D7D7",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
           borderRadius: "16px",
-          bgcolor: "#F7F7F7",
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           overflowY: "hidden",
           overflowX: "hidden",
           scrollbarWidth: "none",

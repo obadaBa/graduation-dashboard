@@ -1,18 +1,21 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import FiberManualRecordRoundedIcon from "@mui/icons-material/FiberManualRecordRounded";
 
-const months = [
-  "كانون الثاني",
-  "شباط",
-  "آذار",
-  "نيسان",
-  "أيار",
-  "حزيران",
-  "تموز",
-];
-
-const publishedContent = [650, 960, 940, 670, 520, 810, 990];
-const contentInteractions = [200, 480, 610, 550, 200, 280, 20];
+const monthLabels = {
+  1: "كانون الثاني",
+  2: "شباط",
+  3: "آذار",
+  4: "نيسان",
+  5: "أيار",
+  6: "حزيران",
+  7: "تموز",
+  8: "آب",
+  9: "أيلول",
+  10: "تشرين الأول",
+  11: "تشرين الثاني",
+  12: "كانون الأول",
+};
 
 function buildSmoothPath(points) {
   if (!points.length) {
@@ -32,9 +35,11 @@ function buildSmoothPath(points) {
 }
 
 function mapSeriesToPoints(series, width, height, minValue, maxValue) {
-  const step = width / (series.length - 1);
+  const safeMax = maxValue === minValue ? maxValue + 1 : maxValue;
+  const step = series.length > 1 ? width / (series.length - 1) : width;
+
   return series.map((value, index) => {
-    const normalized = (value - minValue) / (maxValue - minValue);
+    const normalized = (value - minValue) / (safeMax - minValue);
     return {
       x: index * step,
       y: height - normalized * height,
@@ -43,22 +48,68 @@ function mapSeriesToPoints(series, width, height, minValue, maxValue) {
   });
 }
 
-export default function HomeSection3ContentChart() {
+function normalizeMonths(months) {
+  const monthsByNumber = new Map((months || []).map((month) => [month.month_no, month]));
+
+  return Array.from({ length: 12 }, (_, index) => {
+    const monthNo = index + 1;
+    return {
+      month_no: monthNo,
+      published_materials_count:
+        monthsByNumber.get(monthNo)?.published_materials_count || 0,
+      likes_count: monthsByNumber.get(monthNo)?.likes_count || 0,
+    };
+  });
+}
+
+export default function HomeSection3ContentChart({
+  libraryMaterialYearlyActivity,
+}) {
+  const theme = useTheme();
+  const textPrimary = theme.palette.dashboard.chartTextPrimary;
+  const textSecondary = theme.palette.dashboard.chartTextSecondary;
+  const gridColor = theme.palette.dashboard.chartGrid;
+
+  const months = normalizeMonths(libraryMaterialYearlyActivity?.months);
+  const monthNames = months.map((month) => monthLabels[month.month_no]);
+  const publishedContent = months.map(
+    (month) => month.published_materials_count || 0,
+  );
+  const contentInteractions = months.map((month) => month.likes_count || 0);
+
   const plotWidth = 880;
   const chartHeight = 120;
   const rightAxisGap = 50;
-  const yTicks = [0, 200, 400, 600, 800, 1000];
+  const maxSeriesValue = Math.max(1, ...publishedContent, ...contentInteractions);
+  const tickStep = maxSeriesValue <= 100 ? 20 : maxSeriesValue <= 500 ? 100 : 200;
+  const maxValue = Math.ceil(maxSeriesValue / tickStep) * tickStep;
+  const yTicks = Array.from(
+    { length: Math.floor(maxValue / tickStep) + 1 },
+    (_, index) => index * tickStep,
+  );
 
-  const bluePoints = mapSeriesToPoints(publishedContent, plotWidth, chartHeight, 0, 1000);
-  const greenPoints = mapSeriesToPoints(contentInteractions, plotWidth, chartHeight, 0, 1000);
+  const bluePoints = mapSeriesToPoints(
+    publishedContent,
+    plotWidth,
+    chartHeight,
+    0,
+    maxValue,
+  );
+  const greenPoints = mapSeriesToPoints(
+    contentInteractions,
+    plotWidth,
+    chartHeight,
+    0,
+    maxValue,
+  );
 
   return (
     <Box
       sx={{
         mt: 2.5,
-        bgcolor: "#FFFFFF",
+        bgcolor: (theme) => theme.palette.dashboard.chartBackground,
         borderRadius: { xs: "14px", lg: "20px" },
-        border: "1px solid #ECECEC",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
         boxShadow: "0 6px 18px rgba(15, 23, 42, 0.06)",
         width: {
           xs: "clamp(280px, 88vw, 420px)",
@@ -79,7 +130,7 @@ export default function HomeSection3ContentChart() {
       >
         <Typography
           sx={{
-            color: "#111827",
+            color: textPrimary,
             fontSize: { xs: 17, sm: 19, md: 22, lg: 26 },
             fontWeight: 700,
             textAlign: "right",
@@ -96,14 +147,14 @@ export default function HomeSection3ContentChart() {
         >
           <Stack direction="row" spacing={0.5} alignItems="center">
             <FiberManualRecordRoundedIcon sx={{ color: "#10B981", fontSize: { xs: 10, md: 13, lg: 16 } }} />
-            <Typography sx={{ color: "#263238", fontSize: { xs: 11, md: 14, lg: 20 }, fontWeight: 500 }}>
+            <Typography sx={{ color: textPrimary, fontSize: { xs: 11, md: 14, lg: 20 }, fontWeight: 500 }}>
               التفاعلات على المحتوى
             </Typography>
           </Stack>
 
           <Stack direction="row" spacing={0.5} alignItems="center">
             <FiberManualRecordRoundedIcon sx={{ color: "#4D8BFF", fontSize: { xs: 10, md: 13, lg: 16 } }} />
-            <Typography sx={{ color: "#263238", fontSize: { xs: 11, md: 14, lg: 20 }, fontWeight: 500 }}>
+            <Typography sx={{ color: textPrimary, fontSize: { xs: 11, md: 14, lg: 20 }, fontWeight: 500 }}>
               المحتوى المنشور
             </Typography>
           </Stack>
@@ -124,7 +175,7 @@ export default function HomeSection3ContentChart() {
           >
             <g transform="translate(26 10)">
               {yTicks.map((tick) => {
-                const y = chartHeight - (tick / 1000) * chartHeight;
+                const y = chartHeight - (tick / maxValue) * chartHeight;
                 return (
                   <g key={tick}>
                     <line
@@ -132,13 +183,13 @@ export default function HomeSection3ContentChart() {
                       y1={y}
                       x2={plotWidth}
                       y2={y}
-                      stroke="#EAEAEA"
+                      stroke={gridColor}
                       strokeWidth="1"
                     />
                     <text
                       x={plotWidth + rightAxisGap}
                       y={y + 6}
-                      fill="#6F6F6F"
+                      fill={textSecondary}
                       fontSize="15"
                       fontWeight="500"
                       textAnchor="start"
@@ -166,14 +217,14 @@ export default function HomeSection3ContentChart() {
               />
 
               {bluePoints.map((point, index) => (
-                <circle key={`blue-${months[index]}`} cx={point.x} cy={point.y} r="5" fill="#4D8BFF" />
+                <circle key={`blue-${monthNames[index]}`} cx={point.x} cy={point.y} r="5" fill="#4D8BFF" />
               ))}
 
               {greenPoints.map((point, index) => (
-                <circle key={`green-${months[index]}`} cx={point.x} cy={point.y} r="5" fill="#10B981" />
+                <circle key={`green-${monthNames[index]}`} cx={point.x} cy={point.y} r="5" fill="#10B981" />
               ))}
 
-              {months.map((month, index) => {
+              {monthNames.map((month, index) => {
                 const x = bluePoints[index].x;
                 const [firstLine, secondLine] = month.split(" ");
                 return (
@@ -181,7 +232,7 @@ export default function HomeSection3ContentChart() {
                     <text
                       x={x}
                       y={chartHeight + 28}
-                      fill="#263238"
+                      fill={textSecondary}
                       fontSize="15"
                       fontWeight="500"
                       textAnchor="middle"
@@ -192,7 +243,7 @@ export default function HomeSection3ContentChart() {
                       <text
                         x={x}
                         y={chartHeight + 48}
-                        fill="#263238"
+                        fill={textSecondary}
                         fontSize="15"
                         fontWeight="500"
                         textAnchor="middle"

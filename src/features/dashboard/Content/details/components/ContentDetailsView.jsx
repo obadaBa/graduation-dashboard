@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { useState } from "react";
 import { useParams } from "react-router";
-import { CONTENT_ITEMS } from "../../content.mock";
+import { useLibraryMaterialDetailsQuery } from "../../hooks/useLibraryMaterialDetailsQuery";
 import ContentDetailsAppBar from "./ContentDetailsAppBar";
 import ContentCreationsRecord from "./ContentCreationsRecord";
 import ContentDetailsHeader from "./ContentDetailsHeader";
@@ -10,8 +10,9 @@ import ContentStatusRecord from "./ContentStatusRecord";
 
 export default function ContentDetailsView() {
   const { contentId } = useParams();
-  const currentItem = CONTENT_ITEMS.find((item) => String(item.id) === String(contentId));
   const [activeTab, setActiveTab] = useState("overview");
+  const detailsQuery = useLibraryMaterialDetailsQuery(contentId);
+  const contentDetails = detailsQuery.data?.data;
 
   return (
     <Box
@@ -24,13 +25,23 @@ export default function ContentDetailsView() {
       }}
     >
       <ContentDetailsHeader />
-      <ContentDetailsAppBar activeTab={activeTab} onTabChange={setActiveTab} />
+      <ContentDetailsAppBar
+        contentId={contentId}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
       {activeTab === "creations" ? (
-        <ContentCreationsRecord item={currentItem} />
+        <ContentCreationsRecord contentId={contentId} />
       ) : activeTab === "status" ? (
-        <ContentStatusRecord item={currentItem} />
+        <ContentStatusRecord
+          contentId={contentId}
+          onNavigateReports={() => setActiveTab("creations")}
+        />
       ) : (
-        <ContentOverviewCard item={currentItem} />
+        <ContentOverviewCard
+          contentDetails={contentDetails}
+          isLoading={detailsQuery.isLoading}
+        />
       )}
     </Box>
   );

@@ -21,13 +21,19 @@ export default function TestsEmptyState({
         alt="لا يوجد بيانات"
         sx={{ width: imageSize, height: imageSize, objectFit: "contain" }}
       />
-      <Typography sx={{ color: "#263238", fontSize: 17, fontWeight: 800 }}>
+      <Typography
+        sx={{
+          color: (theme) => theme.palette.dashboard.textPrimary,
+          fontSize: 17,
+          fontWeight: 800,
+        }}
+      >
         {title}
       </Typography>
       <Typography
         sx={{
           maxWidth,
-          color: "#8A8A8A",
+          color: (theme) => theme.palette.dashboard.textSecondary,
           fontSize: 13,
           fontWeight: 500,
           lineHeight: 1.7,

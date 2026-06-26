@@ -28,7 +28,7 @@ const UserProfile = lazy(() =>
   import("../../features/dashboard/Content/userProfile/UserProfile"),
 );
 const TestDetails = lazy(() =>
-  import("../../features/dashboard/Content/testDetails/TestDetails"),
+  import("../../features/dashboard/Tests/testDetails/TestDetails"),
 );
 const DashboardUsers = lazy(() =>
   import("../../pages/dashboard/Users/DashboardUsers"),
