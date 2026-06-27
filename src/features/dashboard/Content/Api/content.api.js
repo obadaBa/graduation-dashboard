@@ -64,3 +64,39 @@ export function deleteLibraryMaterial({ contentId, reason, idempotencyKey }) {
     },
   );
 }
+
+export function getUserProfileOverview(userId) {
+  return httpClient.get(`user-management/user-details/overview/${userId}`, {
+    showErrorToast: true,
+  });
+}
+
+export async function getUserAcademicCertificate(userId) {
+  try {
+    return await httpClient.get(
+      `user-management/user-details/academic-certificate/${userId}`,
+      {
+        responseType: "blob",
+        showErrorToast: false,
+      },
+    );
+  } catch (error) {
+    const errorBlob = error?.originalError?.response?.data;
+
+    if (errorBlob instanceof Blob) {
+      try {
+        const errorData = JSON.parse(await errorBlob.text());
+        const certificateError = new Error(
+          errorData?.message || error.message,
+        );
+        certificateError.title = errorData?.title;
+        certificateError.data = errorData;
+        throw certificateError;
+      } catch (parseError) {
+        if (parseError?.data) throw parseError;
+      }
+    }
+
+    throw error;
+  }
+}

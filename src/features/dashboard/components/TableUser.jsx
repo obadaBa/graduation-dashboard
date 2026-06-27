@@ -1,104 +1,78 @@
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import FemaleRoundedIcon from "@mui/icons-material/FemaleRounded";
 import MaleRoundedIcon from "@mui/icons-material/MaleRounded";
-import { Avatar, Box, Stack, Typography } from "@mui/material";
-
-const defaultUsers = [
-  {
-    id: "1#",
-    name: "محمد منصور",
-    email: "360mohamad360@gmail.com",
-    phone: "0981692323",
-    province: "دمشق",
-    gender: "ذكر",
-    status: "حساب فعال",
-    blocked: false,
-    lastLogin: "2026\\03\\11",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80",
-  },
-  {
-    id: "2#",
-    name: "كارمن الشوفي",
-    email: "carmen.alshof18@gmail.com",
-    phone: "0981692323",
-    province: "السويداء",
-    gender: "أنثى",
-    status: "حساب محظور",
-    blocked: true,
-    lastLogin: "2026\\03\\11",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80",
-  },
-  {
-    id: "3#",
-    name: "عبيدة الرحال",
-    email: "obeda.al.rahal@gmail.com",
-    phone: "-",
-    province: "القنيطرة",
-    gender: "ذكر",
-    status: "حساب فعال",
-    blocked: false,
-    lastLogin: "منذ 5 دقائق",
-    avatar: "",
-  },
-  {
-    id: "4#",
-    name: "عبادة بغدادي",
-    email: "Obada.work.98@gmail.com",
-    phone: "0981692323",
-    province: "دمشق",
-    gender: "ذكر",
-    status: "حساب محظور",
-    blocked: true,
-    lastLogin: "2026\\03\\11",
-    avatar:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=80&q=80",
-  },
-  {
-    id: "5#",
-    name: "سارة الطايع",
-    email: "sara_al_tayaa2002@gmail.com",
-    phone: "0981692323",
-    province: "-",
-    gender: "أنثى",
-    status: "حساب فعال",
-    blocked: false,
-    lastLogin: "منذ ساعة",
-    avatar:
-      "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?auto=format&fit=crop&w=80&q=80",
-  },
-  {
-    id: "6#",
-    name: "عبيد الرفاعي",
-    email: "Obaid.222.rifa@gmail.com",
-    phone: "-",
-    province: "دمشق",
-    gender: "ذكر",
-    status: "حساب فعال",
-    blocked: false,
-    lastLogin: "2026\\03\\11",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80",
-  },
-];
+import {
+  Avatar,
+  Box,
+  CircularProgress,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useNavigate } from "react-router";
 
 const columns = [
   { key: "id", label: "المعرف" },
   { key: "name", label: "الاسم" },
-  { key: "email", label: "البريد الالكتروني" },
+  { key: "email", label: "البريد الإلكتروني" },
   { key: "phone", label: "رقم الهاتف" },
   { key: "province", label: "المحافظة" },
   { key: "gender", label: "الجنس" },
   { key: "status", label: "حالة الحساب" },
-  { key: "lastLogin", label: "اخر تسجيل دخول" },
+  { key: "lastLogin", label: "آخر تسجيل دخول" },
   { key: "action", label: "" },
 ];
 
-const gridTemplateColumns = "0.58fr 1.45fr 2.25fr 1.05fr 1fr 0.85fr 1.25fr 1.25fr 0.35fr";
+const gridTemplateColumns =
+  "0.58fr 1.45fr 2.25fr 1.05fr 1fr 0.85fr 1.25fr 1.25fr 0.35fr";
 
-function StatusPill({ blocked }) {
+function getPageItems(page) {
+  const users = page?.data?.users;
+
+  if (Array.isArray(page?.data)) return page.data;
+  if (Array.isArray(users)) return users;
+  if (Array.isArray(users?.items)) return users.items;
+  if (Array.isArray(page?.data?.items)) return page.data.items;
+  return [];
+}
+
+function normalizeUser(user) {
+  const accountStatus =
+    user.account_status || user.status || user.accountStatus || "-";
+  const normalizedStatus = String(accountStatus).toLowerCase();
+  const blocked =
+    Boolean(user.is_blocked ?? user.blocked) ||
+    normalizedStatus.includes("محظور") ||
+    normalizedStatus.includes("blocked") ||
+    normalizedStatus.includes("suspended");
+
+  return {
+    id: user.id,
+    name: user.name || user.full_name || "-",
+    email: user.email || "-",
+    phone: user.phone || user.phone_number || user.mobile || "-",
+    province: user.governorate || user.province || "-",
+    gender: user.gender || "-",
+    status: accountStatus,
+    blocked,
+    lastLogin:
+      user.last_login ||
+      user.last_login_at ||
+      user.lastLogin ||
+      user.created_at ||
+      "-",
+    avatar: user.avatar || user.avatar_url || user.profile_photo_url || "",
+  };
+}
+
+function StatusPill({ blocked, status }) {
   const color = blocked ? "#FF5E58" : "#25D84E";
+  const label =
+    status && status !== "-"
+      ? status
+      : blocked
+        ? "حساب محظور"
+        : "حساب فعال";
 
   return (
     <Box
@@ -125,18 +99,27 @@ function StatusPill({ blocked }) {
           bgcolor: color,
         }}
       />
-      {blocked ? "حساب محظور" : "حساب فعال"}
+      {label}
     </Box>
   );
 }
 
-function GenderCell({ gender }) {
-  const isFemale = gender === "أنثى";
+export function GenderCell({ gender }) {
+  const normalizedGender = String(gender).toLowerCase();
+  const isFemale =
+    normalizedGender === "أنثى" ||
+    normalizedGender === "انثى" ||
+    normalizedGender === "female";
   const color = isFemale ? "#FF4DB3" : "#19A7FF";
   const Icon = isFemale ? FemaleRoundedIcon : MaleRoundedIcon;
 
   return (
-    <Stack direction="row-reverse" spacing={0.35} alignItems="center" justifyContent="center">
+    <Stack
+      direction="row-reverse"
+      spacing={0.35}
+      alignItems="center"
+      justifyContent="center"
+    >
       <Typography sx={{ color: "#263238", fontSize: 14, fontWeight: 600 }}>
         {gender}
       </Typography>
@@ -145,9 +128,15 @@ function GenderCell({ gender }) {
   );
 }
 
-function NameCell({ user }) {
+export function NameCell({ user }) {
   return (
-    <Stack direction="row" spacing={0.8} alignItems="center" justifyContent="center" gap={1}>
+    <Stack
+      direction="row"
+      spacing={0.8}
+      alignItems="center"
+      justifyContent="center"
+      gap={1}
+    >
       <Avatar
         src={user.avatar}
         alt={user.name}
@@ -166,14 +155,14 @@ function NameCell({ user }) {
   );
 }
 
-function TableCell({ children, align = "center" }) {
+export function TableCell({ children }) {
   return (
     <Box
       sx={{
         minHeight: 41,
         display: "flex",
         alignItems: "center",
-        justifyContent: align === "right" ? "flex-start" : "center",
+        justifyContent: "center",
         minWidth: 0,
       }}
     >
@@ -197,19 +186,41 @@ function TableCell({ children, align = "center" }) {
   );
 }
 
-export default function TableUser({ rows = defaultUsers }) {
+export default function TableUser({ usersQuery, isSearching = false }) {
+  const navigate = useNavigate();
+  const pages = usersQuery?.data?.pages || [];
+  const rows = pages.flatMap(getPageItems).map(normalizeUser);
+
+  const handleScroll = (event) => {
+    const container = event.currentTarget;
+    const remaining =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+
+    if (
+      remaining < 160 &&
+      usersQuery?.hasNextPage &&
+      !usersQuery?.isFetchingNextPage &&
+      !usersQuery?.isFetchNextPageError
+    ) {
+      usersQuery.fetchNextPage();
+    }
+  };
+
   return (
     <Box
       sx={{
         mt: 2.2,
         width: "100%",
-        minHeight: 356,
+        flex: 1,
+        minHeight: 0,
         borderRadius: "10px",
         border: "1px solid #EAEAEA",
         bgcolor: "#FFFFFF",
         boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)",
         overflow: "hidden",
         direction: "rtl",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Box
@@ -220,6 +231,7 @@ export default function TableUser({ rows = defaultUsers }) {
           minHeight: 48,
           bgcolor: "#F6F6F6",
           px: 1.4,
+          flexShrink: 0,
         }}
       >
         {columns.map((column) => (
@@ -238,41 +250,83 @@ export default function TableUser({ rows = defaultUsers }) {
         ))}
       </Box>
 
-      {rows.map((user) => (
-        <Box
-          key={user.id}
-          sx={{
-            display: "grid",
-            gridTemplateColumns,
-            alignItems: "center",
-            minHeight: 41,
-            px: 1.4,
-            borderTop: "1px solid #EFEFEF",
-          }}
-        >
-          <TableCell>
-            <Typography sx={{ color: "#4F7DFF", fontSize: 14, fontWeight: 800 }}>
-              {user.id}
-            </Typography>
-          </TableCell>
-          <TableCell>
-            <NameCell user={user} />
-          </TableCell>
-          <TableCell>{user.email}</TableCell>
-          <TableCell>{user.phone}</TableCell>
-          <TableCell>{user.province}</TableCell>
-          <TableCell>
-            <GenderCell gender={user.gender} />
-          </TableCell>
-          <TableCell>
-            <StatusPill blocked={user.blocked} />
-          </TableCell>
-          <TableCell>{user.lastLogin}</TableCell>
-          <TableCell>
-            <ArrowBackRoundedIcon sx={{ color: "#8A8A8A", fontSize: 22 }} />
-          </TableCell>
-        </Box>
-      ))}
+      <Box
+        onScroll={handleScroll}
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": { display: "none" },
+        }}
+      >
+        {rows.map((user) => (
+          <Box
+            key={user.id}
+            sx={{
+              display: "grid",
+              gridTemplateColumns,
+              alignItems: "center",
+              minHeight: 41,
+              px: 1.4,
+              borderTop: "1px solid #EFEFEF",
+            }}
+          >
+            <TableCell>
+              <Typography
+                sx={{ color: "#4F7DFF", fontSize: 14, fontWeight: 800 }}
+              >
+                #{user.id}
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <NameCell user={user} />
+            </TableCell>
+            <TableCell>{user.email}</TableCell>
+            <TableCell>{user.phone}</TableCell>
+            <TableCell>{user.province}</TableCell>
+            <TableCell>
+              <GenderCell gender={user.gender} />
+            </TableCell>
+            <TableCell>
+              <StatusPill blocked={user.blocked} status={user.status} />
+            </TableCell>
+            <TableCell>{user.lastLogin}</TableCell>
+            <TableCell>
+              <IconButton
+                onClick={() => navigate(`/user-profile/${user.id}`)}
+                aria-label={`عرض ملف ${user.name}`}
+                size="small"
+                sx={{ color: "#8A8A8A" }}
+              >
+                <ArrowBackRoundedIcon sx={{ fontSize: 22 }} />
+              </IconButton>
+            </TableCell>
+          </Box>
+        ))}
+
+        {(usersQuery?.isLoading || usersQuery?.isFetchingNextPage) && (
+          <Box sx={{ py: 3, display: "flex", justifyContent: "center" }}>
+            <CircularProgress size={26} />
+          </Box>
+        )}
+
+        {!usersQuery?.isLoading && rows.length === 0 && (
+          <Typography
+            sx={{
+              py: 8,
+              color: "#8A8A8A",
+              fontSize: 15,
+              fontWeight: 700,
+              textAlign: "center",
+            }}
+          >
+            {isSearching
+              ? "لا توجد نتائج مطابقة للبحث"
+              : "لا يوجد مستخدمون لعرضهم"}
+          </Typography>
+        )}
+      </Box>
     </Box>
   );
 }

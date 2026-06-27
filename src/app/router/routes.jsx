@@ -39,6 +39,11 @@ const DashboardSales = lazy(() =>
 const DashboardCustomization = lazy(() =>
   import("../../pages/dashboard/Customization/DashboardCustomization"),
 );
+const UsersVerificationCenter = lazy(() =>
+  import(
+    "../../features/dashboard/Users/verificationCenter/UsersVerificationCenter"
+  ),
+);
 
 function LoadingFallback() {
   return <div>جارٍ التحميل...</div>;
@@ -110,5 +115,9 @@ export const router = createBrowserRouter([
   {
     path: "/test-details/:testId",
     element: suspenseWrapper(<TestDetails />),
+  },
+  {
+    path: "/account-verification",
+    element: suspenseWrapper(<UsersVerificationCenter />),
   },
 ]);
