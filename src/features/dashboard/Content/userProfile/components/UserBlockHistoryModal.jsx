@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  CircularProgress,
   IconButton,
   Modal,
   Stack,
@@ -9,17 +10,10 @@ import {
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import BlockRoundedIcon from "@mui/icons-material/BlockRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { useUserBanHistoryQuery } from "../../../Users/hooks/useUserBanHistoryQuery";
 
 const fallbackActorAvatar =
   "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=160&q=80";
-
-function getStoredActor() {
-  try {
-    return JSON.parse(localStorage.getItem("authUser")) || {};
-  } catch {
-    return {};
-  }
-}
 
 function roleLabel(role) {
   if (role === "owner") return "مالك التطبيق";
@@ -27,7 +21,9 @@ function roleLabel(role) {
   return "إدارة التطبيق";
 }
 
-function HistoryCard({ index, record }) {
+function HistoryCard({ record }) {
+  const imposedBy = record.imposed_by || {};
+
   return (
     <Stack direction="row" alignItems="flex-start" gap={1.1}>
       <BlockRoundedIcon
@@ -59,7 +55,7 @@ function HistoryCard({ index, record }) {
             textAlign: "right",
           }}
         >
-          {index}#
+          {record.serial_no}#
         </Typography>
 
         <Typography
@@ -91,8 +87,8 @@ function HistoryCard({ index, record }) {
 
         <Stack direction="row" alignItems="center" gap={0.9} sx={{ mt: 0.4 }}>
           <Avatar
-            src={record.actorAvatar || fallbackActorAvatar}
-            alt={record.actorName}
+            src={imposedBy.avatar || fallbackActorAvatar}
+            alt={imposedBy.name || "منفذ الحظر"}
             sx={{
               width: 43,
               height: 43,
@@ -104,12 +100,12 @@ function HistoryCard({ index, record }) {
             <Typography
               sx={{ color: "#263238", fontSize: 14, fontWeight: 800, lineHeight: 1.35 }}
             >
-              {record.actorName}
+              {imposedBy.name || "-"}
             </Typography>
             <Typography
               sx={{ color: "#A0A0A0", fontSize: 10.5, fontWeight: 500, lineHeight: 1.4 }}
             >
-              {record.actorRole}
+              {roleLabel(imposedBy.role)}
             </Typography>
           </Box>
         </Stack>
@@ -138,16 +134,16 @@ function HistoryCard({ index, record }) {
               من
             </Typography>
             <Typography
+              dir="auto"
               sx={{
                 color: "#263238",
                 fontFamily: "serif",
                 fontSize: 14,
                 fontWeight: 500,
-                direction: "ltr",
                 whiteSpace: "nowrap",
               }}
             >
-              {record.from}
+              {record.starts_at || "-"}
             </Typography>
           </Stack>
 
@@ -158,16 +154,16 @@ function HistoryCard({ index, record }) {
               إلى
             </Typography>
             <Typography
+              dir="auto"
               sx={{
                 color: "#263238",
                 fontFamily: "serif",
                 fontSize: 14,
                 fontWeight: 500,
-                direction: "ltr",
                 whiteSpace: "nowrap",
               }}
             >
-              {record.to}
+              {record.ends_at || "حظر دائم"}
             </Typography>
           </Stack>
         </Stack>
@@ -176,28 +172,11 @@ function HistoryCard({ index, record }) {
   );
 }
 
-export default function UserBlockHistoryModal({ open, onClose }) {
-  const actor = getStoredActor();
-  const actorName = actor.name || "محمد منصور";
-  const actorRole = roleLabel(actor.role);
-  const records = [
-    {
-      reason: "لقد قمنا بحظر المستخدم لأسباب تتعلق بانتهاك الخصوصية",
-      actorName,
-      actorRole,
-      actorAvatar: actor.avatar,
-      from: "2026/05/12",
-      to: "2026/05/18",
-    },
-    {
-      reason: "لقد قمنا بحظر المستخدم لأسباب تتعلق بانتهاك الخصوصية",
-      actorName,
-      actorRole,
-      actorAvatar: actor.avatar,
-      from: "2026/05/12",
-      to: "2026/05/18",
-    },
-  ];
+export default function UserBlockHistoryModal({ open, onClose, userId }) {
+  const historyQuery = useUserBanHistoryQuery(userId, open);
+  const records = Array.isArray(historyQuery.data?.data)
+    ? historyQuery.data.data
+    : [];
 
   return (
     <Modal
@@ -275,9 +254,38 @@ export default function UserBlockHistoryModal({ open, onClose }) {
             "&::-webkit-scrollbar": { display: "none" },
           }}
         >
-          {records.map((record, index) => (
-            <HistoryCard key={`${record.from}-${index}`} index={index + 1} record={record} />
-          ))}
+          {historyQuery.isLoading && (
+            <Box sx={{ minHeight: 300, display: "grid", placeItems: "center" }}>
+              <CircularProgress size={30} />
+            </Box>
+          )}
+
+          {historyQuery.isError && (
+            <Box sx={{ minHeight: 300, display: "grid", placeItems: "center" }}>
+              <Typography sx={{ color: "#FF5E58", fontSize: 14, fontWeight: 600 }}>
+                تعذر تحميل سجل حظر المستخدم
+              </Typography>
+            </Box>
+          )}
+
+          {!historyQuery.isLoading && !historyQuery.isError && records.length === 0 && (
+            <Box sx={{ minHeight: 300, display: "grid", placeItems: "center" }}>
+              <Typography sx={{ color: "#929292", fontSize: 14, fontWeight: 600 }}>
+                لا يوجد سجل حظر لهذا المستخدم
+              </Typography>
+            </Box>
+          )}
+
+          {!historyQuery.isLoading &&
+            records.map((record, index) => (
+              <HistoryCard
+                key={`${record.serial_no}-${index}`}
+                record={{
+                  ...record,
+                  serial_no: record.serial_no ?? index + 1,
+                }}
+              />
+            ))}
         </Stack>
       </Box>
     </Modal>

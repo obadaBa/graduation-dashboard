@@ -10,6 +10,8 @@ export default function AuthFormInput({
   startAdornment,
   endAdornment,
   sx,
+  readOnly = false,
+  disabled = false,
 }) {
   const theme = useTheme();
 
@@ -52,8 +54,9 @@ export default function AuthFormInput({
             {...field}
             type={type}
             fullWidth
+            disabled={disabled}
             placeholder={placeholder}
-            inputProps={{ "aria-label": ariaLabel }}
+            inputProps={{ "aria-label": ariaLabel, readOnly }}
             startAdornment={
               startAdornment ? (
                 <InputAdornment position="start">{startAdornment}</InputAdornment>

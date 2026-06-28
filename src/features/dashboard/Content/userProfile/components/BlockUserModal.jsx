@@ -16,6 +16,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import { useUserProfileOverviewQuery } from "../../hooks/useUserProfileOverviewQuery";
+import { useBanUserMutation } from "../../../Users/hooks/useBanUserMutation";
 import UserBlockHistoryModal from "./UserBlockHistoryModal";
 
 const MAX_REASON_LENGTH = 250;
@@ -132,16 +133,47 @@ function DateValue({ label, value, onChange, disabled = false }) {
   );
 }
 
-export default function BlockUserModal({ open, onClose, userId }) {
+export default function BlockUserModal({
+  open,
+  onClose,
+  userId,
+  initiallyBlocked = false,
+  blockedUser,
+}) {
   const today = useMemo(() => toInputDate(new Date()), []);
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState("");
   const [isPermanent, setIsPermanent] = useState(false);
   const [reason, setReason] = useState("");
-  const [isBlocked, setIsBlocked] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(initiallyBlocked);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const profileQuery = useUserProfileOverviewQuery(userId);
+  const banUserMutation = useBanUserMutation({
+    onSuccess: () => setIsBlocked(true),
+  });
   const header = profileQuery.data?.data?.header || {};
+  const blockedIsPermanent =
+    isPermanent || blockedUser?.ban_type === "حظر دائم";
+  const canSubmit =
+    Boolean(userId) &&
+    Boolean(reason.trim()) &&
+    (isPermanent || (Boolean(startDate) && Boolean(endDate)));
+
+  const handleBlockUser = () => {
+    if (isBlocked || !canSubmit || banUserMutation.isPending) return;
+
+    banUserMutation.mutate({
+      userId,
+      isPermanent,
+      startsAt: startDate,
+      endsAt: endDate,
+      reason,
+    });
+  };
+
+  useEffect(() => {
+    setIsBlocked(initiallyBlocked);
+  }, [initiallyBlocked, userId]);
 
   useEffect(() => {
     if (!open || isBlocked) return;
@@ -357,7 +389,10 @@ export default function BlockUserModal({ open, onClose, userId }) {
                       direction: "ltr",
                     }}
                   >
-                    {isPermanent ? "حظر دائم" : formatNumericDate(endDate)}
+                    {blockedIsPermanent
+                      ? "حظر دائم"
+                      : blockedUser?.ban_ends_at ||
+                        formatNumericDate(endDate)}
                   </Typography>
                 </Stack>
               </Stack>
@@ -509,7 +544,8 @@ export default function BlockUserModal({ open, onClose, userId }) {
           <Button
             fullWidth
             type="button"
-            onClick={() => setIsBlocked((current) => !current)}
+            onClick={handleBlockUser}
+            disabled={isBlocked || !canSubmit || banUserMutation.isPending}
             sx={{
               height: 39,
               borderRadius: "4px",
@@ -521,15 +557,25 @@ export default function BlockUserModal({ open, onClose, userId }) {
                 ? "none"
                 : "0 2px 7px rgba(255, 79, 85, 0.28)",
               "&:hover": { bgcolor: isBlocked ? "#F1F1F1" : "#FF4F55" },
+              "&.Mui-disabled": {
+                bgcolor: "#F1F1F1",
+                color: "#9A9A9A",
+                boxShadow: "none",
+              },
             }}
           >
-            {isBlocked ? "إلغاء الحظر" : "حفظ عملية الحظر"}
+            {isBlocked
+              ? "إلغاء الحظر"
+              : banUserMutation.isPending
+                ? "جاري حفظ عملية الحظر..."
+                : "حفظ عملية الحظر"}
           </Button>
         </Box>
 
         <UserBlockHistoryModal
           open={isHistoryOpen}
           onClose={() => setIsHistoryOpen(false)}
+          userId={userId}
         />
       </Box>
     </Modal>

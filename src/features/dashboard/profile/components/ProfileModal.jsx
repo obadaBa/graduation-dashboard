@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   IconButton,
   Modal,
   Slide,
@@ -8,8 +9,20 @@ import {
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ProfileForm from "./ProfileForm";
+import { useSupervisorProfileQuery } from "../hooks/useSupervisorProfileQuery";
+
+function getStoredSupervisorId() {
+  try {
+    return JSON.parse(localStorage.getItem("authUser"))?.id;
+  } catch {
+    return null;
+  }
+}
 
 export default function ProfileModal({ open, onClose }) {
+  const supervisorId = getStoredSupervisorId();
+  const profileQuery = useSupervisorProfileQuery(supervisorId, open);
+
   return (
     <Modal
       open={open}
@@ -86,7 +99,30 @@ export default function ProfileModal({ open, onClose }) {
             </IconButton>
           </Stack>
 
-          <ProfileForm />
+          {profileQuery.isLoading ? (
+            <Box sx={{ flex: 1, display: "grid", placeItems: "center" }}>
+              <CircularProgress size={32} />
+            </Box>
+          ) : profileQuery.isError ? (
+            <Box sx={{ flex: 1, display: "grid", placeItems: "center", px: 3 }}>
+              <Typography
+                sx={{
+                  color: "#FF5E58",
+                  fontSize: 14,
+                  fontWeight: 700,
+                  textAlign: "center",
+                }}
+              >
+                تعذر تحميل معلومات الملف الشخصي
+              </Typography>
+            </Box>
+          ) : (
+            <ProfileForm
+              profile={profileQuery.data?.data}
+              supervisorId={supervisorId}
+              onUpdateSuccess={onClose}
+            />
+          )}
         </Box>
       </Slide>
     </Modal>

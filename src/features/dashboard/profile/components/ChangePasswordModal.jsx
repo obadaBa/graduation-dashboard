@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Box,
   Button,
@@ -12,6 +13,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ReportGmailerrorredRoundedIcon from "@mui/icons-material/ReportGmailerrorredRounded";
 import AuthFormInput from "../../../auth/components/AuthFormInput";
 import { profileInputSx } from "./profileForm.styles";
+import { useUpdateSupervisorPasswordMutation } from "../hooks/useUpdateSupervisorPasswordMutation";
 
 const MotionBox = motion(Box);
 
@@ -24,22 +26,49 @@ const passwordInputSx = {
 };
 
 export default function ChangePasswordModal({ open, onClose }) {
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       currentPassword: "",
       newPassword: "",
       confirmPassword: "",
     },
   });
+  const updatePasswordMutation = useUpdateSupervisorPasswordMutation({
+    onSuccess: () => {
+      reset();
+      onClose();
+    },
+  });
+  const currentPassword = watch("currentPassword");
+  const newPassword = watch("newPassword");
+  const confirmPassword = watch("confirmPassword");
+  const hasLetter = /[A-Za-z\u0600-\u06FF]/.test(newPassword);
+  const hasNumber = /\d/.test(newPassword);
+  const canSubmit =
+    Boolean(currentPassword) &&
+    newPassword.length >= 8 &&
+    hasLetter &&
+    hasNumber &&
+    newPassword === confirmPassword;
+
+  useEffect(() => {
+    if (!open) reset();
+  }, [open, reset]);
 
   const onSubmit = (data) => {
-    console.log("change password form", data);
+    if (!canSubmit || updatePasswordMutation.isPending) return;
+
+    updatePasswordMutation.mutate({
+      oldPassword: data.currentPassword,
+      newPassword: data.newPassword,
+      newPasswordConfirmation: data.confirmPassword,
+    });
   };
 
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={updatePasswordMutation.isPending ? undefined : onClose}
       closeAfterTransition
       slotProps={{
         backdrop: {
@@ -117,6 +146,7 @@ export default function ChangePasswordModal({ open, onClose }) {
                 <IconButton
                   type="button"
                   onClick={onClose}
+                  disabled={updatePasswordMutation.isPending}
                   sx={{
                     width: 34,
                     height: 34,
@@ -237,6 +267,7 @@ export default function ChangePasswordModal({ open, onClose }) {
                   fullWidth
                   variant="contained"
                   disableElevation
+                  disabled={!canSubmit || updatePasswordMutation.isPending}
                   sx={{
                     height: 42,
                     borderRadius: "6px",
@@ -245,9 +276,15 @@ export default function ChangePasswordModal({ open, onClose }) {
                     fontSize: 15,
                     fontWeight: 700,
                     "&:hover": { bgcolor: "#4777F5" },
+                    "&.Mui-disabled": {
+                      bgcolor: "#AFC3FF",
+                      color: "#FFFFFF",
+                    },
                   }}
                 >
-                  حفظ كلمة المرور
+                  {updatePasswordMutation.isPending
+                    ? "جاري حفظ كلمة المرور..."
+                    : "حفظ كلمة المرور"}
                 </Button>
               </Box>
             </MotionBox>

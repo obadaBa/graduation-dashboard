@@ -186,7 +186,11 @@ export function TableCell({ children }) {
   );
 }
 
-export default function TableUser({ usersQuery, isSearching = false }) {
+export default function TableUser({
+  usersQuery,
+  isSearching = false,
+  onRowClick,
+}) {
   const navigate = useNavigate();
   const pages = usersQuery?.data?.pages || [];
   const rows = pages.flatMap(getPageItems).map(normalizeUser);
@@ -263,6 +267,7 @@ export default function TableUser({ usersQuery, isSearching = false }) {
         {rows.map((user) => (
           <Box
             key={user.id}
+            onClick={() => onRowClick?.(user)}
             sx={{
               display: "grid",
               gridTemplateColumns,
@@ -270,6 +275,12 @@ export default function TableUser({ usersQuery, isSearching = false }) {
               minHeight: 41,
               px: 1.4,
               borderTop: "1px solid #EFEFEF",
+              cursor: onRowClick ? "pointer" : "default",
+              "&:hover": onRowClick
+                ? {
+                    bgcolor: "#FAFBFF",
+                  }
+                : undefined,
             }}
           >
             <TableCell>
@@ -294,7 +305,10 @@ export default function TableUser({ usersQuery, isSearching = false }) {
             <TableCell>{user.lastLogin}</TableCell>
             <TableCell>
               <IconButton
-                onClick={() => navigate(`/user-profile/${user.id}`)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  navigate(`/user-profile/${user.id}`);
+                }}
                 aria-label={`عرض ملف ${user.name}`}
                 size="small"
                 sx={{ color: "#8A8A8A" }}

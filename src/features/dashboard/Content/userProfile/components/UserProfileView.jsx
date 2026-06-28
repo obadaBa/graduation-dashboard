@@ -8,11 +8,23 @@ import UserProfileHeader from "./UserProfileHeader";
 import UserProfileListsPanel from "./UserProfileListsPanel";
 import UserProfileOverview from "./UserProfileOverview";
 import UserProfileTestsPanel from "./UserProfileTestsPanel";
+import { useBlockedUsersQuery } from "../../../Users/hooks/useBlockedUsersQuery";
 
 export default function UserProfileView() {
   const { userId } = useParams();
   const [activeTab, setActiveTab] = useState("overview");
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
+  const blockedUsersQuery = useBlockedUsersQuery({
+    tab: "all",
+    enabled: Boolean(userId),
+  });
+  const blockedUsers = Array.isArray(blockedUsersQuery.data?.data)
+    ? blockedUsersQuery.data.data
+    : [];
+  const blockedUser = blockedUsers.find(
+    (user) => String(user.user_id) === String(userId),
+  );
+  const isUserBlocked = Boolean(blockedUser);
 
   return (
     <Box
@@ -29,6 +41,7 @@ export default function UserProfileView() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onBlockUser={() => setIsBlockModalOpen(true)}
+        isUserBlocked={isUserBlocked}
       />
 
       {activeTab === "tests" ? (
@@ -45,6 +58,8 @@ export default function UserProfileView() {
         open={isBlockModalOpen}
         onClose={() => setIsBlockModalOpen(false)}
         userId={userId}
+        initiallyBlocked={isUserBlocked}
+        blockedUser={blockedUser}
       />
     </Box>
   );

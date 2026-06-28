@@ -37,6 +37,7 @@ export default function UserProfileAppBar({
   activeTab = "overview",
   onTabChange,
   onBlockUser,
+  isUserBlocked = false,
 }) {
   const tabs = [
     {
@@ -118,7 +119,7 @@ export default function UserProfileAppBar({
         }}
        
       >
-        حظر المستخدم
+        {isUserBlocked ? "فك الحظر" : "حظر المستخدم"}
       </Button>
     </Box>
   );

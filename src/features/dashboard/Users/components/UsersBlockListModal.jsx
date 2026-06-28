@@ -105,7 +105,7 @@ function BlockedUserItem({ user }) {
             )}
           </Stack>
 
-          <Stack direction="row" spacing={0.7} alignItems="center" sx={{ mt: 0.8 }}>
+          <Stack direction="row" gap={1.4} alignItems="center" sx={{ mt: 0.8 }}>
             <UserTag label={user.education_level} />
             <UserTag label={banLabel} variant="red" />
           </Stack>

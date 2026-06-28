@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, MenuItem, Select, Stack, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
@@ -13,21 +13,81 @@ import ProfileField from "./ProfileField";
 import ProfileGenderSelector from "./ProfileGenderSelector";
 import ProfilePasswordAction from "./ProfilePasswordAction";
 import { phoneInputSx, profileInputSx, selectSx } from "./profileForm.styles";
+import { useUpdateSupervisorProfileMutation } from "../hooks/useUpdateSupervisorProfileMutation";
 
-export default function ProfileForm() {
+const GOVERNORATES = [
+  "دمشق",
+  "ريف دمشق",
+  "حلب",
+  "حمص",
+  "حماة",
+  "اللاذقية",
+  "طرطوس",
+  "درعا",
+  "السويداء",
+  "القنيطرة",
+  "إدلب",
+  "الرقة",
+  "دير الزور",
+  "الحسكة",
+];
+
+function normalizeGender(gender) {
+  if (gender === "ذكر" || gender === "male") return "male";
+  if (gender === "أنثى" || gender === "انثى" || gender === "female") return "female";
+  return "";
+}
+
+function toApiGender(gender) {
+  return gender === "female" ? "أنثى" : "ذكر";
+}
+
+export default function ProfileForm({
+  profile,
+  supervisorId,
+  onUpdateSuccess,
+}) {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const { control, handleSubmit } = useForm({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isDirty },
+  } = useForm({
     defaultValues: {
-      name: "عبيدة الرحال",
-      email: "test@mail.com",
-      governorate: "damascus",
-      phone: "0981692323",
-      gender: "female",
+      name: "",
+      email: "",
+      governorate: "",
+      phone: "",
+      gender: "",
     },
   });
+  const updateProfileMutation = useUpdateSupervisorProfileMutation({
+    onSuccess: onUpdateSuccess,
+  });
+
+  useEffect(() => {
+    if (!profile) return;
+
+    reset({
+      name: profile.name || "",
+      email: profile.email || "",
+      governorate: profile.governorate || "",
+      phone: profile.phone || "",
+      gender: normalizeGender(profile.gender),
+    });
+  }, [profile, reset]);
 
   const onSubmit = (data) => {
-    console.log("profile form", data);
+    if (!supervisorId || updateProfileMutation.isPending) return;
+
+    updateProfileMutation.mutate({
+      supervisorId,
+      name: data.name,
+      governorate: data.governorate,
+      phone: data.phone,
+      gender: toApiGender(data.gender),
+    });
   };
 
   return (
@@ -67,6 +127,7 @@ export default function ProfileForm() {
             control={control}
             name="email"
             ariaLabel="البريد الالكتروني"
+            readOnly
             endAdornment={<EmailOutlinedIcon />}
             sx={profileInputSx}
           />
@@ -83,9 +144,11 @@ export default function ProfileForm() {
                 IconComponent={KeyboardArrowDownRoundedIcon}
                 sx={selectSx}
               >
-                <MenuItem value="damascus">دمشق</MenuItem>
-                <MenuItem value="aleppo">حلب</MenuItem>
-                <MenuItem value="homs">حمص</MenuItem>
+                {GOVERNORATES.map((governorate) => (
+                  <MenuItem key={governorate} value={governorate}>
+                    {governorate}
+                  </MenuItem>
+                ))}
               </Select>
             )}
           />
@@ -154,18 +217,24 @@ export default function ProfileForm() {
           fullWidth
           variant="contained"
           disableElevation
-          onClick={handleSubmit(onSubmit)}
+          disabled={!isDirty || updateProfileMutation.isPending}
           sx={{
             height: 46,
             borderRadius: "8px",
-            bgcolor: "#F1F1F1",
-            color: "#A1A1A1",
+            bgcolor: "#5583FF",
+            color: "#FFFFFF",
             fontSize: 15,
             fontWeight: 700,
-            "&:hover": { bgcolor: "#EDEDED" },
+            "&:hover": { bgcolor: "#4C77E8" },
+            "&.Mui-disabled": {
+              bgcolor: "#F1F1F1",
+              color: "#A1A1A1",
+            },
           }}
         >
-          حفظ التعديلات
+          {updateProfileMutation.isPending
+            ? "جاري حفظ التعديلات..."
+            : "حفظ التعديلات"}
         </Button>
       </Box>
 

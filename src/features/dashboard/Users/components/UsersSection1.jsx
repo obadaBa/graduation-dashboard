@@ -6,12 +6,14 @@ import { useSearchUsersQuery } from "../hooks/useSearchUsersQuery";
 import { useUsersQuery } from "../hooks/useUsersQuery";
 import UsersActions from "./UsersActions";
 import UsersHeader from "./UsersHeader";
+import SupervisorProfileModal from "./SupervisorProfileModal";
 
 export default function UsersSection1() {
   const queryClient = useQueryClient();
   const [userType, setUserType] = useState("mobile_users");
   const [sortBy, setSortBy] = useState("created_at");
   const [searchValue, setSearchValue] = useState("");
+  const [selectedSupervisorId, setSelectedSupervisorId] = useState(null);
   const usersQuery = useUsersQuery({ type: userType, sortBy });
   const searchQuery = useSearchUsersQuery({
     role: userType,
@@ -84,7 +86,21 @@ export default function UsersSection1() {
         onSearchChange={handleSearchChange}
         onClearSearch={() => handleSearchChange("")}
       />
-      <TableUser usersQuery={displayedQuery} isSearching={isSearching} />
+      <TableUser
+        usersQuery={displayedQuery}
+        isSearching={isSearching}
+        onRowClick={
+          userType === "supervisors"
+            ? (user) => setSelectedSupervisorId(user.id)
+            : undefined
+        }
+      />
+
+      <SupervisorProfileModal
+        open={Boolean(selectedSupervisorId)}
+        onClose={() => setSelectedSupervisorId(null)}
+        supervisorId={selectedSupervisorId}
+      />
     </Box>
   );
 }
