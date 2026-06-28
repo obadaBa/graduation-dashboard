@@ -150,6 +150,9 @@ export default function HalfCircleSales({
               questionsCount={test?.question_count}
               questionsLabel="سؤال"
               tags={test?.scientific_interests || []}
+              sx={{
+                height: { xs: 174, sm: 184, lg: 190 },
+              }}
             />
           }
           topMonthsBySoldPurchases={financialStats?.top_months_by_sold_purchases}

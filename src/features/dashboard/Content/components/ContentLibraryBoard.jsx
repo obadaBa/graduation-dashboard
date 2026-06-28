@@ -16,6 +16,12 @@ function mapMaterialToCard(material) {
 }
 
 function mapStatistics(statistics = {}) {
+  const filesCount =
+    statistics.files_count ?? statistics.total_files_count ?? 0;
+  const imagesCount =
+    statistics.image_groups_count ?? statistics.total_images_count ?? 0;
+  const usesImageGroups = statistics.image_groups_count != null;
+
   return [
     {
       id: "posts",
@@ -26,27 +32,30 @@ function mapStatistics(statistics = {}) {
     {
       id: "files",
       title: "عدد الملفات الكلي",
-      value: Number(statistics.total_files_count || 0).toLocaleString("en-US"),
+      value: Number(filesCount).toLocaleString("en-US"),
       unit: "ملف",
     },
     {
       id: "images",
-      title: "عدد الصور الكلي",
-      value: Number(statistics.total_images_count || 0).toLocaleString("en-US"),
-      unit: "صورة",
+      title: usesImageGroups ? "عدد مجموعات الصور" : "عدد الصور الكلي",
+      value: Number(imagesCount).toLocaleString("en-US"),
+      unit: usesImageGroups ? "مجموعة" : "صورة",
     },
   ];
 }
 
 export default function ContentLibraryBoard({
-  materialsQuery,
+  materialsQuery = {},
   statistics = {},
   isSearching = false,
 }) {
   const navigate = useNavigate();
   const pages = materialsQuery.data?.pages || [];
+  const directData = materialsQuery.data?.data || materialsQuery.data || {};
   const stats = mapStatistics(statistics);
-  const materials = pages.flatMap((page) => page?.data?.materials || []);
+  const materials = pages.length
+    ? pages.flatMap((page) => page?.data?.materials || [])
+    : directData.materials || [];
   const items = materials.map(mapMaterialToCard);
 
   const handleScroll = (event) => {
@@ -57,7 +66,8 @@ export default function ContentLibraryBoard({
     if (
       remainingScroll < 180 &&
       materialsQuery.hasNextPage &&
-      !materialsQuery.isFetchingNextPage
+      !materialsQuery.isFetchingNextPage &&
+      materialsQuery.fetchNextPage
     ) {
       materialsQuery.fetchNextPage();
     }
@@ -132,7 +142,20 @@ export default function ContentLibraryBoard({
               },
             }}
           >
-            {items.map((item) => (
+            {materialsQuery.isLoading && (
+              <Box
+                sx={{
+                  gridColumn: "1 / -1",
+                  py: 8,
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <CircularProgress size={30} />
+              </Box>
+            )}
+
+            {!materialsQuery.isLoading && items.map((item) => (
               <Box
                 key={item.id}
                 sx={{

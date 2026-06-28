@@ -1,82 +1,80 @@
-import { Box, Button, Grid, InputBase, Stack } from "@mui/material";
+import { useMemo, useState } from "react";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  InputBase,
+  Stack,
+  Typography,
+} from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import ContentStatsPanel from "../../components/ContentStatsPanel";
 import TicketCard from "../../../Home/components/TicketCard";
+import { useUserProfileTestsQuery } from "../../hooks/useUserProfileTestsQuery";
 
-const testsSummary = [
-  {
-    id: "all-tests",
-    title: "عدد الاختبارات الكلي",
-    value: "17000",
-    unit: "اختبار",
-  },
-  {
-    id: "free-tests",
-    title: "عدد الاختبارات المجانية",
-    value: "5000",
-    unit: "اختبار",
-  },
-  {
-    id: "paid-tests",
-    title: "عدد الاختبارات المدفوعة",
-    value: "12000",
-    unit: "اختبار",
-  },
-];
+const EMPTY_TESTS = [];
 
-const testsData = [
-  {
-    title: "جلسة امتحانية أولى",
-    difficulty: "صعب",
-    difficultyColor: "#FF7373",
-    price: "180",
-    rating: "3.2",
-    questionsCount: "89",
-    duration: "5",
-    durationLabel: "يوم",
-    tags: ["# علوم أساسية", "# برمجة", "..."],
-  },
-  {
-    title: "جلسة امتحانية ثانية",
-    difficulty: "متوسط",
-    difficultyColor: "#FFB54D",
-    price: "240",
-    rating: "4.5",
-    questionsCount: "22",
-    duration: "4",
-    durationLabel: "أشهر",
-    tags: ["# برمجة", "# أرشفة", "..."],
-  },
-  {
-    title: "جلسة امتحانية ثالثة",
-    difficulty: "مستمر",
-    difficultyColor: "#7ED957",
-    price: "1280",
-    rating: "4.5",
-    questionsCount: "89",
-    questionsLabel: "دقيقة",
-    duration: "2",
-    durationLabel: "شهر",
-    tags: ["# علوم أساسية", "# برمجة", "..."],
-  },
-  {
-    title: "جلسة امتحانية رابعة",
-    difficulty: "صعب",
-    difficultyColor: "#FF7373",
-    price: "320",
-    rating: "3.8",
-    questionsCount: "56",
-    duration: "8",
-    durationLabel: "أيام",
-    tags: ["# خوارزميات", "# ذكاء اصطناعي", "..."],
-  },
-];
+function getDifficultyColor(difficulty) {
+  if (difficulty === "سهل") return "#34C759";
+  if (difficulty === "متوسط") return "#FFB54D";
+  return "#FF7373";
+}
+
+function formatPrice(value) {
+  return Number(value || 0).toLocaleString("en-US", {
+    maximumFractionDigits: 0,
+  });
+}
 
 export default function UserProfileTestsPanel() {
+  const { userId } = useParams();
   const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState("");
+  const testsQuery = useUserProfileTestsQuery(userId);
+  const responseData = testsQuery.data?.data || testsQuery.data || {};
+  const stats = responseData.stats || {};
+  const tests = responseData.tests || EMPTY_TESTS;
+  const totalTestsCount = Math.max(
+    Number(stats.total_tests_count || 0),
+    tests.length,
+  );
+
+  const testsSummary = [
+    {
+      id: "all-tests",
+      title: "عدد الاختبارات الكلي",
+      value: totalTestsCount,
+      unit: "اختبار",
+    },
+    {
+      id: "free-tests",
+      title: "عدد الاختبارات المجانية",
+      value: stats.free_tests_count ?? 0,
+      unit: "اختبار",
+    },
+    {
+      id: "paid-tests",
+      title: "عدد الاختبارات المدفوعة",
+      value: stats.paid_tests_count ?? 0,
+      unit: "اختبار",
+    },
+  ];
+
+  const displayedTests = useMemo(() => {
+    const normalizedSearch = searchValue.trim().toLocaleLowerCase("ar");
+
+    if (!normalizedSearch) return tests;
+
+    return tests.filter((test) =>
+      [test.title, test.description, ...(test.interests || [])].some((value) =>
+        String(value || "").toLocaleLowerCase("ar").includes(normalizedSearch),
+      ),
+    );
+  }, [searchValue, tests]);
 
   return (
     <Box
@@ -128,6 +126,8 @@ export default function UserProfileTestsPanel() {
             <SearchRoundedIcon sx={{ color: "#A0A0A0" }} />
             <InputBase
               placeholder="البحث عن اختبار"
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.target.value)}
               sx={{
                 flex: 1,
                 color: "#263238",
@@ -189,14 +189,47 @@ export default function UserProfileTestsPanel() {
             order: { xs: 1, lg: 1 },
           }}
         >
-          {testsData.map((test, index) => (
-            <Grid size={{ xs: 12, sm: 6 }} key={`${test.title}-${index}`}>
+          {testsQuery.isLoading ? (
+            <Grid size={{ xs: 12 }}>
+              <Box sx={{ py: 12, display: "flex", justifyContent: "center" }}>
+                <CircularProgress size={34} />
+              </Box>
+            </Grid>
+          ) : displayedTests.length ? (
+            displayedTests.map((test) => (
+            <Grid size={{ xs: 12, sm: 6 }} key={test.id}>
               <TicketCard
-                {...test}
-                onClick={() => navigate(`/test-details/${index + 1}`)}
+                title={test.title}
+                description={test.description}
+                difficulty={test.difficulty_level}
+                difficultyColor={getDifficultyColor(test.difficulty_level)}
+                price={formatPrice(test.price)}
+                rating={test.average_rating ?? 0}
+                questionsCount={test.question_count ?? 0}
+                duration={test.published_at || "-"}
+                durationLabel=""
+                tags={(test.interests || []).map((interest) => `# ${interest}`)}
+                onClick={() => navigate(`/test-details/${test.id}`)}
               />
             </Grid>
-          ))}
+            ))
+          ) : (
+            <Grid size={{ xs: 12 }}>
+              <Typography
+                sx={{
+                  py: 12,
+                  textAlign: "center",
+                  color: "#8A8A8A",
+                  fontSize: 15,
+                  fontWeight: 600,
+                }}
+              >
+                {searchValue
+                  ? "لا توجد اختبارات مطابقة للبحث"
+                  : "لا توجد اختبارات لهذا المستخدم"}
+              </Typography>
+            </Grid>
+          )}
         </Grid>
       </Box>
     </Box>

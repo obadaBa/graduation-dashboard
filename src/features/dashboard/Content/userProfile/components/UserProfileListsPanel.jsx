@@ -1,165 +1,45 @@
-import { useState } from "react";
-import { Box, Button, InputBase, Stack, Typography } from "@mui/material";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import { useMemo, useState } from "react";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  InputBase,
+  Stack,
+  Typography,
+} from "@mui/material";
+import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
-import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import { useParams } from "react-router";
+import { ReactComponent as FolderWithFilesIcon } from "../../../Assets/folder-with-files-svgrepo-com.svg";
 import ContentStatsPanel from "../../components/ContentStatsPanel";
+import { useUserProfileFoldersQuery } from "../../hooks/useUserProfileFoldersQuery";
 import FolderContentModal from "./FolderContentModal";
-import folderWithFilesImage from "../../../Assets/folder-with-files-svgrepo-com.svg";
 
-const listsStats = [
-  {
-    id: "all-lists",
-    title: "عدد القوائم الكلي",
-    value: "320",
-    unit: "قائمة",
-  },
-  {
-    id: "shared-lists",
-    title: "عدد القوائم المشاركة",
-    value: "120",
-    unit: "قائمة",
-  },
-  {
-    id: "saved-lists",
-    title: "عدد القوائم المحفوظة",
-    value: "200",
-    unit: "قائمة",
-  },
-];
+const EMPTY_FOLDERS = [];
 
-const listItems = [
-  {
-    id: 1,
-    title: "جلسة امتحانية أولى",
-    testsCount: "8",
-    duration: "مدة خمس دقائق",
-    tags: ["...", "# علوم أساسية", "# برمجة", "# الذكاء الاصطناعي"],
-    tests: [
-      {
-        title: "جلسة امتحانية أولى",
-        difficulty: "صعب",
-        difficultyColor: "#FF7373",
-        price: "180",
-        rating: "3.2",
-        questionsCount: "89",
-        duration: "5",
-        durationLabel: "يوم",
-        tags: ["# علوم أساسية", "# برمجة", "..."],
-      },
-      {
-        title: "جلسة امتحانية ثانية",
-        difficulty: "متوسط",
-        difficultyColor: "#FFB54D",
-        price: "240",
-        rating: "4.5",
-        questionsCount: "22",
-        duration: "4",
-        durationLabel: "أشهر",
-        tags: ["# برمجة", "# أرشفة", "..."],
-      },
-      {
-        title: "جلسة امتحانية ثالثة",
-        difficulty: "مستمر",
-        difficultyColor: "#7ED957",
-        price: "1280",
-        rating: "4.5",
-        questionsCount: "89",
-        questionsLabel: "دقيقة",
-        duration: "2",
-        durationLabel: "شهر",
-        tags: ["# علوم أساسية", "# برمجة", "..."],
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "جلسة امتحانية ثانية",
-    testsCount: "8",
-    duration: "مدة خمس دقائق",
-    tags: ["# علوم أساسية", "# برمجة"],
-    tests: [
-      {
-        title: "جلسة امتحانية أولى",
-        difficulty: "صعب",
-        difficultyColor: "#FF7373",
-        price: "180",
-        rating: "3.2",
-        questionsCount: "89",
-        duration: "5",
-        durationLabel: "يوم",
-        tags: ["# علوم أساسية", "# برمجة", "..."],
-      },
-      {
-        title: "جلسة امتحانية ثانية",
-        difficulty: "متوسط",
-        difficultyColor: "#FFB54D",
-        price: "240",
-        rating: "4.5",
-        questionsCount: "22",
-        duration: "4",
-        durationLabel: "أشهر",
-        tags: ["# برمجة", "# أرشفة", "..."],
-      },
-      {
-        title: "جلسة امتحانية ثالثة",
-        difficulty: "مستمر",
-        difficultyColor: "#7ED957",
-        price: "1280",
-        rating: "4.5",
-        questionsCount: "89",
-        questionsLabel: "دقيقة",
-        duration: "2",
-        durationLabel: "شهر",
-        tags: ["# علوم أساسية", "# برمجة", "..."],
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "جلسة امتحانية ثالثة",
-    testsCount: "8",
-    duration: "مدة خمس دقائق",
-    tags: ["...", "# علوم أساسية", "# برمجة", "# الذكاء الاصطناعي"],
-    tests: [
-      {
-        title: "جلسة امتحانية أولى",
-        difficulty: "صعب",
-        difficultyColor: "#FF7373",
-        price: "180",
-        rating: "3.2",
-        questionsCount: "89",
-        duration: "5",
-        durationLabel: "يوم",
-        tags: ["# علوم أساسية", "# برمجة", "..."],
-      },
-      {
-        title: "جلسة امتحانية ثانية",
-        difficulty: "متوسط",
-        difficultyColor: "#FFB54D",
-        price: "240",
-        rating: "4.5",
-        questionsCount: "22",
-        duration: "4",
-        durationLabel: "أشهر",
-        tags: ["# برمجة", "# أرشفة", "..."],
-      },
-      {
-        title: "جلسة امتحانية ثالثة",
-        difficulty: "مستمر",
-        difficultyColor: "#7ED957",
-        price: "1280",
-        rating: "4.5",
-        questionsCount: "89",
-        questionsLabel: "دقيقة",
-        duration: "2",
-        durationLabel: "شهر",
-        tags: ["# علوم أساسية", "# برمجة", "..."],
-      },
-    ],
-  },
-];
+function normalizeFolderColor(value) {
+  const hex = String(value || "")
+    .trim()
+    .replace(/^#/, "");
+
+  return /^[0-9a-fA-F]{6}$/.test(hex) ? `#${hex}` : "#5583FF";
+}
+
+function mapFolder(folder) {
+  return {
+    id: folder.id,
+    title: folder.name || "-",
+    testsCount: Number(folder.tests_count || 0),
+    duration: folder.published_at || "-",
+    tags: (folder.scientific_interests || []).map(
+      (interest) => `# ${interest}`,
+    ),
+    color: normalizeFolderColor(folder.color_code),
+    tests: [],
+  };
+}
 
 function ListTag({ label }) {
   return (
@@ -181,6 +61,28 @@ function ListTag({ label }) {
   );
 }
 
+function FolderIcon({ color }) {
+  return (
+    <Box
+      sx={{
+        width: 72,
+        height: 72,
+        flexShrink: 0,
+        "& svg": {
+          width: "100%",
+          height: "100%",
+          display: "block",
+        },
+        "& #Path_11117": {
+          fill: color,
+        },
+      }}
+    >
+      <FolderWithFilesIcon aria-label="مجلد" />
+    </Box>
+  );
+}
+
 function UserListRow({ item, withDivider = true, onClick }) {
   return (
     <Box
@@ -193,21 +95,17 @@ function UserListRow({ item, withDivider = true, onClick }) {
         cursor: "pointer",
       }}
     >
-      <Stack direction="row" spacing={1.1} alignItems="center" sx={{ width: "fit-content" }}>
-        <Box
-          component="img"
-          src={folderWithFilesImage}
-          alt="folder"
-          sx={{
-            width: 72,
-            height: 72,
-            flexShrink: 0,
-            objectFit: "contain",
-          }}
-        />
+      <Stack
+        direction="row"
+        spacing={1.1}
+        alignItems="center"
+        sx={{ width: "fit-content" }}
+      >
+        <FolderIcon color={item.color} />
+
         <Box
           sx={{
-            width: 320,
+            width: { xs: "min(260px, calc(100vw - 130px))", sm: 320 },
             textAlign: "right",
             display: "flex",
             flexDirection: "column",
@@ -220,7 +118,6 @@ function UserListRow({ item, withDivider = true, onClick }) {
               fontSize: 18,
               fontWeight: 800,
               width: "100%",
-              alignSelf: "stretch",
               textAlign: "right",
               pr: 2.2,
             }}
@@ -230,19 +127,28 @@ function UserListRow({ item, withDivider = true, onClick }) {
 
           <Stack
             direction="row-reverse"
-            spacing={1.6}
             alignItems="center"
-            sx={{ mt: 1.1, color: "#8D8D8D", justifyContent: "flex-end", width: "100%" }}
-            gap={1}
+            gap={1.6}
+            sx={{
+              mt: 1.1,
+              color: "#8D8D8D",
+              justifyContent: "flex-end",
+              width: "100%",
+            }}
           >
-            <Stack direction="row-reverse" spacing={0.4} alignItems="center">
+            <Stack direction="row-reverse" gap={0.4} alignItems="center">
               <Typography sx={{ fontSize: 15, fontWeight: 500 }}>
                 {`${item.testsCount} اختبارات`}
               </Typography>
               <LinkRoundedIcon sx={{ fontSize: 17, color: "#263238" }} />
             </Stack>
 
-            <Stack direction="row-reverse" spacing={0.4} alignItems="center">
+            <Stack
+              direction="row-reverse"
+              gap={0.4}
+              alignItems="center"
+              sx={{ transform: "translateX(-12px)" }}
+            >
               <Typography sx={{ fontSize: 15, fontWeight: 500 }}>
                 {item.duration}
               </Typography>
@@ -255,7 +161,12 @@ function UserListRow({ item, withDivider = true, onClick }) {
             useFlexGap
             flexWrap="wrap"
             gap={0.7}
-            sx={{ mt: 1.35, justifyContent: "flex-end", width: "100%", pr: 2.2 }}
+            sx={{
+              mt: 1.35,
+              justifyContent: "flex-end",
+              width: "100%",
+              pr: 2.2,
+            }}
           >
             {item.tags.map((tag) => (
               <ListTag key={tag} label={tag} />
@@ -269,6 +180,7 @@ function UserListRow({ item, withDivider = true, onClick }) {
           sx={{
             mt: 2.1,
             width: 300,
+            maxWidth: "100%",
             height: "1px",
             bgcolor: "#E8E8E8",
           }}
@@ -279,7 +191,34 @@ function UserListRow({ item, withDivider = true, onClick }) {
 }
 
 export default function UserProfileListsPanel() {
+  const { userId } = useParams();
+  const [searchValue, setSearchValue] = useState("");
   const [selectedFolder, setSelectedFolder] = useState(null);
+  const foldersQuery = useUserProfileFoldersQuery(userId);
+  const responseData = foldersQuery.data?.data || foldersQuery.data || {};
+  const folders = responseData.folders || EMPTY_FOLDERS;
+  const listItems = useMemo(() => folders.map(mapFolder), [folders]);
+  const displayedItems = useMemo(() => {
+    const search = searchValue.trim().toLocaleLowerCase("ar");
+
+    if (!search) return listItems;
+
+    return listItems.filter((item) =>
+      [item.title, ...item.tags].some((value) =>
+        value.toLocaleLowerCase("ar").includes(search),
+      ),
+    );
+  }, [listItems, searchValue]);
+  const listsStats = [
+    {
+      id: "all-lists",
+      title: "عدد القوائم الكلي",
+      value: Number(
+        responseData.total_folders_count ?? folders.length,
+      ).toLocaleString("en-US"),
+      unit: "قائمة",
+    },
+  ];
 
   return (
     <>
@@ -293,10 +232,24 @@ export default function UserProfileListsPanel() {
           overflow: "hidden",
           p: { xs: 1.5, md: 2.2 },
           direction: "rtl",
+          height: { xs: "auto", lg: "calc(100vh - 230px)" },
+          minHeight: 0,
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <Stack direction={{ xs: "column", md: "row" }} spacing={1.5} alignItems={{ xs: "stretch", md: "center" }} gap={1}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}
+        >
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            alignItems={{ xs: "stretch", md: "center" }}
+            gap={1.5}
+          >
             <Button
               endIcon={<KeyboardArrowDownRoundedIcon />}
               sx={{
@@ -329,12 +282,13 @@ export default function UserProfileListsPanel() {
             >
               <SearchRoundedIcon sx={{ color: "#A0A0A0" }} />
               <InputBase
+                value={searchValue}
+                onChange={(event) => setSearchValue(event.target.value)}
                 placeholder="البحث عن قائمة"
                 sx={{
                   flex: 1,
                   color: "#263238",
                   fontSize: 15,
-                  textAlign: "right",
                   "& input": {
                     textAlign: "right",
                   },
@@ -351,6 +305,8 @@ export default function UserProfileListsPanel() {
             flexDirection: { xs: "column", lg: "row" },
             gap: 2.2,
             alignItems: "stretch",
+            flex: 1,
+            minHeight: 0,
           }}
         >
           <Box
@@ -388,16 +344,45 @@ export default function UserProfileListsPanel() {
               width: { xs: "100%", lg: "87%" },
               order: { xs: 1, lg: 1 },
               px: { xs: 0.5, lg: 1.4 },
+              height: "100%",
+              minHeight: 0,
+              overflowY: { xs: "visible", lg: "auto" },
+              overflowX: "hidden",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              "&::-webkit-scrollbar": {
+                display: "none",
+              },
             }}
           >
-            {listItems.map((item, index) => (
-              <UserListRow
-                key={item.id}
-                item={item}
-                withDivider={index !== listItems.length - 1}
-                onClick={() => setSelectedFolder(item)}
-              />
-            ))}
+            {foldersQuery.isLoading ? (
+              <Box sx={{ py: 12, display: "flex", justifyContent: "center" }}>
+                <CircularProgress size={34} />
+              </Box>
+            ) : displayedItems.length ? (
+              displayedItems.map((item, index) => (
+                <UserListRow
+                  key={item.id}
+                  item={item}
+                  withDivider={index !== displayedItems.length - 1}
+                  onClick={() => setSelectedFolder(item)}
+                />
+              ))
+            ) : (
+              <Typography
+                sx={{
+                  py: 12,
+                  textAlign: "center",
+                  color: "#8A8A8A",
+                  fontSize: 15,
+                  fontWeight: 600,
+                }}
+              >
+                {searchValue
+                  ? "لا توجد قوائم مطابقة للبحث"
+                  : "لا توجد قوائم لهذا المستخدم"}
+              </Typography>
+            )}
           </Box>
         </Box>
       </Box>

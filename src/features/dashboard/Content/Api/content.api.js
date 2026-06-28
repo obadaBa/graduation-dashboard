@@ -71,6 +71,44 @@ export function getUserProfileOverview(userId) {
   });
 }
 
+export function getUserProfileTests(userId) {
+  return httpClient.get(`user-management/user-details/test/${userId}`, {
+    showErrorToast: true,
+  });
+}
+
+export function getUserProfileMaterials(userId) {
+  return httpClient.get(`user-management/user-details/material/${userId}`, {
+    showErrorToast: true,
+  });
+}
+
+export function getUserProfileFolders(userId) {
+  return httpClient.get(`user-management/user-details/folder/${userId}`, {
+    showErrorToast: true,
+  });
+}
+
+export function getUserProfileFolderDetails(folderId) {
+  return httpClient.get(`user-management/folder-details/${folderId}`, {
+    showErrorToast: true,
+  });
+}
+
+export function followers({ userId, params = {} }) {
+  return httpClient.get(`user-management/followers/${userId}`, {
+    params,
+    showErrorToast: true,
+  });
+}
+
+export function following({ userId, params = {} }) {
+  return httpClient.get(`user-management/following/${userId}`, {
+    params,
+    showErrorToast: true,
+  });
+}
+
 export async function getUserAcademicCertificate(userId) {
   try {
     return await httpClient.get(

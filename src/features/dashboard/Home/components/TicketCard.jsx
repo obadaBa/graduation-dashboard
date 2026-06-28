@@ -70,7 +70,7 @@ export default function TicketCard({
         borderRadius: { xs: "16px", sm: "20px", lg: "22px" },
         bgcolor: chartBackground,
         p: { xs: 0.4, sm: 0.7, lg: 0.85 },
-        height: { xs: 178, sm: 190, lg: 200 },
+        height: { xs: 200, sm: 210, lg: 216 },
         width: "100%",
         maxWidth: { xs: "100%", sm: 610, lg: "100%" },
         mx: "auto",
@@ -193,10 +193,11 @@ export default function TicketCard({
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            height: "80%",
+            height: "88%",
             position: "relative",
             overflow: "hidden",
             alignItems: "flex-end",
+            px: { xs: 0.45, sm: 0.7, lg: 1 },
           }}
         >
           <Typography
@@ -205,6 +206,10 @@ export default function TicketCard({
               fontSize: { xs: 14, sm: 17, lg: 18 },
               fontWeight: 700,
               mt: { xs: 1, lg: 2 },
+              maxWidth: "100%",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
             {price}
@@ -238,10 +243,13 @@ export default function TicketCard({
             borderRadius: { xs: "9px", lg: "12px" },
             px: { xs: 0.55, sm: 1.1, lg: 1.4 },
             py: { xs: 0.42, lg: 0.7 },
-            height: "80%",
+            height: "88%",
             position: "relative",
             overflow: "hidden",
             width: "99%",
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <Box
@@ -258,8 +266,29 @@ export default function TicketCard({
             }}
           />
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center" gap={0.6}>
-            <Typography sx={{ color: "#4D8BFF", fontSize: { xs: 10.5, sm: 15, lg: 16 }, fontWeight: 700 }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="flex-start"
+            gap={0.6}
+            sx={{ minHeight: { xs: 30, sm: 42 }, minWidth: 0 }}
+          >
+            <Typography
+              sx={{
+                color: "#4D8BFF",
+                fontSize: { xs: 10.5, sm: 15, lg: 16 },
+                fontWeight: 700,
+                lineHeight: 1.35,
+                textAlign: "right",
+                minWidth: 0,
+                flex: 1,
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 2,
+                overflow: "hidden",
+                overflowWrap: "anywhere",
+              }}
+            >
               {title}
             </Typography>
             <Box
@@ -285,19 +314,36 @@ export default function TicketCard({
               fontWeight: 500,
               lineHeight: { xs: 1.35, lg: 1.6 },
               textAlign: "right",
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 3,
+              overflow: "hidden",
+              overflowWrap: "anywhere",
             }}
           >
             {description}
           </Typography>
 
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ mt: { xs: 0.45, lg: 1.1 }, gap: { xs: 0.45, lg: 1 } }}
+          <Box
+            sx={{
+              mt: "auto",
+              pt: { xs: 0.4, lg: 0.7 },
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "minmax(42px, 0.7fr) minmax(0, 1.7fr)",
+                sm: "minmax(70px, 0.9fr) minmax(0, 1.6fr)",
+              },
+              alignItems: "center",
+              gap: { xs: 0.45, lg: 0.8 },
+              minWidth: 0,
+            }}
           >
-            <Stack direction="row" spacing={0.4} gap={0.45}>
-              {tags.map((chip) => (
+            <Stack
+              direction="row"
+              gap={0.45}
+              sx={{ minWidth: 0, overflow: "hidden" }}
+            >
+              {tags.slice(0, 2).map((chip) => (
                 <Box
                   key={chip}
                   sx={{
@@ -306,13 +352,9 @@ export default function TicketCard({
                     borderRadius: "4px",
                     bgcolor: "#4D7EFF",
                     maxWidth: { xs: 44, sm: 70, lg: 82 },
-                    overflowX: "auto",
-                    overflowY: "hidden",
-                    scrollbarWidth: "none",
-                    msOverflowStyle: "none",
-                    "&::-webkit-scrollbar": {
-                      display: "none",
-                    },
+                    minWidth: 0,
+                    overflow: "hidden",
+                    flexShrink: 1,
                   }}
                 >
                   <Typography
@@ -321,6 +363,8 @@ export default function TicketCard({
                       fontSize: { xs: 7.6, lg: 11 },
                       whiteSpace: "nowrap",
                       lineHeight: 1.2,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
                     }}
                   >
                     {chip}
@@ -329,21 +373,49 @@ export default function TicketCard({
               ))}
             </Stack>
 
-            <Stack direction="row" spacing={0.8} alignItems="center" gap={{ xs: 0.65, lg: 2 }}>
-              <Stack direction="row" spacing={0.3} alignItems="center" sx={{ flexShrink: 0, whiteSpace: "nowrap" }}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="flex-end"
+              gap={{ xs: 0.5, lg: 0.8 }}
+              sx={{ minWidth: 0, overflow: "hidden" }}
+            >
+              <Stack
+                direction="row"
+                spacing={0.3}
+                alignItems="center"
+                sx={{ minWidth: 0, overflow: "hidden" }}
+              >
                 <AccessTimeRoundedIcon sx={{ fontSize: { xs: 12, lg: 20 }, color: textPrimary }} />
-                <Typography sx={{ color: textPrimary, fontSize: { xs: 8.8, lg: 14 }, fontWeight: 700, whiteSpace: "nowrap" }}>
+                <Typography
+                  title={`${duration} ${durationLabel}`.trim()}
+                  dir="auto"
+                  sx={{
+                    color: textPrimary,
+                    fontSize: { xs: 8.8, sm: 11, lg: 12 },
+                    fontWeight: 700,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    minWidth: 0,
+                  }}
+                >
                   {`${duration} ${durationLabel}`}
                 </Typography>
               </Stack>
-              <Stack direction="row" spacing={0.3} alignItems="center" sx={{ flexShrink: 0, whiteSpace: "nowrap" }}>
+              <Stack
+                direction="row"
+                spacing={0.3}
+                alignItems="center"
+                sx={{ flexShrink: 0, whiteSpace: "nowrap" }}
+              >
                 <BrushRoundedIcon sx={{ fontSize: { xs: 12, lg: 20 }, color: textPrimary }} />
-                <Typography sx={{ color: textPrimary, fontSize: { xs: 8.8, lg: 14 }, fontWeight: 700, whiteSpace: "nowrap" }}>
+                <Typography sx={{ color: textPrimary, fontSize: { xs: 8.8, sm: 11, lg: 12 }, fontWeight: 700, whiteSpace: "nowrap" }}>
                   {`${questionsCount} ${questionsLabel}`}
                 </Typography>
               </Stack>
             </Stack>
-          </Stack>
+          </Box>
         </Box>
       </Box>
     </Box>

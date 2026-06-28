@@ -85,7 +85,8 @@ function RatingStatCard({ value, label, icon }) {
         width: 142,
         height: 76,
         borderRadius: "12px",
-        bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+        bgcolor: (theme) =>
+          theme.palette.mode === "dark" ? "#3A3A3A" : "#F6F6F6",
         px: 1.5,
         py: 1.2,
       }}

@@ -33,7 +33,11 @@ function TabAction({ label, icon, active = false, onClick }) {
   );
 }
 
-export default function UserProfileAppBar({ activeTab = "overview", onTabChange }) {
+export default function UserProfileAppBar({
+  activeTab = "overview",
+  onTabChange,
+  onBlockUser,
+}) {
   const tabs = [
     {
       id: "overview",
@@ -95,6 +99,7 @@ export default function UserProfileAppBar({ activeTab = "overview", onTabChange 
       </Stack>
 
       <Button
+        onClick={onBlockUser}
         sx={{
           minWidth: 114,
           height: 39,

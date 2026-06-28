@@ -1,11 +1,38 @@
-import { Box, IconButton, Modal, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  Modal,
+  Stack,
+  Typography,
+} from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+import { useNavigate } from "react-router";
 import TicketCard from "../../../Home/components/TicketCard";
 import folderOpenImage from "../../../Assets/folder-open.svg";
+import { useUserProfileFolderDetailsQuery } from "../../hooks/useUserProfileFolderDetailsQuery";
+
+function getDifficultyColor(difficulty) {
+  if (difficulty === "سهل") return "#34C759";
+  if (difficulty === "متوسط") return "#FFB54D";
+  return "#FF7373";
+}
+
+function formatPrice(value) {
+  return Number(value || 0).toLocaleString("en-US", {
+    maximumFractionDigits: 0,
+  });
+}
 
 export default function FolderContentModal({ open, onClose, folder }) {
+  const navigate = useNavigate();
+  const folderQuery = useUserProfileFolderDetailsQuery(folder?.id, open);
+  const responseData = folderQuery.data?.data || folderQuery.data || {};
+  const folderDetails = responseData.folder || {};
+  const items = responseData.items || [];
+
   if (!folder) {
     return null;
   }
@@ -108,7 +135,7 @@ export default function FolderContentModal({ open, onClose, folder }) {
                 <Typography
                   sx={{ fontSize: 17, fontWeight: 800, lineHeight: 1.25 }}
                 >
-                  {folder.title}
+                  {folderDetails.name || folder.title}
                 </Typography>
 
                 <Stack
@@ -136,7 +163,7 @@ export default function FolderContentModal({ open, onClose, folder }) {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {folder.duration}
+                      {folderDetails.published_at || folder.duration}
                     </Typography>
                     <AccessTimeRoundedIcon sx={{ fontSize: 16 , color:"black"  }} />
                   </Stack>
@@ -153,7 +180,7 @@ export default function FolderContentModal({ open, onClose, folder }) {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {`${folder.testsCount} عناصر`}
+                      {`${folderDetails.tests_count ?? folder.testsCount} عناصر`}
                     </Typography>
                     <LinkRoundedIcon sx={{ fontSize: 19 , color:"black" }} />
                   </Stack>
@@ -177,17 +204,47 @@ export default function FolderContentModal({ open, onClose, folder }) {
               },
             }}
           >
-            {folder.tests.map((test, index) => (
-              <TicketCard
-                key={`${folder.id}-${index}`}
-                {...test}
+            {folderQuery.isLoading ? (
+              <Box sx={{ py: 12, display: "flex", justifyContent: "center" }}>
+                <CircularProgress size={32} />
+              </Box>
+            ) : items.length ? (
+              items.map((test) => (
+                <TicketCard
+                  key={test.id}
+                  title={test.title}
+                  description={test.description}
+                  difficulty={test.difficulty_level}
+                  difficultyColor={getDifficultyColor(test.difficulty_level)}
+                  price={formatPrice(test.price)}
+                  rating={test.average_rating ?? 0}
+                  questionsCount={test.question_count ?? 0}
+                  duration={test.published_at || "-"}
+                  durationLabel=""
+                  tags={(test.interests || []).map(
+                    (interest) => `# ${interest}`,
+                  )}
+                  onClick={() => navigate(`/test-details/${test.id}`)}
+                  sx={{
+                    height: { xs: 285, sm: 295, lg: 212 },
+                    minHeight: { xs: 285, sm: 295, lg: 105 },
+                    flexShrink: 0,
+                  }}
+                />
+              ))
+            ) : (
+              <Typography
                 sx={{
-                  height: { xs: 285, sm: 295, lg: 212 },
-                  minHeight: { xs: 285, sm: 295, lg: 105 },
-                  flexShrink: 0,
+                  py: 12,
+                  color: "#8A8A8A",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  textAlign: "center",
                 }}
-              />
-            ))}
+              >
+                لا توجد اختبارات ضمن هذا المجلد
+              </Typography>
+            )}
           </Stack>
         </Box>
       </Box>

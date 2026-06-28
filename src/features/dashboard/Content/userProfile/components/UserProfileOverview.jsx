@@ -21,6 +21,7 @@ import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import { useUserProfileOverviewQuery } from "../../hooks/useUserProfileOverviewQuery";
 import { useUserAcademicCertificateMutation } from "../../hooks/useUserAcademicCertificateMutation";
 import AcademicCertificateModal from "./AcademicCertificateModal";
+import UserConnectionsSlide from "./UserConnectionsSlide";
 
 const fallbackCoverImage =
   "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80";
@@ -231,6 +232,7 @@ export default function UserProfileOverview() {
   const { userId } = useParams();
   const [isCertificateOpen, setIsCertificateOpen] = useState(false);
   const [certificateUrl, setCertificateUrl] = useState("");
+  const [connectionsType, setConnectionsType] = useState(null);
   const profileQuery = useUserProfileOverviewQuery(userId);
   const certificateMutation = useUserAcademicCertificateMutation();
   const profile = profileQuery.data?.data || {};
@@ -399,15 +401,50 @@ export default function UserProfileOverview() {
                   )}
                 </Stack>
 
-                <Typography sx={{ mt: 0.6, color: "#6B6B6B", fontSize: { xs: 16, md: 17 }, fontWeight: 500 }}>
-                  <Box component="span" sx={{ color: "#263238", fontWeight: 800 }}>
-                    {formatCount(header.followers_count)}
+                <Typography
+                  component="div"
+                  sx={{ mt: 0.6, color: "#6B6B6B", fontSize: { xs: 16, md: 17 }, fontWeight: 500 }}
+                >
+                  <Box
+                    component="button"
+                    type="button"
+                    onClick={() => setConnectionsType("followers")}
+                    sx={{
+                      border: 0,
+                      p: 0,
+                      bgcolor: "transparent",
+                      color: "inherit",
+                      font: "inherit",
+                      cursor: "pointer",
+                      "&:hover": { color: "#5583FF" },
+                    }}
+                  >
+                    <Box component="span" sx={{ color: "#263238", fontWeight: 800 }}>
+                      {formatCount(header.followers_count)}
+                    </Box>{" "}
+                    متابع
                   </Box>{" "}
-                  متابع .{" "}
-                  <Box component="span" sx={{ color: "#263238", fontWeight: 800 }}>
-                    {formatCount(header.following_count)}
+                  .{" "}
+                  <Box
+                    component="button"
+                    type="button"
+                    onClick={() => setConnectionsType("following")}
+                    sx={{
+                      border: 0,
+                      p: 0,
+                      bgcolor: "transparent",
+                      color: "inherit",
+                      font: "inherit",
+                      cursor: "pointer",
+                      "&:hover": { color: "#5583FF" },
+                    }}
+                  >
+                    <Box component="span" sx={{ color: "#263238", fontWeight: 800 }}>
+                      {formatCount(header.following_count)}
+                    </Box>{" "}
+                    يتابع
                   </Box>{" "}
-                  يتابع .{" "}
+                  .{" "}
                   <Box component="span" sx={{ color: "#263238", fontWeight: 800 }}>
                     {formatCount(header.published_tests_count)}
                   </Box>{" "}
@@ -679,6 +716,12 @@ export default function UserProfileOverview() {
         onClose={handleCloseCertificate}
         imageUrl={certificateUrl}
         isLoading={certificateMutation.isPending}
+      />
+      <UserConnectionsSlide
+        open={Boolean(connectionsType)}
+        type={connectionsType}
+        userId={userId}
+        onClose={() => setConnectionsType(null)}
       />
     </Box>
   );
