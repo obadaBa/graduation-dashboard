@@ -12,17 +12,34 @@ import {
   showErrorToast,
   showInfoToast,
 } from "../../../../shared/lib/Tost/toastService";
+import { createIdempotencyKey } from "../../../../shared/lib/idempotency";
 import { useRequestTestAiEvaluationMutation } from "../hooks/useRequestTestAiEvaluationMutation";
 import { useTestAiEvaluationStatusQuery } from "../hooks/useTestAiEvaluationStatusQuery";
 
 const STORAGE_KEY = "testAiEvaluationJob";
 const TERMINAL_STATUSES = new Set(["completed", "failed", "finished"]);
+const JOB_MAX_AGE_MS = 60 * 60 * 1000;
 const TestAiEvaluationContext = createContext(null);
 
 function readStoredJob() {
   try {
     const value = localStorage.getItem(STORAGE_KEY);
-    return value ? JSON.parse(value) : null;
+    const storedJob = value ? JSON.parse(value) : null;
+
+    if (!storedJob) {
+      return null;
+    }
+
+    const createdAt = Number(storedJob.createdAt);
+    const isExpired =
+      !Number.isFinite(createdAt) || Date.now() - createdAt > JOB_MAX_AGE_MS;
+
+    if (!storedJob.requestId || isExpired || storedJob.notified) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+
+    return storedJob;
   } catch {
     localStorage.removeItem(STORAGE_KEY);
     return null;
@@ -120,6 +137,7 @@ export function TestAiEvaluationProvider({ children, onOpenResult }) {
       notifiedRequestRef.current !== job.requestId
     ) {
       notifiedRequestRef.current = job.requestId;
+      setJob(null);
       showErrorToast(
         "تعذر متابعة حالة تقييم الاختبار. يمكنك إعادة تشغيل العملية.",
         "تعذر متابعة التقييم",
@@ -137,7 +155,10 @@ export function TestAiEvaluationProvider({ children, onOpenResult }) {
       setJob(null);
       setRequestingTestId(String(testId));
 
-      requestMutation.mutate(testId, {
+      requestMutation.mutate({
+        testId,
+        idempotencyKey: createIdempotencyKey(),
+      }, {
         onSuccess: (response) => {
           const requestId = response?.data?.evaluation_request_id;
 
@@ -155,6 +176,7 @@ export function TestAiEvaluationProvider({ children, onOpenResult }) {
             testId: String(testId),
             status: response?.data?.status?.toLowerCase() || "pending",
             notified: false,
+            createdAt: Date.now(),
           });
           setRequestingTestId(null);
           showInfoToast(

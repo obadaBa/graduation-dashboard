@@ -86,7 +86,10 @@ export default function HomeSection3SourceChart({ discoverySources }) {
         bgcolor: (theme) => theme.palette.dashboard.chartBackground,
         borderRadius: { xs: "14px", lg: "20px" },
         border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-        boxShadow: "0 6px 18px rgba(15, 23, 42, 0.06)",
+        boxShadow: (theme) =>
+          theme.palette.mode === "dark"
+            ? "0 16px 36px rgba(0, 0, 0, 0.24)"
+            : "0 6px 18px rgba(15, 23, 42, 0.06)",
         width: {
           xs: "clamp(280px, 88vw, 420px)",
           sm: "clamp(360px, 72vw, 500px)",
@@ -153,7 +156,7 @@ export default function HomeSection3SourceChart({ discoverySources }) {
                     style={{
                       transition: "stroke-width 180ms ease, filter 180ms ease",
                       filter: isHovered
-                        ? "drop-shadow(0 4px 10px rgba(15, 23, 42, 0.18))"
+                        ? "drop-shadow(0 6px 14px rgba(0, 0, 0, 0.24))"
                         : "none",
                     }}
                     onMouseEnter={() => setHoveredArc(arc)}
@@ -184,7 +187,10 @@ export default function HomeSection3SourceChart({ discoverySources }) {
                   borderRadius: "16px",
                   bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                   border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-                  boxShadow: "0 4px 12px rgba(15, 23, 42, 0.16)",
+                  boxShadow: (theme) =>
+                    theme.palette.mode === "dark"
+                      ? "0 12px 28px rgba(0, 0, 0, 0.32)"
+                      : "0 4px 12px rgba(15, 23, 42, 0.16)",
                 }}
                 gap={1}
               >

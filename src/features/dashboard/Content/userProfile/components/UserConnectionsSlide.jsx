@@ -26,7 +26,8 @@ function ConnectionItem({ user }) {
       gap={1.2}
       sx={{
         py: 1.45,
-        borderBottom: "1px solid #EEEEEE",
+        borderBottom: (theme) =>
+          `1px solid ${theme.palette.dashboard.chartBorder}`,
       }}
     >
       <Avatar
@@ -35,7 +36,7 @@ function ConnectionItem({ user }) {
         sx={{
           width: 52,
           height: 52,
-          bgcolor: "#E2E2E2",
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           flexShrink: 0,
         }}
       />
@@ -44,7 +45,7 @@ function ConnectionItem({ user }) {
         <Stack direction="row" alignItems="center" gap={0.55}>
           <Typography
             sx={{
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: 14,
               fontWeight: 800,
               overflow: "hidden",
@@ -66,8 +67,8 @@ function ConnectionItem({ user }) {
             px: 1,
             py: 0.35,
             borderRadius: "4px",
-            bgcolor: "#EEF2FF",
-            color: "#5C84FF",
+            bgcolor: (theme) => theme.palette.dashboard.activeItem.background,
+            color: (theme) => theme.palette.dashboard.logoPrimary,
             fontSize: 10,
             fontWeight: 700,
           }}
@@ -131,7 +132,7 @@ export default function UserConnectionsSlide({
       slotProps={{
         backdrop: {
           sx: {
-            bgcolor: "rgba(255, 255, 255, 0.42)",
+            bgcolor: "rgba(20, 24, 29, 0.34)",
             backdropFilter: "blur(8px)",
           },
         },
@@ -152,8 +153,8 @@ export default function UserConnectionsSlide({
             right: 0,
             width: { xs: "100%", sm: 370 },
             height: "100dvh",
-            bgcolor: "#FFFFFF",
-            boxShadow: "-10px 0 30px rgba(15, 23, 42, 0.10)",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
             display: "flex",
             flexDirection: "column",
             outline: "none",
@@ -174,13 +175,17 @@ export default function UserConnectionsSlide({
                 right: 0,
                 bottom: 0,
                 height: "3px",
-                backgroundImage:
-                  "repeating-linear-gradient(to left, #CFCFCF 0 18px, transparent 18px 29px)",
+                backgroundImage: (theme) =>
+                  `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 29px)`,
               },
             }}
           >
             <Typography
-              sx={{ color: "#263238", fontSize: 21, fontWeight: 800 }}
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 21,
+                fontWeight: 800,
+              }}
             >
               {title}
             </Typography>
@@ -190,10 +195,12 @@ export default function UserConnectionsSlide({
               sx={{
                 width: 34,
                 height: 34,
-                bgcolor: "#FFFFFF",
-                boxShadow: "0 2px 10px rgba(15, 23, 42, 0.10)",
-                color: "#263238",
-                "&:hover": { bgcolor: "#F7F7F7" },
+                bgcolor: (theme) => theme.palette.dashboard.surface,
+                boxShadow: (theme) => theme.palette.dashboard.shadow,
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                "&:hover": {
+                  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+                },
               }}
             >
               <CloseRoundedIcon sx={{ fontSize: 21 }} />
@@ -206,20 +213,25 @@ export default function UserConnectionsSlide({
                 height: 38,
                 px: 1.3,
                 borderRadius: "999px",
-                bgcolor: "#F6F6F6",
+                bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                 display: "flex",
                 alignItems: "center",
                 gap: 0.8,
               }}
             >
-              <SearchRoundedIcon sx={{ color: "#A1A1A1", fontSize: 19 }} />
+              <SearchRoundedIcon
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textSecondary,
+                  fontSize: 19,
+                }}
+              />
               <InputBase
                 value={searchValue}
                 onChange={(event) => setSearchValue(event.target.value)}
                 placeholder="البحث عن مستخدم"
                 sx={{
                   flex: 1,
-                  color: "#263238",
+                  color: (theme) => theme.palette.dashboard.textPrimary,
                   fontSize: 12,
                   "& input": { textAlign: "right" },
                 }}
@@ -228,7 +240,11 @@ export default function UserConnectionsSlide({
                 <IconButton
                   onClick={() => setSearchValue("")}
                   aria-label="مسح البحث"
-                  sx={{ width: 25, height: 25, color: "#A1A1A1" }}
+                  sx={{
+                    width: 25,
+                    height: 25,
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                  }}
                 >
                   <CloseRoundedIcon sx={{ fontSize: 15 }} />
                 </IconButton>
@@ -267,7 +283,7 @@ export default function UserConnectionsSlide({
               <Typography
                 sx={{
                   py: 8,
-                  color: "#8A8A8A",
+                  color: (theme) => theme.palette.dashboard.textSecondary,
                   fontSize: 14,
                   fontWeight: 600,
                   textAlign: "center",

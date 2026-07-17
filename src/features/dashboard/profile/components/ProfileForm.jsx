@@ -13,7 +13,9 @@ import ProfileField from "./ProfileField";
 import ProfileGenderSelector from "./ProfileGenderSelector";
 import ProfilePasswordAction from "./ProfilePasswordAction";
 import { phoneInputSx, profileInputSx, selectSx } from "./profileForm.styles";
+import { useDeleteSupervisorPhotoMutation } from "../hooks/useDeleteSupervisorPhotoMutation";
 import { useUpdateSupervisorProfileMutation } from "../hooks/useUpdateSupervisorProfileMutation";
+import { useUpdateSupervisorPhotoMutation } from "../hooks/useUpdateSupervisorPhotoMutation";
 
 const GOVERNORATES = [
   "دمشق",
@@ -45,9 +47,11 @@ function toApiGender(gender) {
 export default function ProfileForm({
   profile,
   supervisorId,
+  fallbackPhoto = "",
   onUpdateSuccess,
 }) {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [currentPhoto, setCurrentPhoto] = useState("");
   const {
     control,
     handleSubmit,
@@ -65,6 +69,20 @@ export default function ProfileForm({
   const updateProfileMutation = useUpdateSupervisorProfileMutation({
     onSuccess: onUpdateSuccess,
   });
+  const profilePhoto =
+    profile?.photo || profile?.avatar || profile?.avatar_url || fallbackPhoto;
+  const updatePhotoMutation = useUpdateSupervisorPhotoMutation({
+    onSuccess: (_response, variables) => {
+      if (variables.previewUrl) {
+        setCurrentPhoto(variables.previewUrl);
+      }
+    },
+  });
+  const deletePhotoMutation = useDeleteSupervisorPhotoMutation({
+    onSuccess: (response) => {
+      setCurrentPhoto(response?.data?.default_photo_url || "");
+    },
+  });
 
   useEffect(() => {
     if (!profile) return;
@@ -78,6 +96,10 @@ export default function ProfileForm({
     });
   }, [profile, reset]);
 
+  useEffect(() => {
+    setCurrentPhoto(profilePhoto);
+  }, [profilePhoto]);
+
   const onSubmit = (data) => {
     if (!supervisorId || updateProfileMutation.isPending) return;
 
@@ -87,6 +109,26 @@ export default function ProfileForm({
       governorate: data.governorate,
       phone: data.phone,
       gender: toApiGender(data.gender),
+    });
+  };
+
+  const handleAvatarChange = ({ file, previewUrl }) => {
+    if (!supervisorId || updatePhotoMutation.isPending) return;
+
+    updatePhotoMutation.mutate({
+      supervisorId,
+      photo: file,
+      type: "avatar",
+      previewUrl,
+    });
+  };
+
+  const handleAvatarDelete = () => {
+    if (!supervisorId || deletePhotoMutation.isPending) return;
+
+    deletePhotoMutation.mutate({
+      supervisorId,
+      type: "avatar",
     });
   };
 
@@ -107,7 +149,13 @@ export default function ProfileForm({
         }}
       >
         <Stack direction="row" alignItems="flex-end" spacing={1.25} gap={1}>
-          <ProfileAvatarPicker />
+          <ProfileAvatarPicker
+            initialAvatar={currentPhoto}
+            isDeleting={deletePhotoMutation.isPending}
+            isUploading={updatePhotoMutation.isPending}
+            onAvatarChange={handleAvatarChange}
+            onAvatarDelete={handleAvatarDelete}
+          />
 
           <Box sx={{ flex: 1 }}>
             <ProfileField label="الاسم">

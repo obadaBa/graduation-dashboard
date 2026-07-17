@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { saveAuthTokenSession } from "../../../lib/api/httpClient";
 import { showSuccessToast } from "../../../shared/lib/Tost/toastService";
 import { loginRequest } from "../api/auth.api";
 
@@ -8,12 +9,7 @@ function persistAuthSession(response) {
   const user = response?.data?.user;
 
   if (token) {
-    localStorage.setItem("accessToken", token);
-    localStorage.setItem("token", token);
-  }
-
-  if (expiresIn) {
-    localStorage.setItem("tokenExpiresIn", String(expiresIn));
+    saveAuthTokenSession({ token, expiresIn });
   }
 
   if (user) {

@@ -81,9 +81,9 @@ export default function UserProfileTestsPanel() {
       sx={{
         mt: 0.8,
         borderRadius: "18px",
-        border: "1px solid #EAEAEA",
-        bgcolor: "#FFFFFF",
-        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.surface,
+        boxShadow: (theme) => theme.palette.dashboard.shadow,
         overflow: "hidden",
         p: { xs: 1.5, md: 2.2 },
         direction: "rtl",
@@ -99,12 +99,12 @@ export default function UserProfileTestsPanel() {
               minWidth: 110,
               height: 42,
               borderRadius: "999px",
-              bgcolor: "#F5F5F5",
-              color: "#8A8A8A",
+              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 15,
               fontWeight: 500,
               "&:hover": {
-                bgcolor: "#F5F5F5",
+                bgcolor: (theme) => theme.palette.dashboard.chartBackground,
               },
             }}
           >
@@ -116,21 +116,23 @@ export default function UserProfileTestsPanel() {
               width: { xs: "100%", md: 310 },
               height: 46,
               borderRadius: "999px",
-              bgcolor: "#F5F5F5",
+              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
               px: 1.8,
               display: "flex",
               alignItems: "center",
               gap: 1,
             }}
           >
-            <SearchRoundedIcon sx={{ color: "#A0A0A0" }} />
+            <SearchRoundedIcon
+              sx={{ color: (theme) => theme.palette.dashboard.textSecondary }}
+            />
             <InputBase
               placeholder="البحث عن اختبار"
               value={searchValue}
               onChange={(event) => setSearchValue(event.target.value)}
               sx={{
                 flex: 1,
-                color: "#263238",
+                color: (theme) => theme.palette.dashboard.textPrimary,
                 fontSize: 15,
                 textAlign: "right",
                 "& input": {
@@ -140,7 +142,12 @@ export default function UserProfileTestsPanel() {
             />
           </Box>
         </Stack>
-          <InfoOutlinedIcon sx={{ color: "#263238", fontSize: 22 }} />
+          <InfoOutlinedIcon
+            sx={{
+              color: (theme) => theme.palette.dashboard.textPrimary,
+              fontSize: 22,
+            }}
+          />
       </Box>
 
       <Box
@@ -168,8 +175,8 @@ export default function UserProfileTestsPanel() {
               bottom: -26,
               right: 0,
               width: "3px",
-              background:
-                "repeating-linear-gradient(to bottom, #D7D7D7 0 10px, transparent 10px 18px)",
+              background: (theme) =>
+                `repeating-linear-gradient(to bottom, ${theme.palette.dashboard.divider} 0 10px, transparent 10px 18px)`,
             },
           }}
         >
@@ -219,7 +226,7 @@ export default function UserProfileTestsPanel() {
                 sx={{
                   py: 12,
                   textAlign: "center",
-                  color: "#8A8A8A",
+                  color: (theme) => theme.palette.dashboard.textSecondary,
                   fontSize: 15,
                   fontWeight: 600,
                 }}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -58,14 +58,26 @@ const navigationItems = [
     label: "المبيعات",
     path: "/dashboard/sales",
     icon: <CreditCardOutlinedIcon />,
+    ownerOnly: true,
   },
   {
     key: "customization",
     label: "التخصيصات",
     path: "/dashboard/customization",
     icon: <HandymanOutlinedIcon />,
+    ownerOnly: true,
   },
 ];
+
+function getStoredAuthUser() {
+  try {
+    const rawUser = localStorage.getItem("authUser");
+
+    return rawUser ? JSON.parse(rawUser) : null;
+  } catch {
+    return null;
+  }
+}
 
 const StyledDrawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) =>
@@ -206,8 +218,13 @@ function DrawerContent({
   onNavigate,
   onLogout,
   isLoggingOut,
+  authUser,
 }) {
   const theme = useTheme();
+  const isOwner = authUser?.role === "owner";
+  const visibleNavigationItems = navigationItems.filter(
+    (item) => !item.ownerOnly || isOwner,
+  );
 
   return (
     <Box
@@ -263,7 +280,7 @@ function DrawerContent({
       />
 
       <List sx={{ p: 0 }}>
-        {navigationItems.map((item) => (
+        {visibleNavigationItems.map((item) => (
           <NavigationItem
             key={item.key}
             item={item}
@@ -333,6 +350,7 @@ export default function DashboardDrawer({
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
+  const [authUser, setAuthUser] = useState(() => getStoredAuthUser());
   const logoutMutation = useLogoutMutation({
     onSuccess: () => {
       navigate("/login", { replace: true });
@@ -343,6 +361,20 @@ export default function DashboardDrawer({
   const handleLogout = () => {
     logoutMutation.mutate();
   };
+
+  useEffect(() => {
+    const refreshStoredUser = () => {
+      setAuthUser(getStoredAuthUser());
+    };
+
+    window.addEventListener("authUserUpdated", refreshStoredUser);
+    window.addEventListener("storage", refreshStoredUser);
+
+    return () => {
+      window.removeEventListener("authUserUpdated", refreshStoredUser);
+      window.removeEventListener("storage", refreshStoredUser);
+    };
+  }, []);
 
   if (isMobile) {
     return (
@@ -362,6 +394,7 @@ export default function DashboardDrawer({
           onNavigate={onMobileClose}
           onLogout={handleLogout}
           isLoggingOut={logoutMutation.isPending}
+          authUser={authUser}
         />
       </StyledDrawer>
     );
@@ -385,6 +418,7 @@ export default function DashboardDrawer({
           pathname={location.pathname}
           onLogout={handleLogout}
           isLoggingOut={logoutMutation.isPending}
+          authUser={authUser}
         />
       </StyledDrawer>
     </Box>

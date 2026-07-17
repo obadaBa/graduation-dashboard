@@ -1,4 +1,5 @@
 import httpClient from "../../../../lib/api/httpClient";
+import { getIdempotencyHeaders } from "../../../../shared/lib/idempotency";
 
 export function getSupervisorProfile(supervisorId) {
   return httpClient.get(
@@ -15,6 +16,7 @@ export function updateSupervisorProfile({
   governorate,
   phone,
   gender,
+  idempotencyKey,
 }) {
   const formData = new FormData();
 
@@ -27,6 +29,43 @@ export function updateSupervisorProfile({
     `user-management/update/profile-details/${supervisorId}`,
     formData,
     {
+      headers: getIdempotencyHeaders(idempotencyKey),
+      showErrorToast: true,
+    },
+  );
+}
+
+export function updateSupervisorPhoto({
+  supervisorId,
+  photo,
+  type = "avatar",
+  idempotencyKey,
+}) {
+  const formData = new FormData();
+
+  formData.append("photo", photo);
+
+  return httpClient.post(
+    `user-management/update/photo/${supervisorId}`,
+    formData,
+    {
+      headers: getIdempotencyHeaders(idempotencyKey),
+      params: { type },
+      showErrorToast: true,
+    },
+  );
+}
+
+export function deleteSupervisorPhoto({
+  supervisorId,
+  type = "avatar",
+  idempotencyKey,
+}) {
+  return httpClient.delete(
+    `user-management/delete/photo/${supervisorId}`,
+    {
+      headers: getIdempotencyHeaders(idempotencyKey),
+      params: { type },
       showErrorToast: true,
     },
   );
@@ -36,6 +75,7 @@ export function updateSupervisorPassword({
   oldPassword,
   newPassword,
   newPasswordConfirmation,
+  idempotencyKey,
 }) {
   const formData = new FormData();
 
@@ -47,6 +87,7 @@ export function updateSupervisorPassword({
     "user-management/update/password",
     formData,
     {
+      headers: getIdempotencyHeaders(idempotencyKey),
       showErrorToast: true,
     },
   );

@@ -48,8 +48,8 @@ function ListTag({ label }) {
         px: 0.85,
         py: 0.35,
         borderRadius: "4px",
-        bgcolor: "#EEF4FF",
-        color: "#5C84FF",
+        bgcolor: (theme) => theme.palette.dashboard.activeItem.background,
+        color: (theme) => theme.palette.dashboard.logoPrimary,
         fontSize: 11,
         fontWeight: 500,
         lineHeight: 1,
@@ -114,7 +114,7 @@ function UserListRow({ item, withDivider = true, onClick }) {
         >
           <Typography
             sx={{
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: 18,
               fontWeight: 800,
               width: "100%",
@@ -131,7 +131,7 @@ function UserListRow({ item, withDivider = true, onClick }) {
             gap={1.6}
             sx={{
               mt: 1.1,
-              color: "#8D8D8D",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               justifyContent: "flex-end",
               width: "100%",
             }}
@@ -140,7 +140,12 @@ function UserListRow({ item, withDivider = true, onClick }) {
               <Typography sx={{ fontSize: 15, fontWeight: 500 }}>
                 {`${item.testsCount} اختبارات`}
               </Typography>
-              <LinkRoundedIcon sx={{ fontSize: 17, color: "#263238" }} />
+              <LinkRoundedIcon
+                sx={{
+                  fontSize: 17,
+                  color: (theme) => theme.palette.dashboard.textPrimary,
+                }}
+              />
             </Stack>
 
             <Stack
@@ -152,7 +157,12 @@ function UserListRow({ item, withDivider = true, onClick }) {
               <Typography sx={{ fontSize: 15, fontWeight: 500 }}>
                 {item.duration}
               </Typography>
-              <AccessTimeRoundedIcon sx={{ fontSize: 17, color: "#263238" }} />
+              <AccessTimeRoundedIcon
+                sx={{
+                  fontSize: 17,
+                  color: (theme) => theme.palette.dashboard.textPrimary,
+                }}
+              />
             </Stack>
           </Stack>
 
@@ -182,7 +192,7 @@ function UserListRow({ item, withDivider = true, onClick }) {
             width: 300,
             maxWidth: "100%",
             height: "1px",
-            bgcolor: "#E8E8E8",
+            bgcolor: (theme) => theme.palette.dashboard.divider,
           }}
         />
       )}
@@ -226,9 +236,9 @@ export default function UserProfileListsPanel() {
         sx={{
           mt: 0.8,
           borderRadius: "18px",
-          border: "1px solid #EAEAEA",
-          bgcolor: "#FFFFFF",
-          boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+          bgcolor: (theme) => theme.palette.dashboard.surface,
+          boxShadow: (theme) => theme.palette.dashboard.shadow,
           overflow: "hidden",
           p: { xs: 1.5, md: 2.2 },
           direction: "rtl",
@@ -256,12 +266,12 @@ export default function UserProfileListsPanel() {
                 minWidth: 126,
                 height: 42,
                 borderRadius: "999px",
-                bgcolor: "#F5F5F5",
-                color: "#8A8A8A",
+                bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+                color: (theme) => theme.palette.dashboard.textSecondary,
                 fontSize: 15,
                 fontWeight: 500,
                 "&:hover": {
-                  bgcolor: "#F5F5F5",
+                  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                 },
               }}
             >
@@ -273,21 +283,23 @@ export default function UserProfileListsPanel() {
                 width: { xs: "100%", md: 310 },
                 height: 46,
                 borderRadius: "999px",
-                bgcolor: "#F5F5F5",
+                bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                 px: 1.8,
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
               }}
             >
-              <SearchRoundedIcon sx={{ color: "#A0A0A0" }} />
+              <SearchRoundedIcon
+                sx={{ color: (theme) => theme.palette.dashboard.textSecondary }}
+              />
               <InputBase
                 value={searchValue}
                 onChange={(event) => setSearchValue(event.target.value)}
                 placeholder="البحث عن قائمة"
                 sx={{
                   flex: 1,
-                  color: "#263238",
+                  color: (theme) => theme.palette.dashboard.textPrimary,
                   fontSize: 15,
                   "& input": {
                     textAlign: "right",
@@ -325,8 +337,8 @@ export default function UserProfileListsPanel() {
                 bottom: -24,
                 right: 0,
                 width: "3px",
-                background:
-                  "repeating-linear-gradient(to bottom, #D7D7D7 0 10px, transparent 10px 18px)",
+                background: (theme) =>
+                  `repeating-linear-gradient(to bottom, ${theme.palette.dashboard.divider} 0 10px, transparent 10px 18px)`,
               },
             }}
           >
@@ -373,7 +385,7 @@ export default function UserProfileListsPanel() {
                 sx={{
                   py: 12,
                   textAlign: "center",
-                  color: "#8A8A8A",
+                  color: (theme) => theme.palette.dashboard.textSecondary,
                   fontSize: 15,
                   fontWeight: 600,
                 }}

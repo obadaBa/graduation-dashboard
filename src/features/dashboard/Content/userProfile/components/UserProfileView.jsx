@@ -9,6 +9,7 @@ import UserProfileListsPanel from "./UserProfileListsPanel";
 import UserProfileOverview from "./UserProfileOverview";
 import UserProfileTestsPanel from "./UserProfileTestsPanel";
 import { useBlockedUsersQuery } from "../../../Users/hooks/useBlockedUsersQuery";
+import { useUserBanHistoryQuery } from "../../../Users/hooks/useUserBanHistoryQuery";
 
 export default function UserProfileView() {
   const { userId } = useParams();
@@ -24,13 +25,18 @@ export default function UserProfileView() {
   const blockedUser = blockedUsers.find(
     (user) => String(user.user_id) === String(userId),
   );
-  const isUserBlocked = Boolean(blockedUser);
+  const banHistoryQuery = useUserBanHistoryQuery(userId, Boolean(userId));
+  const firstBanRecord = Array.isArray(banHistoryQuery.data?.data)
+    ? banHistoryQuery.data.data[0]
+    : null;
+  const hasActiveOrFutureBan = ["active", "future"].includes(firstBanRecord?.ban_status);
+  const isUserBlocked = hasActiveOrFutureBan || Boolean(blockedUser);
 
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        bgcolor: "#FFFFFF",
+        bgcolor: (theme) => theme.palette.dashboard.pageBackground,
         px: { xs: 2, md: 4 },
         py: { xs: 2, md: 3 },
         overflow: "hidden",

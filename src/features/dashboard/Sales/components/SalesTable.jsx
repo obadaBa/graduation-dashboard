@@ -1,86 +1,5 @@
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { Avatar, Box, Stack, Typography } from "@mui/material";
-
-const salesRows = [
-  {
-    id: "1#",
-    buyer: "محمد منصور",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80",
-    totalPrice: 180,
-    profit: 15,
-    profitPercent: "7%",
-    date: "2026\\03\\11",
-    time: "08:20 م",
-    testId: "123009",
-    status: "موافق عليه",
-    statusType: "approved",
-  },
-  {
-    id: "2#",
-    buyer: "كارمن الشوفي",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80",
-    totalPrice: 70,
-    profit: 4,
-    date: "2026\\03\\11",
-    time: "11:00 ص",
-    testId: "203",
-    status: "تم حذفه",
-    statusType: "deleted",
-  },
-  {
-    id: "3#",
-    buyer: "عبيدة الرحال",
-    avatar: "",
-    totalPrice: 1200,
-    profit: 180,
-    date: "منذ 5 دقائق",
-    time: "09:15 ص",
-    testId: "1440",
-    status: "مبلغ عنه",
-    statusType: "reported",
-  },
-  {
-    id: "4#",
-    buyer: "عبادة بغدادي",
-    avatar:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=80&q=80",
-    totalPrice: 240,
-    profit: 70,
-    date: "2026\\03\\11",
-    time: "10:00 م",
-    testId: "12",
-    status: "يحتاج تعديل",
-    statusType: "needs_edit",
-  },
-  {
-    id: "5#",
-    buyer: "سارة الطايع",
-    avatar:
-      "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?auto=format&fit=crop&w=80&q=80",
-    totalPrice: 15,
-    profit: 1,
-    date: "منذ ساعة",
-    time: "08:00 م",
-    testId: "128",
-    status: "موافق عليه",
-    statusType: "approved",
-  },
-  {
-    id: "6#",
-    buyer: "عبيد الرفاعي",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80",
-    totalPrice: 2030,
-    profit: 240,
-    date: "2026\\03\\11",
-    time: "11:00 ص",
-    testId: "1",
-    status: "قيد المراجعة",
-    statusType: "reviewing",
-  },
-];
+import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material";
 
 const columns = [
   { key: "id", label: "المعرف" },
@@ -94,50 +13,76 @@ const columns = [
   { key: "status", label: "حالة الاختبار" },
 ];
 
-const gridTemplateColumns = "0.58fr 1.5fr 1.2fr 1.05fr 1.35fr 1.05fr 1.1fr 0.45fr 1.35fr";
+const gridTemplateColumns =
+  "0.58fr 1.5fr 1.2fr 1.05fr 1.35fr 1.05fr 1.1fr 0.45fr 1.35fr";
 
 const statusStyles = {
-  approved: { color: "#20C84F", bgcolor: "#EAFFED" },
-  deleted: { color: "#FF5E58", bgcolor: "#FFF0F0" },
-  reported: { color: "#A66BFF", bgcolor: "#F5EEFF" },
-  needs_edit: { color: "#FFB84D", bgcolor: "#FFF4E5" },
-  reviewing: { color: "#E2D000", bgcolor: "#FFFCE4" },
+  approved: { color: "#20C84F", bgcolor: "rgba(32, 200, 79, 0.12)" },
+  deleted: { color: "#FF5E58", bgcolor: "rgba(255, 94, 88, 0.12)" },
+  reported: { color: "#A66BFF", bgcolor: "rgba(166, 107, 255, 0.12)" },
+  needs_edit: { color: "#FFB84D", bgcolor: "rgba(255, 184, 77, 0.14)" },
+  reviewing: { color: "#E2D000", bgcolor: "rgba(226, 208, 0, 0.14)" },
+  default: { color: "#8A8A8A", bgcolor: "rgba(138, 138, 138, 0.12)" },
 };
 
-const summaryItems = [
-  {
-    label: "عدد الاختبارات المباعة",
-    value: "132",
-    suffix: "اختبار",
-    color: "#5C84FF",
-  },
-  {
-    label: "المبيعات الكلية ضمن الفترة",
-    value: "270000",
-    suffix: "ليرة سورية",
-    color: "#263238",
-  },
-  {
-    label: "أرباح المستخدمين ضمن الفترة",
-    value: "190000",
-    suffix: "ليرة سورية",
-    color: "#263238",
-  },
-  {
-    label: "صافي الأرباح ضمن الفترة",
-    value: "80000",
-    suffix: "ليرة سورية",
-    color: "#20E03A",
-  },
-];
+function formatNumber(value) {
+  const number = Number(value || 0);
+  return Number.isFinite(number)
+    ? number.toLocaleString("en-US")
+    : value || "0";
+}
+
+function getStatusType(status = "") {
+  if (status.includes("موافقة") || status.includes("الموافقة")) {
+    return "approved";
+  }
+  if (status.includes("حذف")) return "deleted";
+  if (status.includes("مبلغ")) return "reported";
+  if (status.includes("تعديل")) return "needs_edit";
+  if (status.includes("مراجعة")) return "reviewing";
+  return "default";
+}
+
+function normalizeSale(sale) {
+  return {
+    id: sale.sale_id,
+    buyer: sale.buyer?.name || "-",
+    avatar: sale.buyer?.avatar || "",
+    totalPrice: sale.gross_amount ?? 0,
+    profit: sale.platform_fee_amount ?? 0,
+    profitPercent: sale.platform_fee_percentage,
+    date: sale.purchase_date || "-",
+    time: sale.purchase_time || "-",
+    testId: sale.test_id || "-",
+    status: sale.test_status || "-",
+    statusType: getStatusType(sale.test_status),
+  };
+}
 
 function MoneyCell({ value }) {
   return (
-    <Stack direction="row" alignItems="baseline" spacing={1} justifyContent="center" gap={1}>
-      <Typography sx={{ color: "#263238", fontSize: 18, fontWeight: 900 }}>
-        {value}
+    <Stack
+      direction="row"
+      alignItems="baseline"
+      justifyContent="center"
+      gap={1}
+    >
+      <Typography
+        sx={{
+          color: (theme) => theme.palette.dashboard.textPrimary,
+          fontSize: 18,
+          fontWeight: 900,
+        }}
+      >
+        {formatNumber(value)}
       </Typography>
-      <Typography sx={{ color: "#8F8F8F", fontSize: 10, fontWeight: 500 }}>
+      <Typography
+        sx={{
+          color: (theme) => theme.palette.dashboard.textSecondary,
+          fontSize: 10,
+          fontWeight: 500,
+        }}
+      >
         ليرة سورية
       </Typography>
     </Stack>
@@ -146,19 +91,30 @@ function MoneyCell({ value }) {
 
 function BuyerCell({ row }) {
   return (
-    <Stack direction="row" spacing={0.8} alignItems="center" justifyContent="center">
+    <Stack
+      direction="row"
+      spacing={0.8}
+      alignItems="center"
+      justifyContent="center"
+    >
       <Avatar
         src={row.avatar}
         alt={row.buyer}
         sx={{
           width: 25,
           height: 25,
-          bgcolor: "#ECECEC",
-          color: "#A0A0A0",
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+          color: (theme) => theme.palette.dashboard.textSecondary,
           fontSize: 12,
         }}
       />
-      <Typography sx={{ color: "#263238", fontSize: 14, fontWeight: 700 }}>
+      <Typography
+        sx={{
+          color: (theme) => theme.palette.dashboard.textPrimary,
+          fontSize: 14,
+          fontWeight: 700,
+        }}
+      >
         {row.buyer}
       </Typography>
     </Stack>
@@ -166,7 +122,7 @@ function BuyerCell({ row }) {
 }
 
 function StatusPill({ row }) {
-  const style = statusStyles[row.statusType] || statusStyles.approved;
+  const style = statusStyles[row.statusType] || statusStyles.default;
 
   return (
     <Box
@@ -212,7 +168,7 @@ function TableCell({ children }) {
       {typeof children === "string" || typeof children === "number" ? (
         <Typography
           sx={{
-            color: "#263238",
+            color: (theme) => theme.palette.dashboard.textPrimary,
             fontSize: 14,
             fontWeight: 600,
             whiteSpace: "nowrap",
@@ -229,18 +185,115 @@ function TableCell({ children }) {
   );
 }
 
-export default function SalesTable({ rows = salesRows }) {
+function SummaryItem({ item, isLast }) {
+  return (
+    <Box
+      sx={{
+        px: 2.5,
+        py: 1.4,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 2,
+        borderLeft: isLast
+          ? "none"
+          : ((theme) => `1px solid ${theme.palette.dashboard.chartBorder}`),
+      }}
+    >
+      <Box sx={{ textAlign: "right" }}>
+        <Typography
+          sx={{
+            color: (theme) => theme.palette.dashboard.textPrimary,
+            fontSize: 16,
+            fontWeight: 700,
+          }}
+        >
+          {item.label}
+        </Typography>
+      </Box>
+      <Box sx={{ textAlign: "center" }}>
+        <Typography sx={{ color: item.color, fontSize: 24, fontWeight: 900 }}>
+          {formatNumber(item.value)}
+        </Typography>
+        <Typography
+          sx={{
+            mt: 0.55,
+            color: (theme) => theme.palette.dashboard.textSecondary,
+            fontSize: 11,
+            fontWeight: 500,
+          }}
+        >
+          {item.suffix}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
+export default function SalesTable({ salesQuery }) {
+  const pages = salesQuery?.data?.pages || [];
+  const rows = pages
+    .flatMap((page) => page?.data?.sales || page?.sales || [])
+    .map(normalizeSale);
+  const stats = pages[0]?.data?.stats || pages[0]?.stats || {};
+  const isInitialLoading = salesQuery?.isLoading && rows.length === 0;
+
+  const summaryItems = [
+    {
+      label: "عدد الاختبارات المباعة",
+      value: stats.distinct_sold_tests_count,
+      suffix: "اختبار",
+      color: "#5C84FF",
+    },
+    {
+      label: "المبيعات الكلية ضمن الفترة",
+      value: stats.gross_sales_amount,
+      suffix: "ليرة سورية",
+      color: "#7298FF",
+    },
+    {
+      label: "أرباح المستخدمين ضمن الفترة",
+      value: stats.users_profit_amount,
+      suffix: "ليرة سورية",
+      color: "#7A5AF8",
+    },
+    {
+      label: "صافي الأرباح ضمن الفترة",
+      value: stats.platform_net_profit_amount,
+      suffix: "ليرة سورية",
+      color: "#20E03A",
+    },
+  ];
+
+  const handleScroll = (event) => {
+    const target = event.currentTarget;
+    const distanceFromBottom =
+      target.scrollHeight - target.scrollTop - target.clientHeight;
+
+    if (
+      distanceFromBottom < 180 &&
+      salesQuery?.hasNextPage &&
+      !salesQuery?.isFetchingNextPage
+    ) {
+      salesQuery.fetchNextPage();
+    }
+  };
+
   return (
     <Box
       sx={{
         mt: 2.2,
         width: "100%",
         borderRadius: "10px",
-        border: "1px solid #EAEAEA",
-        bgcolor: "#FFFFFF",
-        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.surface,
+        boxShadow: (theme) => theme.palette.dashboard.shadow,
         overflow: "hidden",
         direction: "rtl",
+        display: "flex",
+        flexDirection: "column",
+        minHeight: 0,
+        flex: "1 1 0",
       }}
     >
       <Box
@@ -249,15 +302,16 @@ export default function SalesTable({ rows = salesRows }) {
           gridTemplateColumns,
           alignItems: "center",
           minHeight: 48,
-          bgcolor: "#F6F6F6",
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           px: 1.4,
+          flexShrink: 0,
         }}
       >
         {columns.map((column) => (
           <Typography
             key={column.key}
             sx={{
-              color: "#8F8F8F",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 16,
               fontWeight: 800,
               textAlign: "center",
@@ -269,99 +323,119 @@ export default function SalesTable({ rows = salesRows }) {
         ))}
       </Box>
 
-      {rows.map((row) => (
-        <Box
-          key={row.id}
-          sx={{
-            display: "grid",
-            gridTemplateColumns,
-            alignItems: "center",
-            minHeight: 41,
-            px: 1.4,
-            borderTop: "1px solid #EFEFEF",
-          }}
-        >
-          <TableCell>
-            <Typography sx={{ color: "#4F7DFF", fontSize: 14, fontWeight: 800 }}>
-              {row.id}
-            </Typography>
-          </TableCell>
-          <TableCell>
-            <BuyerCell row={row} />
-          </TableCell>
-          <TableCell>
-            <MoneyCell value={row.totalPrice} />
-          </TableCell>
-          <TableCell>
-            <Stack direction="row" alignItems="baseline" spacing={1} justifyContent="center" gap={1}>
-              <Typography sx={{ color: "#263238", fontSize: 18, fontWeight: 900 }}>
-                {row.profit}
-              </Typography>
-              <Typography sx={{ color: "#8F8F8F", fontSize: 10, fontWeight: 500 }}>
-                ليرة سورية
-              </Typography>
-            </Stack>
-          </TableCell>
-          <TableCell>{row.date}</TableCell>
-          <TableCell>{row.time}</TableCell>
-          <TableCell>
-            <Typography sx={{ color: "#4F7DFF", fontSize: 14, fontWeight: 700 }}>
-              {row.testId}
-            </Typography>
-          </TableCell>
-          <TableCell>
-            <ArrowBackRoundedIcon sx={{ color: "#8A8A8A", fontSize: 22 }} />
-          </TableCell>
-          <TableCell>
-            <StatusPill row={row} />
-          </TableCell>
-        </Box>
-      ))}
-
       <Box
+        onScroll={handleScroll}
         sx={{
-          minHeight: 170,
-          borderTop: "1px solid #EFEFEF",
-          bgcolor: "#FFFFFF",
+          minHeight: 0,
+          flex: 1,
+          overflowY: "auto",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          "&::-webkit-scrollbar": { display: "none" },
         }}
-      />
+      >
+        {isInitialLoading ? (
+          <Stack
+            sx={{ minHeight: 220 }}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <CircularProgress size={28} />
+          </Stack>
+        ) : rows.length === 0 ? (
+          <Stack
+            sx={{ minHeight: 220 }}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textSecondary,
+                fontSize: 15,
+                fontWeight: 700,
+              }}
+            >
+              لا يوجد سجلات مبيعات
+            </Typography>
+          </Stack>
+        ) : (
+          rows.map((row) => (
+            <Box
+              key={row.id}
+              sx={{
+                display: "grid",
+                gridTemplateColumns,
+                alignItems: "center",
+                minHeight: 41,
+                px: 1.4,
+                borderTop: (theme) =>
+                  `1px solid ${theme.palette.dashboard.chartBorder}`,
+              }}
+            >
+              <TableCell>
+                <Typography
+                  sx={{ color: "#4F7DFF", fontSize: 14, fontWeight: 800 }}
+                >
+                  {`#${row.id}`}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <BuyerCell row={row} />
+              </TableCell>
+              <TableCell>
+                <MoneyCell value={row.totalPrice} />
+              </TableCell>
+              <TableCell>
+                <MoneyCell value={row.profit} />
+              </TableCell>
+              <TableCell>{row.date}</TableCell>
+              <TableCell>{row.time}</TableCell>
+              <TableCell>
+                <Typography
+                  sx={{ color: "#4F7DFF", fontSize: 14, fontWeight: 700 }}
+                >
+                  {row.testId}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <ArrowBackRoundedIcon
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                    fontSize: 22,
+                  }}
+                />
+              </TableCell>
+              <TableCell>
+                <StatusPill row={row} />
+              </TableCell>
+            </Box>
+          ))
+        )}
+
+        {salesQuery?.isFetchingNextPage && (
+          <Stack sx={{ py: 1.5 }} alignItems="center">
+            <CircularProgress size={22} />
+          </Stack>
+        )}
+      </Box>
 
       <Box
         sx={{
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
-          borderTop: "1px solid #EFEFEF",
+          borderTop: (theme) =>
+            `1px solid ${theme.palette.dashboard.chartBorder}`,
           minHeight: 88,
-          bgcolor: "#FFFFFF",
+          bgcolor: (theme) => theme.palette.dashboard.surface,
+          flexShrink: 0,
         }}
       >
         {summaryItems.map((item, index) => (
-          <Box
+          <SummaryItem
             key={item.label}
-            sx={{
-              px: 2.5,
-              py: 1.4,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 2,
-              borderLeft: index === summaryItems.length - 1 ? "none" : "1px solid #E2E2E2",
-            }}
-          >
-            <Box sx={{ textAlign: "right" }}>
-              <Typography sx={{ color: "#263238", fontSize: 16, fontWeight: 700 }}>
-                {item.label}
-              </Typography>
-            </Box>
-            <Box sx={{ textAlign: "center" }}>
-              <Typography sx={{ color: item.color, fontSize: 24, fontWeight: 900 }}>
-                {item.value}
-              </Typography>
-              <Typography sx={{ mt: 0.55, color: "#8F8F8F", fontSize: 11, fontWeight: 500 }}>
-                {item.suffix}
-              </Typography>
-            </Box>
-          </Box>
+            item={item}
+            isLast={index === summaryItems.length - 1}
+          />
         ))}
       </Box>
     </Box>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
+import { createIdempotencyKey } from "../../../../../../shared/lib/idempotency";
 import { useTestQuestionsQuery } from "../../../hooks/useTestQuestionsQuery";
 import { useUpdateManagementTestRevisionsMutation } from "../../../hooks/useUpdateManagementTestRevisionsMutation";
 import RequestTestChangesModal from "../RequestTestChangesModal";
@@ -54,7 +55,11 @@ export default function NeedsEditStatusDetails({ history, testId }) {
         }}
         onSave={(revisions) => {
           updateMutation.mutate(
-            { testId, revisions },
+            {
+              testId,
+              revisions,
+              idempotencyKey: createIdempotencyKey(),
+            },
             {
               onSuccess: () => setIsEditModalOpen(false),
             },

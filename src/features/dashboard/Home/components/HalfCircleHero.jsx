@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import TrendingDownRoundedIcon from "@mui/icons-material/TrendingDownRounded";
 
@@ -25,7 +26,10 @@ function FloatingStatCard({ title, value, unit, change, positive = true, sx }) {
         py: 1.5,
         borderRadius: "14px",
         bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-        boxShadow: "0 4px 16px rgba(15, 23, 42, 0.12)",
+        boxShadow: (theme) =>
+          theme.palette.mode === "dark"
+            ? "0 14px 34px rgba(0, 0, 0, 0.28)"
+            : "0 4px 16px rgba(15, 23, 42, 0.12)",
         border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
         zIndex: 2,
         ...sx,
@@ -81,7 +85,10 @@ function FloatingStatCard({ title, value, unit, change, positive = true, sx }) {
             px: 0.8,
             py: 0.35,
             borderRadius: "999px",
-            bgcolor: positive ? "#E9FFF1" : "#FFF0F0",
+            bgcolor: (theme) =>
+              positive
+                ? alpha("#22C55E", theme.palette.mode === "dark" ? 0.16 : 0.12)
+                : alpha("#FF5C5C", theme.palette.mode === "dark" ? 0.16 : 0.12),
           }}
         >
           {positive ? (
@@ -232,7 +239,7 @@ export default function HalfCircleHero({ summary }) {
               width: { xs: 530, md: 690, lg: 820 },
               height: { xs: 530, md: 690, lg: 820 },
               borderRadius: "50%",
-              border: "3px solid #4D8BFF",
+              border: (theme) => `3px solid ${theme.palette.dashboard.logoPrimary}`,
             }}
           />
           <Box
@@ -244,8 +251,10 @@ export default function HalfCircleHero({ summary }) {
               width: { xs: 416, md: 540, lg: 742 },
               height: { xs: 416, md: 540, lg: 692 },
               borderRadius: "50%",
-              background:
-                "linear-gradient(260deg, #4791FF 0%, #6DA8FF 10%, #FFFFFF 100%)",
+              background: (theme) =>
+                theme.palette.mode === "dark"
+                  ? "linear-gradient(260deg, #3E7CF2 0%, #2B5FBF 28%, #1E2633 100%)"
+                  : "linear-gradient(260deg, #4791FF 0%, #6DA8FF 10%, #FFFFFF 100%)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -285,7 +294,10 @@ export default function HalfCircleHero({ summary }) {
               </Typography>
               <Typography
                 sx={{
-                  color: "#8B7A61",
+                  color: (theme) =>
+                    theme.palette.mode === "dark"
+                      ? theme.palette.dashboard.chartTextSecondary
+                      : "#8B7A61",
                   fontSize: { xs: 20, md: 28 },
                   fontWeight: 700,
                   lineHeight: 1.1,
@@ -343,7 +355,7 @@ export default function HalfCircleHero({ summary }) {
             width: 18,
             height: 18,
             borderRadius: "50%",
-            bgcolor: "#4D8BFF",
+            bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
             zIndex: 3,
           }}
         />
@@ -355,7 +367,7 @@ export default function HalfCircleHero({ summary }) {
             width: 18,
             height: 18,
             borderRadius: "50%",
-            bgcolor: "#4D8BFF",
+            bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
             zIndex: 3,
           }}
         />
@@ -367,7 +379,7 @@ export default function HalfCircleHero({ summary }) {
             width: 18,
             height: 18,
             borderRadius: "50%",
-            bgcolor: "#4D8BFF",
+            bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
             zIndex: 3,
           }}
         />

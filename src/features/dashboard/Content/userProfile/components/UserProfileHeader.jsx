@@ -19,7 +19,7 @@ export default function UserProfileHeader() {
       <Box sx={{ textAlign: "right" }}>
         <Typography
           sx={{
-            color: "#263238",
+            color: (theme) => theme.palette.dashboard.textPrimary,
             fontSize: { xs: 28, md: 38 },
             fontWeight: 800,
             lineHeight: 1.2,
@@ -37,16 +37,16 @@ export default function UserProfileHeader() {
           height: 42,
           px: 1.8,
           borderRadius: "6px",
-          border: "1px solid #D6D6D6",
-          bgcolor: "#FFFFFF",
-          color: "#263238",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+          bgcolor: (theme) => theme.palette.dashboard.surface,
+          color: (theme) => theme.palette.dashboard.textPrimary,
           fontSize: 16,
           fontWeight: 600,
           flexShrink: 0,
-          boxShadow: "0 2px 4px rgba(15, 23, 42, 0.04)",
+          boxShadow: (theme) => theme.palette.dashboard.shadow,
           "&:hover": {
-            bgcolor: "#FFFFFF",
-            borderColor: "#C8C8C8",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            borderColor: (theme) => theme.palette.dashboard.border,
           },
           "& .MuiButton-startIcon": {
             marginInlineStart: 0,

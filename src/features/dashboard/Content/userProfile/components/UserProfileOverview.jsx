@@ -45,12 +45,18 @@ function BasicInfoItem({ icon, label, value, color }) {
       <Box sx={{ color, display: "flex", alignItems: "center", justifyContent: "center" }}>
         {icon}
       </Box>
-      <Typography sx={{ color: "#263238", fontSize: 16, fontWeight: 700 }}>
+      <Typography
+        sx={{
+          color: (theme) => theme.palette.dashboard.textPrimary,
+          fontSize: 16,
+          fontWeight: 700,
+        }}
+      >
         {label}
       </Typography>
       <Typography
         sx={{
-          color: "#8F8F8F",
+          color: (theme) => theme.palette.dashboard.textSecondary,
           fontSize: 15,
           fontWeight: 500,
           whiteSpace: "nowrap",
@@ -70,8 +76,8 @@ function TagChip({ label }) {
         px: 1.3,
         py: 0.85,
         borderRadius: "6px",
-        bgcolor: "#F4F7FF",
-        color: "#5C84FF",
+        bgcolor: (theme) => theme.palette.dashboard.activeItem.background,
+        color: (theme) => theme.palette.dashboard.logoPrimary,
         fontSize: 15,
         fontWeight: 500,
         lineHeight: 1,
@@ -93,7 +99,10 @@ function ProfileStatCard({ value, label, icon }) {
         px: 2,
         py: 1.6,
         borderRadius: "16px",
-        bgcolor: "#F7F7F7",
+        bgcolor: (theme) =>
+          theme.palette.mode === "dark"
+            ? theme.palette.dashboard.chartBackground
+            : "#F7F7F7",
       }}
     >
       <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -113,7 +122,13 @@ function ProfileStatCard({ value, label, icon }) {
           {icon}
         </Box>
 
-        <Typography sx={{ color: "#263238", fontSize: 24, fontWeight: 800 }}>
+        <Typography
+          sx={{
+            color: (theme) => theme.palette.dashboard.textPrimary,
+            fontSize: 24,
+            fontWeight: 800,
+          }}
+        >
           {value}
         </Typography>
       </Stack>
@@ -121,7 +136,7 @@ function ProfileStatCard({ value, label, icon }) {
       <Typography
         sx={{
           mt: 1.1,
-          color: "#5F6368",
+          color: (theme) => theme.palette.dashboard.textSecondary,
           fontSize: 15,
           fontWeight: 500,
           textAlign: "right",
@@ -147,7 +162,7 @@ function VerificationInfo({ header, onShowCertificate }) {
       <Stack direction="row" alignItems="center" spacing={0.8}>
         <Typography
           sx={{
-            color: "#6E6E6E",
+            color: (theme) => theme.palette.dashboard.textSecondary,
             fontSize: 16,
             fontWeight: 600,
             whiteSpace: "nowrap",
@@ -161,12 +176,16 @@ function VerificationInfo({ header, onShowCertificate }) {
             <Avatar
               src={header.verified_by.avatar}
               alt={header.verified_by.name}
-              sx={{ width: 32, height: 32, bgcolor: "#E5E5E5" }}
+              sx={{
+                width: 32,
+                height: 32,
+                bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+              }}
             />
             <Box sx={{ minWidth: 0 }}>
               <Typography
                 sx={{
-                  color: "#263238",
+                  color: (theme) => theme.palette.dashboard.textPrimary,
                   fontSize: 13,
                   fontWeight: 800,
                   whiteSpace: "nowrap",
@@ -176,7 +195,7 @@ function VerificationInfo({ header, onShowCertificate }) {
               </Typography>
               <Typography
                 sx={{
-                  color: "#A0A0A0",
+                  color: (theme) => theme.palette.dashboard.textSecondary,
                   fontSize: 11,
                   fontWeight: 600,
                   whiteSpace: "nowrap",
@@ -191,7 +210,7 @@ function VerificationInfo({ header, onShowCertificate }) {
       <Typography
         sx={{
           mt: 0.4,
-          color: "#A0A0A0",
+          color: (theme) => theme.palette.dashboard.textSecondary,
           fontSize: 16,
           fontWeight: 500,
           whiteSpace: "nowrap",
@@ -211,13 +230,13 @@ function VerificationInfo({ header, onShowCertificate }) {
             height: 30,
             px: 1.3,
             borderRadius: "999px",
-            bgcolor: "#F4F4F4",
-            color: "#9E9E9E",
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+            color: (theme) => theme.palette.dashboard.textSecondary,
             fontSize: 12,
             fontWeight: 600,
             whiteSpace: "nowrap",
             "&:hover": {
-              bgcolor: "#F4F4F4",
+              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
             },
           }}
         >
@@ -309,7 +328,7 @@ export default function UserProfileOverview() {
       <Typography
         sx={{
           py: 12,
-          color: "#8A8A8A",
+          color: (theme) => theme.palette.dashboard.textSecondary,
           fontSize: 16,
           fontWeight: 700,
           textAlign: "center",
@@ -327,9 +346,9 @@ export default function UserProfileOverview() {
             width: "100%",
             minHeight: 420,
             borderRadius: "18px",
-            border: "1px solid #EAEAEA",
-            bgcolor: "#FFFFFF",
-            boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
             overflow: "hidden",
           }}
         >
@@ -361,9 +380,9 @@ export default function UserProfileOverview() {
                 height: { xs: 92, md: 118 },
                 borderRadius: "50%",
                 objectFit: "cover",
-                border: "4px solid #FFFFFF",
-                boxShadow: "0 10px 22px rgba(15, 23, 42, 0.10)",
-                bgcolor: "#FFFFFF",
+                border: (theme) => `4px solid ${theme.palette.dashboard.surface}`,
+                boxShadow: (theme) => theme.palette.dashboard.shadow,
+                bgcolor: (theme) => theme.palette.dashboard.surface,
               }}
             />
           </Box>
@@ -391,7 +410,13 @@ export default function UserProfileOverview() {
                   alignItems="center"
                   justifyContent="flex-start"
                 >
-                  <Typography sx={{ color: "#263238", fontSize: { xs: 24, md: 26 }, fontWeight: 800 }}>
+                  <Typography
+                    sx={{
+                      color: (theme) => theme.palette.dashboard.textPrimary,
+                      fontSize: { xs: 24, md: 26 },
+                      fontWeight: 800,
+                    }}
+                  >
                     {header.name || "-"}
                   </Typography>
                   {header.is_academically_verified && (
@@ -403,7 +428,12 @@ export default function UserProfileOverview() {
 
                 <Typography
                   component="div"
-                  sx={{ mt: 0.6, color: "#6B6B6B", fontSize: { xs: 16, md: 17 }, fontWeight: 500 }}
+                  sx={{
+                    mt: 0.6,
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                    fontSize: { xs: 16, md: 17 },
+                    fontWeight: 500,
+                  }}
                 >
                   <Box
                     component="button"
@@ -419,7 +449,13 @@ export default function UserProfileOverview() {
                       "&:hover": { color: "#5583FF" },
                     }}
                   >
-                    <Box component="span" sx={{ color: "#263238", fontWeight: 800 }}>
+                    <Box
+                      component="span"
+                      sx={{
+                        color: (theme) => theme.palette.dashboard.textPrimary,
+                        fontWeight: 800,
+                      }}
+                    >
                       {formatCount(header.followers_count)}
                     </Box>{" "}
                     متابع
@@ -439,13 +475,25 @@ export default function UserProfileOverview() {
                       "&:hover": { color: "#5583FF" },
                     }}
                   >
-                    <Box component="span" sx={{ color: "#263238", fontWeight: 800 }}>
+                    <Box
+                      component="span"
+                      sx={{
+                        color: (theme) => theme.palette.dashboard.textPrimary,
+                        fontWeight: 800,
+                      }}
+                    >
                       {formatCount(header.following_count)}
                     </Box>{" "}
                     يتابع
                   </Box>{" "}
                   .{" "}
-                  <Box component="span" sx={{ color: "#263238", fontWeight: 800 }}>
+                  <Box
+                    component="span"
+                    sx={{
+                      color: (theme) => theme.palette.dashboard.textPrimary,
+                      fontWeight: 800,
+                    }}
+                  >
                     {formatCount(header.published_tests_count)}
                   </Box>{" "}
                   اختبار
@@ -490,7 +538,14 @@ export default function UserProfileOverview() {
                 }}
               >
                 <Box sx={{ textAlign: "right" }}>
-                  <Typography sx={{ color: "#263238", fontSize: 22, fontWeight: 800, mr: 3 }}>
+                  <Typography
+                    sx={{
+                      color: (theme) => theme.palette.dashboard.textPrimary,
+                      fontSize: 22,
+                      fontWeight: 800,
+                      mr: 3,
+                    }}
+                  >
                     معلومات أساسية
                   </Typography>
 
@@ -506,7 +561,13 @@ export default function UserProfileOverview() {
                       value={basicInfo.education_level || "-"}
                       color="#2AA8FF"
                     />
-  <Box sx={{ width: "1px", height: 92, bgcolor: "#ECECEC" }} />
+  <Box
+    sx={{
+      width: "1px",
+      height: 92,
+      bgcolor: (theme) => theme.palette.dashboard.divider,
+    }}
+  />
                     <BasicInfoItem
                       icon={<HourglassEmptyRoundedIcon sx={{ fontSize: 34 }} />}
                       label="انضم في"
@@ -514,7 +575,13 @@ export default function UserProfileOverview() {
                       color="#FF5C4D"
                     />
 
-                    <Box sx={{ width: "1px", height: 92, bgcolor: "#ECECEC" }} />
+                    <Box
+                      sx={{
+                        width: "1px",
+                        height: 92,
+                        bgcolor: (theme) => theme.palette.dashboard.divider,
+                      }}
+                    />
 
                     <BasicInfoItem
                       icon={<WcRoundedIcon sx={{ fontSize: 34 }} />}
@@ -523,7 +590,13 @@ export default function UserProfileOverview() {
                       color="#FFB300"
                     />
 
-                    <Box sx={{ width: "1px", height: 92, bgcolor: "#ECECEC" }} />
+                    <Box
+                      sx={{
+                        width: "1px",
+                        height: 92,
+                        bgcolor: (theme) => theme.palette.dashboard.divider,
+                      }}
+                    />
 
                     <BasicInfoItem
                       icon={<LocationOnOutlinedIcon sx={{ fontSize: 34 }} />}
@@ -570,7 +643,8 @@ export default function UserProfileOverview() {
                               flex: 1,
                               height: 5,
                               borderRadius: "999px",
-                              bgcolor: "#EEF2FF",
+                              bgcolor: (theme) =>
+                                theme.palette.dashboard.activeItem.background,
                               overflow: "hidden",
                             }}
                           >
@@ -586,7 +660,7 @@ export default function UserProfileOverview() {
                           <Typography
                             sx={{
                               minWidth: 46,
-                              color: "#8F8F8F",
+                              color: (theme) => theme.palette.dashboard.textSecondary,
                               fontSize: 13,
                               fontWeight: 500,
                             }}
@@ -604,7 +678,7 @@ export default function UserProfileOverview() {
                     >
                       <Typography
                         sx={{
-                          color: "#263238",
+                          color: (theme) => theme.palette.dashboard.textPrimary,
                           fontSize: 22,
                           fontWeight: 800,
                           textAlign: "right",
@@ -615,7 +689,7 @@ export default function UserProfileOverview() {
 
                       <Typography
                         sx={{
-                          color: "#263238",
+                          color: (theme) => theme.palette.dashboard.textPrimary,
                           fontSize: 21,
                           fontWeight: 800,
                           textAlign: "right",
@@ -629,7 +703,7 @@ export default function UserProfileOverview() {
 
                       <Typography
                         sx={{
-                          color: "#8F8F8F",
+                          color: (theme) => theme.palette.dashboard.textSecondary,
                           fontSize: 14,
                           fontWeight: 500,
                           textAlign: "right",
@@ -674,7 +748,7 @@ export default function UserProfileOverview() {
                 <Box sx={{ textAlign: "right" }}>
                   <Typography
                     sx={{
-                      color: "#263238",
+                      color: (theme) => theme.palette.dashboard.textPrimary,
                       fontSize: 22,
                       fontWeight: 800,
                       textAlign: "right",

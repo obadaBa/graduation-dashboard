@@ -6,24 +6,17 @@ import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import ViewAgendaOutlinedIcon from "@mui/icons-material/ViewAgendaOutlined";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { createIdempotencyKey } from "../../../../../shared/lib/idempotency";
 import ApproveTestConfirmationModal from "../../../Tests/testDetails/components/ApproveTestConfirmationModal";
 import DeleteTestConfirmationModal from "../../../Tests/testDetails/components/DeleteTestConfirmationModal";
 import { useApproveLibraryMaterialMutation } from "../../hooks/useApproveLibraryMaterialMutation";
 import { useDeleteLibraryMaterialMutation } from "../../hooks/useDeleteLibraryMaterialMutation";
 
-function createIdempotencyKey() {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-
-  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
-
 function GhostIconButton({
   children,
   color,
   borderColor,
-  bgcolor = "#FFFFFF",
+  bgcolor,
   onClick,
   disabled = false,
 }) {
@@ -38,15 +31,15 @@ function GhostIconButton({
         height: 42,
         borderRadius: "10px",
         border: `1.5px dashed ${borderColor}`,
-        bgcolor,
+        bgcolor: bgcolor || ((theme) => theme.palette.dashboard.surface),
         color,
         p: 0,
         "&:hover": {
-          bgcolor,
+          bgcolor: bgcolor || ((theme) => theme.palette.dashboard.surface),
           borderColor,
         },
         "&.Mui-disabled": {
-          bgcolor,
+          bgcolor: bgcolor || ((theme) => theme.palette.dashboard.surface),
           color,
           borderColor,
           opacity: 0.55,
@@ -69,13 +62,15 @@ function TabAction({ label, icon, active = false, onClick }) {
         px: 2.1,
         borderRadius: active ? "10px" : 0,
         border: active ? "1px solid #5C84FF" : "none",
-        bgcolor: active ? "#FFFFFF" : "transparent",
-        color: active ? "#5C84FF" : "#8F8F8F",
+        bgcolor: active ? ((theme) => theme.palette.dashboard.surface) : "transparent",
+        color: active
+          ? "#5C84FF"
+          : ((theme) => theme.palette.dashboard.textSecondary),
         fontSize: 19,
         fontWeight: active ? 700 : 600,
         whiteSpace: "nowrap",
         "&:hover": {
-          bgcolor: active ? "#FFFFFF" : "transparent",
+          bgcolor: active ? ((theme) => theme.palette.dashboard.surface) : "transparent",
         },
         "& .MuiButton-startIcon": {
           marginInlineStart: 0,
@@ -181,7 +176,7 @@ export default function ContentDetailsAppBar({
           width: "100%",
           minHeight: 68,
           borderRadius: "14px",
-          bgcolor: "#FFFFFF",
+          bgcolor: (theme) => theme.palette.dashboard.surface,
           px: { xs: 1, md: 2 },
           py: 1,
           display: "flex",
@@ -198,9 +193,9 @@ export default function ContentDetailsAppBar({
           sx={{
             minHeight: 46,
             flex: { xs: "1 1 100%", lg: "0 1 auto" },
-            border: "1px solid #EBEBEB",
+            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
             overflow: "hidden",
-            bgcolor: "#FFFFFF",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
             p: 0.6,
           }}
         >

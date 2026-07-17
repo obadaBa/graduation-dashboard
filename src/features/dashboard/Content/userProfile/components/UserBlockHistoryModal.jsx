@@ -23,13 +23,14 @@ function roleLabel(role) {
 
 function HistoryCard({ record }) {
   const imposedBy = record.imposed_by || {};
+  const isActiveNow = Boolean(record.is_active_now);
 
   return (
     <Stack direction="row" alignItems="flex-start" gap={1.1}>
       <BlockRoundedIcon
         sx={{
           mt: 0.6,
-          color: "#FF4F55",
+          color: isActiveNow ? "#FF4F55" : "#A0A0A0",
           fontSize: 25,
           flexShrink: 0,
         }}
@@ -39,9 +40,13 @@ function HistoryCard({ record }) {
         sx={{
           flex: 1,
           minWidth: 0,
-          border: "1px solid #DEDEDE",
+          border: isActiveNow
+            ? "1px solid #FF4F55"
+            : (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
           borderRadius: "8px",
-          bgcolor: "#FFFFFF",
+          bgcolor: isActiveNow
+            ? "rgba(255, 79, 85, 0.04)"
+            : (theme) => theme.palette.dashboard.surface,
           px: 1.25,
           py: 1.05,
         }}
@@ -93,17 +98,27 @@ function HistoryCard({ record }) {
               width: 43,
               height: 43,
               borderRadius: "4px",
-              bgcolor: "#E1E1E1",
+              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
             }}
           />
           <Box>
             <Typography
-              sx={{ color: "#263238", fontSize: 14, fontWeight: 800, lineHeight: 1.35 }}
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 14,
+                fontWeight: 800,
+                lineHeight: 1.35,
+              }}
             >
               {imposedBy.name || "-"}
             </Typography>
             <Typography
-              sx={{ color: "#A0A0A0", fontSize: 10.5, fontWeight: 500, lineHeight: 1.4 }}
+              sx={{
+                color: "#A0A0A0",
+                fontSize: 10.5,
+                fontWeight: 500,
+                lineHeight: 1.4,
+              }}
             >
               {roleLabel(imposedBy.role)}
             </Typography>
@@ -130,13 +145,19 @@ function HistoryCard({ record }) {
           sx={{ mt: 0.25 }}
         >
           <Stack direction="row" alignItems="center" gap={0.7}>
-            <Typography sx={{ color: "#A0A0A0", fontSize: 11, fontWeight: 500 }}>
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textSecondary,
+                fontSize: 11,
+                fontWeight: 500,
+              }}
+            >
               من
             </Typography>
             <Typography
               dir="auto"
               sx={{
-                color: "#263238",
+                color: (theme) => theme.palette.dashboard.textPrimary,
                 fontFamily: "serif",
                 fontSize: 14,
                 fontWeight: 500,
@@ -150,13 +171,19 @@ function HistoryCard({ record }) {
           <ArrowBackRoundedIcon sx={{ color: "#8F9498", fontSize: 22 }} />
 
           <Stack direction="row" alignItems="center" gap={0.7}>
-            <Typography sx={{ color: "#A0A0A0", fontSize: 11, fontWeight: 500 }}>
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textSecondary,
+                fontSize: 11,
+                fontWeight: 500,
+              }}
+            >
               إلى
             </Typography>
             <Typography
               dir="auto"
               sx={{
-                color: "#263238",
+                color: (theme) => theme.palette.dashboard.textPrimary,
                 fontFamily: "serif",
                 fontSize: 14,
                 fontWeight: 500,
@@ -201,7 +228,7 @@ export default function UserBlockHistoryModal({ open, onClose, userId }) {
           height: "min(650px, calc(100vh - 24px))",
           maxHeight: "calc(100vh - 24px)",
           borderRadius: "14px",
-          bgcolor: "#FFFFFF",
+          bgcolor: (theme) => theme.palette.dashboard.surface,
           boxShadow: "0 16px 44px rgba(22, 29, 37, 0.24)",
           direction: "rtl",
           outline: 0,
@@ -212,7 +239,13 @@ export default function UserBlockHistoryModal({ open, onClose, userId }) {
       >
         <Box sx={{ px: 2.2, pt: 2.2 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography sx={{ color: "#263238", fontSize: 21, fontWeight: 900 }}>
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 21,
+                fontWeight: 900,
+              }}
+            >
               سجل حظر المستخدم
             </Typography>
             <IconButton
@@ -222,8 +255,9 @@ export default function UserBlockHistoryModal({ open, onClose, userId }) {
                 width: 31,
                 height: 31,
                 borderRadius: "3px",
-                border: "1px solid #D3D7DA",
-                color: "#263238",
+                border: (theme) =>
+                  `1px solid ${theme.palette.dashboard.chartBorder}`,
+                color: (theme) => theme.palette.dashboard.textPrimary,
                 p: 0,
               }}
             >
@@ -235,8 +269,8 @@ export default function UserBlockHistoryModal({ open, onClose, userId }) {
             sx={{
               mt: 1.6,
               height: 3,
-              background:
-                "repeating-linear-gradient(to left, #CFCFCF 0 14px, transparent 14px 25px)",
+              background: (theme) =>
+                `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 14px, transparent 14px 25px)`,
             }}
           />
         </Box>

@@ -59,8 +59,8 @@ export default function FolderContentModal({ open, onClose, folder }) {
             height: "98vh",
             maxHeight: 820,
             borderRadius: "18px",
-            bgcolor: "#FFFFFF",
-            border: "1px solid #E5E7EB",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
             boxShadow: "0 20px 48px rgba(15, 23, 42, 0.18)",
             px: 2.2,
             py: 1.8,
@@ -75,7 +75,11 @@ export default function FolderContentModal({ open, onClose, folder }) {
             }}
           >
             <Typography
-              sx={{ color: "#263238", fontSize: 20, fontWeight: 800 }}
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 20,
+                fontWeight: 800,
+              }}
             >
               محتوى المجلد
             </Typography>
@@ -84,9 +88,10 @@ export default function FolderContentModal({ open, onClose, folder }) {
               onClick={onClose}
               size="small"
               sx={{
-                border: "1px solid #D8D8D8",
+                border: (theme) =>
+                  `1px solid ${theme.palette.dashboard.chartBorder}`,
                 borderRadius: "6px",
-                color: "#263238",
+                color: (theme) => theme.palette.dashboard.textPrimary,
               }}
             >
               <CloseRoundedIcon />
@@ -98,8 +103,8 @@ export default function FolderContentModal({ open, onClose, folder }) {
               mt: 1.2,
               mb: 1.6,
               height: "3px",
-              background:
-                "repeating-linear-gradient(to left, #D7D7D7 0 14px, transparent 14px 24px)",
+              background: (theme) =>
+                `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 14px, transparent 14px 24px)`,
             }}
           />
 
@@ -236,7 +241,7 @@ export default function FolderContentModal({ open, onClose, folder }) {
               <Typography
                 sx={{
                   py: 12,
-                  color: "#8A8A8A",
+                  color: (theme) => theme.palette.dashboard.textSecondary,
                   fontSize: 15,
                   fontWeight: 600,
                   textAlign: "center",

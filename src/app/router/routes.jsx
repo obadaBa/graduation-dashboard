@@ -53,6 +53,26 @@ const suspenseWrapper = (element) => (
   <Suspense fallback={<LoadingFallback />}>{element}</Suspense>
 );
 
+function getStoredAuthUser() {
+  try {
+    const rawUser = localStorage.getItem("authUser");
+
+    return rawUser ? JSON.parse(rawUser) : null;
+  } catch {
+    return null;
+  }
+}
+
+function OwnerOnlyRoute({ children }) {
+  const authUser = getStoredAuthUser();
+
+  if (authUser?.role !== "owner") {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -96,11 +116,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "sales",
-        element: suspenseWrapper(<DashboardSales />),
+        element: suspenseWrapper(
+          <OwnerOnlyRoute>
+            <DashboardSales />
+          </OwnerOnlyRoute>,
+        ),
       },
       {
         path: "customization",
-        element: suspenseWrapper(<DashboardCustomization />),
+        element: suspenseWrapper(
+          <OwnerOnlyRoute>
+            <DashboardCustomization />
+          </OwnerOnlyRoute>,
+        ),
       },
     ],
   },
@@ -118,6 +146,10 @@ export const router = createBrowserRouter([
   },
   {
     path: "/account-verification",
-    element: suspenseWrapper(<UsersVerificationCenter />),
+    element: suspenseWrapper(
+      <OwnerOnlyRoute>
+        <UsersVerificationCenter />
+      </OwnerOnlyRoute>,
+    ),
   },
 ]);

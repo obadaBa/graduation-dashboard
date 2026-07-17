@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 
 const monthLabels = {
   1: "كانون الثاني",
@@ -72,7 +73,10 @@ function RankingList({ children }) {
           right: -4,
           width: { xs: 21, sm: 25, lg: 32 },
           borderRadius: "8px",
-          bgcolor: "#EEF2FF",
+          bgcolor: (theme) =>
+            theme.palette.mode === "dark"
+              ? alpha(theme.palette.dashboard.logoPrimary, 0.13)
+              : "#EEF2FF",
           zIndex: 0,
         },
         "& > *": {
@@ -99,7 +103,13 @@ function ResponsiveCard({ children, isScrollableItem = false, sx }) {
         borderRadius: { xs: "14px", sm: "16px", lg: 0 },
         border: (theme) => ({ xs: `1px solid ${theme.palette.dashboard.chartBorder}`, lg: 0 }),
         bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-        boxShadow: { xs: "0 4px 14px rgba(15, 23, 42, 0.05)", lg: "none" },
+        boxShadow: (theme) => ({
+          xs:
+            theme.palette.mode === "dark"
+              ? "0 12px 28px rgba(0, 0, 0, 0.22)"
+              : "0 4px 14px rgba(15, 23, 42, 0.05)",
+          lg: "none",
+        }),
         p: { xs: 1, sm: 2, lg: 0 },
         ...sx,
       }}
@@ -171,7 +181,13 @@ export default function HomeSection2BottomCard({
           xs: "transparent",
           lg: theme.palette.dashboard.chartBackground,
         }),
-        boxShadow: { xs: "none", lg: "0 4px 14px rgba(15, 23, 42, 0.05)" },
+        boxShadow: (theme) => ({
+          xs: "none",
+          lg:
+            theme.palette.mode === "dark"
+              ? "0 16px 36px rgba(0, 0, 0, 0.24)"
+              : "0 4px 14px rgba(15, 23, 42, 0.05)",
+        }),
         px: { xs: 0, lg: 2.5 },
         py: { xs: 0, lg: 2.3 },
       }}

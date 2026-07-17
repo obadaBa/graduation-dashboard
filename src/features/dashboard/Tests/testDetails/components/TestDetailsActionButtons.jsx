@@ -5,6 +5,7 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { useEffect, useState } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useSearchParams } from "react-router";
+import { createIdempotencyKey } from "../../../../../shared/lib/idempotency";
 import { useTestAiEvaluation } from "../../context/TestAiEvaluationContext";
 import { useApproveManagementTestMutation } from "../../hooks/useApproveManagementTestMutation";
 import { useDeleteManagementTestMutation } from "../../hooks/useDeleteManagementTestMutation";
@@ -15,14 +16,6 @@ import DeleteTestConfirmationModal from "./DeleteTestConfirmationModal";
 import RequestTestChangesModal from "./RequestTestChangesModal";
 import TestQuestionsExportButton from "./TestQuestionsExportButton";
 import TestAiAssistantModal from "./TestAiAssistantModal";
-
-function createIdempotencyKey() {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-
-  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
 
 function StatusPill({
   label,

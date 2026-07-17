@@ -79,9 +79,9 @@ export default function ContentLibraryBoard({
         mt: 2.5,
         width: "100%",
         borderRadius: "18px",
-        bgcolor: "#FFFFFF",
-        boxShadow: "0 8px 22px rgba(15, 23, 42, 0.06)",
-        border: "1px solid #ECECEC",
+        bgcolor: (theme) => theme.palette.dashboard.surface,
+        boxShadow: (theme) => theme.palette.dashboard.shadow,
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
         overflow: "hidden",
         flex: 1,
         minHeight: 0,
@@ -114,8 +114,8 @@ export default function ContentLibraryBoard({
               bottom: 0,
               left: 0,
               width: "3px",
-              background:
-                "repeating-linear-gradient(to bottom, #D8D8D8 0 18px, transparent 18px 34px)",
+              background: (theme) =>
+                `repeating-linear-gradient(to bottom, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 34px)`,
               pointerEvents: "none",
               zIndex: 2,
             },
@@ -188,7 +188,7 @@ export default function ContentLibraryBoard({
                 sx={{
                   gridColumn: "1 / -1",
                   py: 8,
-                  color: "#8A8A8A",
+                  color: (theme) => theme.palette.dashboard.textSecondary,
                   fontSize: 15,
                   fontWeight: 700,
                   textAlign: "center",

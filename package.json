@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "ajv": "^8.18.0",
     "axios": "^1.14.0",
+    "firebase": "^12.15.0",
     "framer-motion": "^12.38.0",
     "laravel-echo": "^2.3.7",
     "pusher-js": "^8.5.0",

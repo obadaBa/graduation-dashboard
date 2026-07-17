@@ -5,6 +5,16 @@ import { useNavigate } from "react-router";
 import UsersBlockListModal from "./UsersBlockListModal";
 import UsersSupervisorModal from "./UsersSupervisorModal";
 
+function getStoredAuthUser() {
+  try {
+    const rawUser = localStorage.getItem("authUser");
+
+    return rawUser ? JSON.parse(rawUser) : null;
+  } catch {
+    return null;
+  }
+}
+
 function HeaderAction({ label, variant = "filled", icon, onClick }) {
   const styles = {
     filled: {
@@ -15,13 +25,13 @@ function HeaderAction({ label, variant = "filled", icon, onClick }) {
     },
     danger: {
       color: "#FF5E58",
-      bgcolor: "#FFF1F0",
+      bgcolor: "rgba(255, 94, 88, 0.10)",
       border: "1px dashed #FF5E58",
       boxShadow: "none",
     },
     success: {
       color: "#1FC75A",
-      bgcolor: "#FFFFFF",
+      bgcolor: "transparent",
       border: "1px solid #1FC75A",
       boxShadow: "none",
     },
@@ -60,6 +70,8 @@ export default function UsersHeader() {
   const navigate = useNavigate();
   const [isBlockListOpen, setIsBlockListOpen] = useState(false);
   const [isSupervisorModalOpen, setIsSupervisorModalOpen] = useState(false);
+  const authUser = getStoredAuthUser();
+  const isOwner = authUser?.role === "owner";
 
   return (
     <>
@@ -76,7 +88,7 @@ export default function UsersHeader() {
         <Box sx={{ textAlign: "right" }}>
           <Typography
             sx={{
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: 28,
               fontWeight: 900,
               lineHeight: 1.35,
@@ -90,7 +102,7 @@ export default function UsersHeader() {
           <Typography
             sx={{
               mt: 1.1,
-              color: "#A0A0A0",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 17,
               fontWeight: 500,
               lineHeight: 1.75,
@@ -108,13 +120,13 @@ export default function UsersHeader() {
           alignItems="center"
           sx={{
             borderRadius: "6px",
-            border: "1px solid #EAEAEA",
-            bgcolor: "#FFFFFF",
-            boxShadow: "0 6px 16px rgba(15, 23, 42, 0.08)",
+            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
             overflow: "hidden",
           }}
         >
-          <Box sx={{ p: 1 }}>
+          <Box sx={{ p: 1, display: isOwner ? "block" : "none" }}>
             <HeaderAction
               label="تعيين مشرف"
               variant="filled"
@@ -122,7 +134,15 @@ export default function UsersHeader() {
               onClick={() => setIsSupervisorModalOpen(true)}
             />
           </Box>
-          <Box sx={{ width: "1px", alignSelf: "stretch", borderLeft: "1px dashed #D8D8D8" }} />
+          <Box
+            sx={{
+              display: isOwner ? "block" : "none",
+              width: "1px",
+              alignSelf: "stretch",
+              borderLeft: (theme) =>
+                `1px dashed ${theme.palette.dashboard.divider}`,
+            }}
+          />
           <Box sx={{ p: 1, borderRadius: "9px" }}>
             <HeaderAction
               label="قائمة الحظر"
@@ -131,7 +151,7 @@ export default function UsersHeader() {
             />
           </Box>
 
-          <Box sx={{ p: 1 }}>
+          <Box sx={{ p: 1, display: isOwner ? "block" : "none" }}>
             <HeaderAction
               label="مركز توثيق الحسابات"
               variant="success"
@@ -142,7 +162,7 @@ export default function UsersHeader() {
       </Box>
 
       <UsersSupervisorModal
-        open={isSupervisorModalOpen}
+        open={isOwner && isSupervisorModalOpen}
         onClose={() => setIsSupervisorModalOpen(false)}
       />
       <UsersBlockListModal

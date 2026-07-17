@@ -23,7 +23,7 @@ function ReadOnlyField({ label, value, icon, prefix, suffix }) {
       <Typography
         sx={{
           mb: 0.7,
-          color: "#263238",
+          color: (theme) => theme.palette.dashboard.textPrimary,
           fontSize: 15,
           fontWeight: 800,
           textAlign: "right",
@@ -37,8 +37,8 @@ function ReadOnlyField({ label, value, icon, prefix, suffix }) {
         sx={{
           height: 40,
           borderRadius: "6px",
-          border: "1px solid #DFDFDF",
-          bgcolor: "#FAFAFA",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           overflow: "hidden",
         }}
       >
@@ -48,7 +48,7 @@ function ReadOnlyField({ label, value, icon, prefix, suffix }) {
             flex: 1,
             minWidth: 0,
             px: 1.2,
-            color: "#8C8C8C",
+            color: (theme) => theme.palette.dashboard.textSecondary,
             fontSize: 13,
             fontWeight: 500,
             textAlign: "right",
@@ -65,7 +65,7 @@ function ReadOnlyField({ label, value, icon, prefix, suffix }) {
             sx={{
               width: 42,
               height: "100%",
-              color: "#A4A4A4",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               display: "grid",
               placeItems: "center",
               flexShrink: 0,
@@ -86,9 +86,15 @@ function GenderChoice({ active, children }) {
         width: 38,
         height: 38,
         borderRadius: "7px",
-        border: active ? "1px solid #5C84FF" : "1px solid #DFDFDF",
-        bgcolor: active ? "#F2F6FF" : "#FFFFFF",
-        color: active ? "#5C84FF" : "#A7A7A7",
+        border: active
+          ? "1px solid #5C84FF"
+          : ((theme) => `1px solid ${theme.palette.dashboard.chartBorder}`),
+        bgcolor: active
+          ? ((theme) => theme.palette.dashboard.activeItem.background)
+          : ((theme) => theme.palette.dashboard.surface),
+        color: active
+          ? "#5C84FF"
+          : ((theme) => theme.palette.dashboard.textSecondary),
         display: "grid",
         placeItems: "center",
       }}
@@ -107,17 +113,33 @@ function normalizeGender(value) {
   return "";
 }
 
+function getStoredAuthUser() {
+  try {
+    const rawUser = localStorage.getItem("authUser");
+
+    return rawUser ? JSON.parse(rawUser) : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function SupervisorProfileModal({
   open,
   onClose,
   supervisorId,
 }) {
-  const profileQuery = useSupervisorProfileQuery(supervisorId, open);
+  const authUser = getStoredAuthUser();
+  const isOwner = authUser?.role === "owner";
+  const profileQuery = useSupervisorProfileQuery(supervisorId, open && isOwner);
   const deleteSupervisorMutation = useDeleteSupervisorMutation({
     onSuccess: onClose,
   });
   const supervisor = profileQuery.data?.data || {};
   const gender = normalizeGender(supervisor.gender);
+
+  if (!isOwner) {
+    return null;
+  }
 
   return (
     <Modal
@@ -142,8 +164,8 @@ export default function SupervisorProfileModal({
           width: { xs: "calc(100% - 24px)", sm: 350 },
           height: "min(532px, calc(100vh - 24px))",
           borderRadius: "14px",
-          bgcolor: "#FFFFFF",
-          boxShadow: "0 16px 42px rgba(22, 29, 37, 0.2)",
+          bgcolor: (theme) => theme.palette.dashboard.surface,
+          boxShadow: (theme) => theme.palette.dashboard.shadow,
           outline: 0,
           overflow: "hidden",
           display: "flex",
@@ -154,7 +176,7 @@ export default function SupervisorProfileModal({
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography
               sx={{
-                color: "#263238",
+                color: (theme) => theme.palette.dashboard.textPrimary,
                 fontSize: 21,
                 fontWeight: 900,
                 whiteSpace: "nowrap",
@@ -172,8 +194,9 @@ export default function SupervisorProfileModal({
                 width: 30,
                 height: 30,
                 borderRadius: "3px",
-                border: "1px solid #D1D5D8",
-                color: "#263238",
+                border: (theme) =>
+                  `1px solid ${theme.palette.dashboard.chartBorder}`,
+                color: (theme) => theme.palette.dashboard.textPrimary,
                 p: 0,
               }}
             >
@@ -185,8 +208,8 @@ export default function SupervisorProfileModal({
             sx={{
               mt: 1.6,
               height: 3,
-              background:
-                "repeating-linear-gradient(to left, #CFCFCF 0 14px, transparent 14px 25px)",
+              background: (theme) =>
+                `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 14px, transparent 14px 25px)`,
             }}
           />
         </Box>
@@ -241,13 +264,19 @@ export default function SupervisorProfileModal({
                   sx={{
                     height: "100%",
                     px: 0.8,
-                    borderRight: "1px solid #DFDFDF",
-                    color: "#8C8C8C",
+                    borderRight: (theme) =>
+                      `1px solid ${theme.palette.dashboard.chartBorder}`,
+                    color: (theme) => theme.palette.dashboard.textSecondary,
                     direction: "ltr",
                     flexShrink: 0,
                   }}
                 >
-                  <Typography sx={{ color: "#8C8C8C", fontSize: 12 }}>
+                  <Typography
+                    sx={{
+                      color: (theme) => theme.palette.dashboard.textSecondary,
+                      fontSize: 12,
+                    }}
+                  >
                     +963
                   </Typography>
                   <Box
@@ -264,7 +293,7 @@ export default function SupervisorProfileModal({
               <Typography
                 sx={{
                   mb: 0.7,
-                  color: "#263238",
+                  color: (theme) => theme.palette.dashboard.textPrimary,
                   fontSize: 15,
                   fontWeight: 800,
                   textAlign: "right",
@@ -288,9 +317,10 @@ export default function SupervisorProfileModal({
           sx={{
             px: 1.2,
             py: 1.05,
-            borderTop: "1px solid #EEEEEE",
+            borderTop: (theme) =>
+              `1px solid ${theme.palette.dashboard.chartBorder}`,
             boxShadow: "0 -5px 12px rgba(28, 38, 49, 0.08)",
-            bgcolor: "#FFFFFF",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
           }}
         >
           <Button

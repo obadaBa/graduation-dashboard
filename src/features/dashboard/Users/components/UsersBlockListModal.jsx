@@ -30,13 +30,19 @@ function FilterChip({ label, active, onClick }) {
         height: 24,
         px: 1.65,
         borderRadius: "999px",
-        bgcolor: active ? "#5C84FF" : "#F3F3F3",
-        color: active ? "#FFFFFF" : "#A0A0A0",
+        bgcolor: active
+          ? "#5C84FF"
+          : ((theme) => theme.palette.dashboard.chartBackground),
+        color: active
+          ? "#FFFFFF"
+          : ((theme) => theme.palette.dashboard.textSecondary),
         fontSize: 12,
         fontWeight: 700,
         whiteSpace: "nowrap",
         "&:hover": {
-          bgcolor: active ? "#5C84FF" : "#ECECEC",
+          bgcolor: active
+            ? "#5C84FF"
+            : ((theme) => theme.palette.dashboard.activeItem.background),
         },
       }}
     >
@@ -52,8 +58,12 @@ function UserTag({ label, variant = "blue" }) {
         minHeight: 22,
         px: 1,
         borderRadius: "4px",
-        bgcolor: variant === "red" ? "#FFECEC" : "#EEF2FF",
-        color: variant === "red" ? "#FF5E58" : "#5C84FF",
+        bgcolor: variant === "red"
+          ? "rgba(255, 94, 88, 0.10)"
+          : ((theme) => theme.palette.dashboard.activeItem.background),
+        color: variant === "red"
+          ? "#FF5E58"
+          : ((theme) => theme.palette.dashboard.logoPrimary),
         display: "inline-flex",
         alignItems: "center",
         fontSize: 11,
@@ -69,7 +79,13 @@ function BlockedUserItem({ user }) {
   const banLabel = user.ban_ends_at || user.ban_type || "-";
 
   return (
-    <Box sx={{ py: 2.2, borderBottom: "2px solid #F0F0F0" }}>
+    <Box
+      sx={{
+        py: 2.2,
+        borderBottom: (theme) =>
+          `2px solid ${theme.palette.dashboard.chartBorder}`,
+      }}
+    >
       <Stack direction="row" alignItems="center" spacing={0.8}>
         <Avatar
           src={user.avatar}
@@ -89,7 +105,7 @@ function BlockedUserItem({ user }) {
           <Stack direction="row" alignItems="center" spacing={0.55}>
             <Typography
               sx={{
-                color: "#263238",
+                color: (theme) => theme.palette.dashboard.textPrimary,
                 fontSize: 18,
                 fontWeight: 900,
                 whiteSpace: "nowrap",
@@ -145,7 +161,7 @@ export default function UsersBlockListModal({ open, onClose }) {
       slotProps={{
         backdrop: {
           sx: {
-            bgcolor: "rgba(255, 255, 255, 0.44)",
+            bgcolor: "rgba(20, 24, 29, 0.34)",
             backdropFilter: "blur(8px)",
           },
         },
@@ -166,8 +182,8 @@ export default function UsersBlockListModal({ open, onClose }) {
             right: 0,
             width: { xs: "100%", sm: 330 },
             height: "100dvh",
-            bgcolor: "#FFFFFF",
-            boxShadow: "-10px 0 30px rgba(15, 23, 42, 0.08)",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
             display: "flex",
             flexDirection: "column",
             outline: "none",
@@ -188,13 +204,18 @@ export default function UsersBlockListModal({ open, onClose }) {
                 right: 0,
                 bottom: 0,
                 height: "3px",
-                backgroundImage:
-                  "repeating-linear-gradient(to left, #CFCFCF 0 18px, transparent 18px 29px)",
+                backgroundImage: (theme) =>
+                  `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 29px)`,
               },
             }}
           >
             <Typography
-              sx={{ color: "#263238", fontSize: 22, fontWeight: 900, mt: 2 }}
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 22,
+                fontWeight: 900,
+                mt: 2,
+              }}
             >
               قائمة الحظر
             </Typography>
@@ -204,10 +225,12 @@ export default function UsersBlockListModal({ open, onClose }) {
               sx={{
                 width: 32,
                 height: 32,
-                bgcolor: "#FFFFFF",
-                boxShadow: "0 2px 10px rgba(15, 23, 42, 0.08)",
-                color: "#263238",
-                "&:hover": { bgcolor: "#F7F7F7" },
+                bgcolor: (theme) => theme.palette.dashboard.surface,
+                boxShadow: (theme) => theme.palette.dashboard.shadow,
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                "&:hover": {
+                  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+                },
               }}
             >
               <CloseRoundedIcon sx={{ fontSize: 20 }} />
@@ -219,26 +242,31 @@ export default function UsersBlockListModal({ open, onClose }) {
               sx={{
                 height: 34,
                 borderRadius: "999px",
-                bgcolor: "#F6F6F6",
+                bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                 display: "flex",
                 alignItems: "center",
                 px: 1.1,
                 gap: 0.9,
               }}
             >
-              <SearchRoundedIcon sx={{ fontSize: 18, color: "#B0B0B0" }} />
+              <SearchRoundedIcon
+                sx={{
+                  fontSize: 18,
+                  color: (theme) => theme.palette.dashboard.textSecondary,
+                }}
+              />
               <InputBase
                 value={searchValue}
                 onChange={(event) => setSearchValue(event.target.value)}
                 placeholder="البحث عن مستخدمين"
                 sx={{
                   flex: 1,
-                  color: "#263238",
+                  color: (theme) => theme.palette.dashboard.textPrimary,
                   fontSize: 12,
                   fontWeight: 500,
                   textAlign: "right",
                   "& input::placeholder": {
-                    color: "#A9A9A9",
+                    color: (theme) => theme.palette.dashboard.textSecondary,
                     opacity: 1,
                   },
                 }}
@@ -249,7 +277,12 @@ export default function UsersBlockListModal({ open, onClose }) {
                 onClick={() => setSearchValue("")}
                 aria-label="مسح البحث"
               >
-                <CloseRoundedIcon sx={{ fontSize: 16, color: "#A9A9A9" }} />
+                <CloseRoundedIcon
+                  sx={{
+                    fontSize: 16,
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                  }}
+                />
               </IconButton>
             </Box>
 
@@ -295,7 +328,7 @@ export default function UsersBlockListModal({ open, onClose }) {
                 <Typography
                   sx={{
                     py: 8,
-                    color: "#8A8A8A",
+                    color: (theme) => theme.palette.dashboard.textSecondary,
                     fontSize: 14,
                     fontWeight: 700,
                     textAlign: "center",

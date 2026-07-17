@@ -86,7 +86,7 @@ export default function UsersSupervisorModal({ open, onClose }) {
       slotProps={{
         backdrop: {
           sx: {
-            bgcolor: "rgba(255, 255, 255, 0.44)",
+            bgcolor: "rgba(20, 24, 29, 0.34)",
             backdropFilter: "blur(8px)",
           },
         },
@@ -103,8 +103,8 @@ export default function UsersSupervisorModal({ open, onClose }) {
             width: { xs: "calc(100vw - 28px)", sm: 382 },
             maxHeight: "calc(100dvh - 28px)",
             borderRadius: "12px",
-            bgcolor: "#FFFFFF",
-            boxShadow: "0 14px 36px rgba(15, 23, 42, 0.16)",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
             outline: "none",
             overflow: "hidden",
             display: "flex",
@@ -127,12 +127,18 @@ export default function UsersSupervisorModal({ open, onClose }) {
                 right: 0,
                 bottom: 0,
                 height: "3px",
-                backgroundImage:
-                  "repeating-linear-gradient(to left, #CFCFCF 0 18px, transparent 18px 29px)",
+                backgroundImage: (theme) =>
+                  `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 29px)`,
               },
             }}
           >
-            <Typography sx={{ color: "#263238", fontSize: 22, fontWeight: 900 }}>
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 22,
+                fontWeight: 900,
+              }}
+            >
               إضافة مشرف جديد
             </Typography>
             <IconButton
@@ -142,10 +148,13 @@ export default function UsersSupervisorModal({ open, onClose }) {
                 width: 34,
                 height: 34,
                 borderRadius: "6px",
-                border: "1px solid #DFDFDF",
-                bgcolor: "#FFFFFF",
-                color: "#263238",
-                "&:hover": { bgcolor: "#F7F7F7" },
+                border: (theme) =>
+                  `1px solid ${theme.palette.dashboard.chartBorder}`,
+                bgcolor: (theme) => theme.palette.dashboard.surface,
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                "&:hover": {
+                  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+                },
               }}
             >
               <CloseRoundedIcon sx={{ fontSize: 22 }} />
@@ -208,7 +217,12 @@ export default function UsersSupervisorModal({ open, onClose }) {
                       selected ? (
                         selected
                       ) : (
-                        <Typography sx={{ color: "#A1A1A1", fontSize: 14 }}>
+                        <Typography
+                          sx={{
+                            color: (theme) => theme.palette.dashboard.textSecondary,
+                            fontSize: 14,
+                          }}
+                        >
                           اختر المحافظة التي يسكن فيها...
                         </Typography>
                       )
@@ -237,10 +251,11 @@ export default function UsersSupervisorModal({ open, onClose }) {
                     sx={{
                       height: 40,
                       px: 1.15,
-                      borderRight: "1px solid #DFDFDF",
+                      borderRight: (theme) =>
+                        `1px solid ${theme.palette.dashboard.chartBorder}`,
                       color: "#868686",
                       direction: "ltr",
-                      bgcolor: "#FAFAFA",
+                      bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                     }}
                   >
                     <Typography sx={{ fontSize: 13, color: "#868686" }}>+963</Typography>
@@ -284,9 +299,10 @@ export default function UsersSupervisorModal({ open, onClose }) {
             sx={{
               px: 2,
               py: 1.4,
-              borderTop: "1px solid #F0F0F0",
+              borderTop: (theme) =>
+                `1px solid ${theme.palette.dashboard.chartBorder}`,
               boxShadow: "0 -8px 18px rgba(15, 23, 42, 0.08)",
-              bgcolor: "#FFFFFF",
+              bgcolor: (theme) => theme.palette.dashboard.surface,
             }}
           >
             <Button

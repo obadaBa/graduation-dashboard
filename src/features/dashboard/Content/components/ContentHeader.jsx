@@ -10,7 +10,7 @@ export default function ContentHeader() {
     >
       <Typography
         sx={{
-          color: "#263238",
+          color: (theme) => theme.palette.dashboard.textPrimary,
           fontSize: { xs: 28, md: 34 },
           fontWeight: 800,
           lineHeight: 1.2,
@@ -25,7 +25,7 @@ export default function ContentHeader() {
       <Typography
         sx={{
           mt: 0.6,
-          color: "#A1A1A1",
+          color: (theme) => theme.palette.dashboard.textSecondary,
           fontSize: { xs: 15, md: 17 },
           fontWeight: 600,
           lineHeight: 1.6,

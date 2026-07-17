@@ -36,7 +36,7 @@ export default function HomeSection2Header({
           }}
         >
           احصائيات المبيعات الخاصة
-          <Box component="span" sx={{ color: "#5583FF" }}>
+          <Box component="span" sx={{ color: (theme) => theme.palette.dashboard.logoPrimary }}>
             {" "}
             بالاختبارات
           </Box>
@@ -83,7 +83,10 @@ export default function HomeSection2Header({
             height: 42,
             borderRadius: "12px",
             bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-            boxShadow: "0 4px 14px rgba(15, 23, 42, 0.06)",
+            boxShadow: (theme) =>
+              theme.palette.mode === "dark"
+                ? "0 10px 24px rgba(0, 0, 0, 0.22)"
+                : "0 4px 14px rgba(15, 23, 42, 0.06)",
             ".MuiOutlinedInput-notchedOutline": {
               borderColor: (theme) => theme.palette.dashboard.chartBorder,
             },
@@ -91,14 +94,14 @@ export default function HomeSection2Header({
               py: 1,
               pr: 1.5,
               pl: 4,
-              color: "#5583FF",
+              color: (theme) => theme.palette.dashboard.logoPrimary,
               fontSize: 15,
               fontWeight: 600,
             },
             ".MuiSvgIcon-root": {
               left: 10,
               right: "auto",
-              color: "#5583FF",
+              color: (theme) => theme.palette.dashboard.logoPrimary,
             },
           }}
         >

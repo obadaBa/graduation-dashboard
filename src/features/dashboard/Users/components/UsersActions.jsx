@@ -51,13 +51,19 @@ function UserTypeTab({ label, icon, active, onClick }) {
         px: 1.4,
         borderRadius: active ? "5px" : 0,
         border: active ? "1px solid #5C84FF" : "none",
-        bgcolor: active ? "#F4F7FF" : "transparent",
-        color: active ? "#5C84FF" : "#9A9A9A",
+        bgcolor: active
+          ? ((theme) => theme.palette.dashboard.activeItem.background)
+          : "transparent",
+        color: active
+          ? "#5C84FF"
+          : ((theme) => theme.palette.dashboard.textSecondary),
         fontSize: 14,
         fontWeight: active ? 800 : 700,
         whiteSpace: "nowrap",
         "&:hover": {
-          bgcolor: active ? "#F4F7FF" : "#FAFAFA",
+          bgcolor: active
+            ? ((theme) => theme.palette.dashboard.activeItem.background)
+            : ((theme) => theme.palette.dashboard.chartBackground),
         },
         "& .MuiButton-startIcon": {
           marginInlineStart: 0,
@@ -97,28 +103,33 @@ export default function UsersActions({
             width: 424,
             height: 40,
             borderRadius: "999px",
-            bgcolor: "#FFFFFF",
-            border: "1px solid #EAEAEA",
-            boxShadow: "0 6px 16px rgba(15, 23, 42, 0.10)",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
             display: "flex",
             alignItems: "center",
             px: 1.4,
             gap: 1,
           }}
         >
-          <SearchRoundedIcon sx={{ fontSize: 22, color: "#8F8F8F" }} />
+          <SearchRoundedIcon
+            sx={{
+              fontSize: 22,
+              color: (theme) => theme.palette.dashboard.textSecondary,
+            }}
+          />
           <InputBase
             value={searchValue}
             onChange={(event) => onSearchChange?.(event.target.value)}
             placeholder="البحث عن مستخدم"
             sx={{
               flex: 1,
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: 14,
               fontWeight: 500,
               textAlign: "right",
               "& input::placeholder": {
-                color: "#A0A0A0",
+                color: (theme) => theme.palette.dashboard.textSecondary,
                 opacity: 1,
               },
             }}
@@ -129,7 +140,12 @@ export default function UsersActions({
             onClick={onClearSearch}
             aria-label="مسح البحث"
           >
-            <CloseRoundedIcon sx={{ fontSize: 18, color: "#8F8F8F" }} />
+            <CloseRoundedIcon
+              sx={{
+                fontSize: 18,
+                color: (theme) => theme.palette.dashboard.textSecondary,
+              }}
+            />
           </IconButton>
         </Box>
 
@@ -142,12 +158,12 @@ export default function UsersActions({
             minWidth: 150,
             height: 40,
             borderRadius: "999px",
-            bgcolor: "#FFFFFF",
-            border: "1px solid #EAEAEA",
-            color: "#8F8F8F",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+            color: (theme) => theme.palette.dashboard.textSecondary,
             fontSize: 14,
             fontWeight: 700,
-            boxShadow: "0 6px 16px rgba(15, 23, 42, 0.10)",
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
             ".MuiOutlinedInput-notchedOutline": { border: 0 },
             ".MuiSelect-select": {
               py: 0.8,
@@ -158,7 +174,7 @@ export default function UsersActions({
             ".MuiSvgIcon-root": {
               left: 11,
               right: "auto",
-              color: "#8A8A8A",
+              color: (theme) => theme.palette.dashboard.textSecondary,
             },
           }}
         >
@@ -176,9 +192,9 @@ export default function UsersActions({
         sx={{
           height: 40,
           borderRadius: "6px",
-          border: "1px solid #EAEAEA",
-          bgcolor: "#FFFFFF",
-          boxShadow: "0 6px 16px rgba(15, 23, 42, 0.08)",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+          bgcolor: (theme) => theme.palette.dashboard.surface,
+          boxShadow: (theme) => theme.palette.dashboard.shadow,
           p: 0.45,
           ml: 3,
         }}

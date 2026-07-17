@@ -464,12 +464,15 @@ export default function HomeFinancialStatsExportButton({
           height: 42,
           px: 3,
           borderRadius: "12px",
-          bgcolor: "#5583FF",
-          boxShadow: "0 4px 14px rgba(85, 131, 255, 0.28)",
+          bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
+          boxShadow: (theme) =>
+            theme.palette.mode === "dark"
+              ? "0 12px 26px rgba(64, 112, 255, 0.24)"
+              : "0 4px 14px rgba(85, 131, 255, 0.28)",
           fontSize: 16,
           fontWeight: 600,
           "&:hover": {
-            bgcolor: "#5583FF",
+            bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
           },
           "&.Mui-disabled": {
             bgcolor: "rgba(85, 131, 255, 0.46)",
@@ -494,7 +497,10 @@ export default function HomeFinancialStatsExportButton({
             border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
             bgcolor: (theme) => theme.palette.dashboard.chartBackground,
             color: (theme) => theme.palette.dashboard.chartTextPrimary,
-            boxShadow: "0 8px 24px rgba(15, 23, 42, 0.12)",
+            boxShadow: (theme) =>
+              theme.palette.mode === "dark"
+                ? "0 14px 32px rgba(0, 0, 0, 0.3)"
+                : "0 8px 24px rgba(15, 23, 42, 0.12)",
             direction: "rtl",
           },
         }}

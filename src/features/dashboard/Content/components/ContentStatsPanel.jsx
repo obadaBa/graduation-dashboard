@@ -8,8 +8,12 @@ export default function ContentStatsPanel({
   sx,
 }) {
   const borderStyles = {
-    left: { borderLeft: "1px solid #D8D8D8" },
-    right: { borderRight: "1px solid #D8D8D8" },
+    left: {
+      borderLeft: (theme) => `1px solid ${theme.palette.dashboard.divider}`,
+    },
+    right: {
+      borderRight: (theme) => `1px solid ${theme.palette.dashboard.divider}`,
+    },
     none: {},
   };
 
@@ -24,7 +28,13 @@ export default function ContentStatsPanel({
       }}
     >
       {showInfoIcon && (
-        <InfoOutlinedIcon sx={{ fontSize: 20, color: "#263238", mt: 0.25 }} />
+        <InfoOutlinedIcon
+          sx={{
+            fontSize: 20,
+            color: (theme) => theme.palette.dashboard.textPrimary,
+            mt: 0.25,
+          }}
+        />
       )}
       <Stack spacing={3.5} sx={{ height: "100%" }} gap={3}>
         {stats.map((item, index) => (
@@ -38,7 +48,7 @@ export default function ContentStatsPanel({
             >
               <Typography
                 sx={{
-                  color: "#263238",
+                  color: (theme) => theme.palette.dashboard.textPrimary,
                   fontSize: 16,
                   fontWeight: 700,
                   lineHeight: 1.65,
@@ -52,7 +62,7 @@ export default function ContentStatsPanel({
             <Typography
               sx={{
                 mt: 2,
-                color: "#5583FF",
+                color: (theme) => theme.palette.dashboard.logoPrimary,
                 fontSize: 20,
                 fontWeight: 500,
                 lineHeight: 1,
@@ -65,7 +75,7 @@ export default function ContentStatsPanel({
             <Typography
               sx={{
                 mt: 0.8,
-                color: "#A1A1A1",
+                color: (theme) => theme.palette.dashboard.textSecondary,
                 fontSize: 11,
                 fontWeight: 600,
                 textAlign: "left",
@@ -81,7 +91,7 @@ export default function ContentStatsPanel({
                   mx: "auto",
                   width: 96,
                   height: "1px",
-                  bgcolor: "#DFDFDF",
+                  bgcolor: (theme) => theme.palette.dashboard.divider,
                 }}
               />
             )}

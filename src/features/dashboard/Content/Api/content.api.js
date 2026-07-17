@@ -1,4 +1,5 @@
 import httpClient from "../../../../lib/api/httpClient";
+import { getIdempotencyHeaders } from "../../../../shared/lib/idempotency";
 
 export function getLibraryMaterials(params = {}) {
   return httpClient.get("library-management/library-materials", {
@@ -41,9 +42,7 @@ export function approveLibraryMaterial({ contentId, idempotencyKey }) {
     `library-management/approve/${contentId}`,
     {},
     {
-      headers: {
-        "Idempotency-Key": idempotencyKey,
-      },
+      headers: getIdempotencyHeaders(idempotencyKey),
       showErrorToast: true,
     },
   );
@@ -57,9 +56,7 @@ export function deleteLibraryMaterial({ contentId, reason, idempotencyKey }) {
     `library-management/delete/${contentId}`,
     formData,
     {
-      headers: {
-        "Idempotency-Key": idempotencyKey,
-      },
+      headers: getIdempotencyHeaders(idempotencyKey),
       showErrorToast: true,
     },
   );

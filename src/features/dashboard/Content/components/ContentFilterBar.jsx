@@ -55,18 +55,18 @@ export default function ContentFilterBar({
             "& .MuiOutlinedInput-root": {
               height: 38,
               borderRadius: "999px",
-              bgcolor: "#FFFFFF",
-              boxShadow: "0 4px 14px rgba(15, 23, 42, 0.06)",
-              color: "#263238",
+              bgcolor: (theme) => theme.palette.dashboard.surface,
+              boxShadow: (theme) => theme.palette.dashboard.shadow,
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: 13,
               fontWeight: 500,
               pr: 0.6,
               pl: 0.8,
               "& fieldset": {
-                borderColor: "#ECECEC",
+                borderColor: (theme) => theme.palette.dashboard.chartBorder,
               },
               "&:hover fieldset": {
-                borderColor: "#ECECEC",
+                borderColor: (theme) => theme.palette.dashboard.chartBorder,
               },
               "&.Mui-focused fieldset": {
                 borderColor: "#5583FF",
@@ -75,7 +75,7 @@ export default function ContentFilterBar({
             "& input": {
               textAlign: "right",
               "&::placeholder": {
-                color: "#A1A1A1",
+                color: (theme) => theme.palette.dashboard.textSecondary,
                 opacity: 1,
               },
             },
@@ -83,7 +83,12 @@ export default function ContentFilterBar({
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchRoundedIcon sx={{ color: "#8A8A8A", fontSize: 20 }} />
+                <SearchRoundedIcon
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                    fontSize: 20,
+                  }}
+                />
               </InputAdornment>
             ),
             endAdornment: (
@@ -94,7 +99,7 @@ export default function ContentFilterBar({
                   aria-label="مسح البحث"
                   size="small"
                   sx={{
-                    color: "#8A8A8A",
+                    color: (theme) => theme.palette.dashboard.textSecondary,
                     width: 24,
                     height: 24,
                     visibility: searchValue ? "visible" : "hidden",
@@ -116,16 +121,16 @@ export default function ContentFilterBar({
             width: { xs: "100%", sm: 150 },
             height: 38,
             borderRadius: "999px",
-            bgcolor: "#FFFFFF",
-            boxShadow: "0 4px 14px rgba(15, 23, 42, 0.06)",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
             ".MuiOutlinedInput-notchedOutline": {
-              borderColor: "#ECECEC",
+              borderColor: (theme) => theme.palette.dashboard.chartBorder,
             },
             ".MuiSelect-select": {
               py: 0.8,
               pr: 2,
               pl: 4,
-              color: "#8A8A8A",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 13,
               fontWeight: 600,
               textAlign: "right",
@@ -133,7 +138,7 @@ export default function ContentFilterBar({
             ".MuiSvgIcon-root": {
               left: 11,
               right: "auto",
-              color: "#8A8A8A",
+              color: (theme) => theme.palette.dashboard.textSecondary,
             },
           }}
         >

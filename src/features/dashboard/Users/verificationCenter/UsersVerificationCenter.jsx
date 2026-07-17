@@ -8,7 +8,7 @@ export default function UsersVerificationCenter() {
       dir="rtl"
       sx={{
         minHeight: "100vh",
-        bgcolor: "#F8F9FB",
+        bgcolor: (theme) => theme.palette.dashboard.pageBackground,
         px: { xs: 2, md: 5 },
         py: 4,
       }}

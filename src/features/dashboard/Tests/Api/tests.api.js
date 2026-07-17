@@ -1,4 +1,5 @@
 import httpClient from "../../../../lib/api/httpClient";
+import { getIdempotencyHeaders } from "../../../../shared/lib/idempotency";
 
 export function getTestsManagementBoard(date) {
   return httpClient.get("test-management/management-board", {
@@ -33,9 +34,18 @@ export function getTestReviews(testId, params = {}) {
 }
 
 export function deleteTestReview(reviewId) {
-  return httpClient.delete(`test-management/delete/review/${reviewId}`, {
-    showErrorToast: true,
-  });
+  const normalizedReviewId =
+    typeof reviewId === "object" ? reviewId.reviewId : reviewId;
+  const idempotencyKey =
+    typeof reviewId === "object" ? reviewId.idempotencyKey : undefined;
+
+  return httpClient.delete(
+    `test-management/delete/review/${normalizedReviewId}`,
+    {
+      headers: getIdempotencyHeaders(idempotencyKey),
+      showErrorToast: true,
+    },
+  );
 }
 
 export function getTestStatusHistory(testId) {
@@ -56,9 +66,7 @@ export function approveManagementTest({ testId, idempotencyKey }) {
     `test-management/approve/${testId}`,
     {},
     {
-      headers: {
-        "Idempotency-Key": idempotencyKey,
-      },
+      headers: getIdempotencyHeaders(idempotencyKey),
       showErrorToast: true,
     },
   );
@@ -72,9 +80,7 @@ export function deleteManagementTest({ testId, reason, idempotencyKey }) {
     `test-management/delete/${testId}`,
     formData,
     {
-      headers: {
-        "Idempotency-Key": idempotencyKey,
-      },
+      headers: getIdempotencyHeaders(idempotencyKey),
       showErrorToast: true,
     },
   );
@@ -89,15 +95,17 @@ export function requestManagementTestRevisions({
     `test-management/need-revision/${testId}`,
     { revisions },
     {
-      headers: {
-        "Idempotency-Key": idempotencyKey,
-      },
+      headers: getIdempotencyHeaders(idempotencyKey),
       showErrorToast: true,
     },
   );
 }
 
-export function updateManagementTestRevisions({ testId, revisions }) {
+export function updateManagementTestRevisions({
+  testId,
+  revisions,
+  idempotencyKey,
+}) {
   const normalizedRevisions = revisions.map((revision) => {
     const normalizedRevision = {
       revision_type: revision.revision_type,
@@ -119,16 +127,23 @@ export function updateManagementTestRevisions({ testId, revisions }) {
     `test-management/update/need-revision/${testId}`,
     { revisions: normalizedRevisions },
     {
+      headers: getIdempotencyHeaders(idempotencyKey),
       showErrorToast: true,
     },
   );
 }
 
 export function requestTestAiEvaluation(testId) {
+  const normalizedTestId =
+    typeof testId === "object" ? testId.testId : testId;
+  const idempotencyKey =
+    typeof testId === "object" ? testId.idempotencyKey : undefined;
+
   return httpClient.post(
-    `test-management/ai-evaluation/${testId}`,
+    `test-management/ai-evaluation/${normalizedTestId}`,
     {},
     {
+      headers: getIdempotencyHeaders(idempotencyKey),
       showErrorToast: true,
     },
   );

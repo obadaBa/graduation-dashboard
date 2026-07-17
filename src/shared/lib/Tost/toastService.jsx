@@ -2,7 +2,36 @@ import { toast } from "react-toastify";
 import ErrorMarkIcon from "../../../features/dashboard/Assets/wrong-mark-svgrepo-com.svg";
 import SuccessMarkIcon from "../../../features/dashboard/Assets/wrong-mark-svgrepo-com (1).svg";
 
+function normalizeToastText(value, fallback = "") {
+  if (value == null) {
+    return fallback;
+  }
+
+  if (typeof value === "string" || typeof value === "number") {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => normalizeToastText(item)).filter(Boolean).join("، ");
+  }
+
+  if (typeof value === "object") {
+    return (
+      normalizeToastText(value.message) ||
+      normalizeToastText(value.title) ||
+      normalizeToastText(value.error) ||
+      fallback
+    );
+  }
+
+  return fallback;
+}
+
 function ToastContent({ title, message, color, icon, alt, actionLabel }) {
+  const safeTitle = normalizeToastText(title);
+  const safeMessage = normalizeToastText(message);
+  const safeActionLabel = normalizeToastText(actionLabel);
+
   return (
     <div
       style={{
@@ -28,7 +57,7 @@ function ToastContent({ title, message, color, icon, alt, actionLabel }) {
             marginBottom: 10,
           }}
         >
-          {title}
+          {safeTitle}
         </div>
         <div
           style={{
@@ -38,9 +67,9 @@ function ToastContent({ title, message, color, icon, alt, actionLabel }) {
             lineHeight: 1.5,
           }}
         >
-          {message}
+          {safeMessage}
         </div>
-        {actionLabel && (
+        {safeActionLabel && (
           <div
             style={{
               color,
@@ -49,12 +78,100 @@ function ToastContent({ title, message, color, icon, alt, actionLabel }) {
               marginTop: 8,
             }}
           >
-            {actionLabel}
+            {safeActionLabel}
           </div>
         )}
       </div>
 
       <img src={icon} alt={alt} style={{ width: 38, height: 38, flexShrink: 0 }} />
+    </div>
+  );
+}
+
+function NotificationToastContent({ title, message }) {
+  const safeTitle = normalizeToastText(title, "إشعار جديد");
+  const safeMessage = normalizeToastText(message, safeTitle);
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        direction: "rtl",
+        display: "flex",
+        alignItems: "center",
+        gap: 14,
+        padding: "14px 16px",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          width: 42,
+          height: 42,
+          borderRadius: "12px",
+          background: "linear-gradient(135deg, #263238 0%, #5583FF 100%)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          boxShadow: "0 8px 18px rgba(85, 131, 255, 0.28)",
+        }}
+      >
+        <div
+          style={{
+            width: 15,
+            height: 18,
+            border: "2px solid #FFFFFF",
+            borderRadius: "8px 8px 5px 5px",
+            position: "relative",
+            boxSizing: "border-box",
+          }}
+        >
+          <span
+            style={{
+              position: "absolute",
+              left: "50%",
+              bottom: -7,
+              width: 7,
+              height: 3,
+              borderRadius: "999px",
+              background: "#FFFFFF",
+              transform: "translateX(-50%)",
+            }}
+          />
+        </div>
+      </div>
+
+      <div style={{ minWidth: 0, flex: 1, textAlign: "right" }}>
+        <div
+          style={{
+            color: "#263238",
+            fontSize: 14,
+            fontWeight: 800,
+            lineHeight: 1.35,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            marginBottom: 4,
+          }}
+        >
+          {safeTitle}
+        </div>
+        <div
+          style={{
+            color: "#667085",
+            fontSize: 13,
+            fontWeight: 600,
+            lineHeight: 1.55,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {safeMessage}
+        </div>
+      </div>
     </div>
   );
 }
@@ -141,6 +258,40 @@ export const showActionSuccessToast = ({
       },
     },
   );
+};
+
+export const showNotificationToast = (message, title = "إشعار جديد") => {
+  toast(<NotificationToastContent title={title} message={message} />, {
+    position: "top-center",
+    autoClose: 6500,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    closeButton: false,
+    icon: false,
+    theme: "light",
+    style: {
+      width: "min(420px, calc(100vw - 28px))",
+      minHeight: "74px",
+      padding: 0,
+      borderRadius: "14px",
+      border: "1px solid rgba(38, 50, 56, 0.12)",
+      boxShadow: "0 18px 50px rgba(15, 23, 42, 0.18)",
+      overflow: "hidden",
+      background: "rgba(255, 255, 255, 0.98)",
+    },
+    bodyStyle: {
+      margin: 0,
+      padding: 0,
+      width: "100%",
+    },
+    progressStyle: {
+      background: "linear-gradient(90deg, #5583FF 0%, #263238 100%)",
+      height: "3px",
+    },
+  });
 };
 
 export const showWarningToast = (message) => {

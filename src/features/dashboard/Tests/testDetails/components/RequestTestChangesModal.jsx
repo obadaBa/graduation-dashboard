@@ -14,6 +14,7 @@ import RevisionRequestFields, {
 } from "./RevisionRequestFields";
 
 const MAX_REVISIONS = 8;
+const EMPTY_INITIAL_REVISIONS = [];
 
 function createRevision() {
   return {
@@ -41,7 +42,7 @@ export default function RequestTestChangesModal({
   onSave,
   questions = [],
   isPending = false,
-  initialRevisions = [],
+  initialRevisions = EMPTY_INITIAL_REVISIONS,
   saveLabel = "حفظ قائمة التعديلات",
   pendingLabel = "جاري إرسال التعديلات...",
 }) {

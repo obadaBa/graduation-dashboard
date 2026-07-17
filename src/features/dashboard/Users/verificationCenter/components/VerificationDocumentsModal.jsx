@@ -41,7 +41,7 @@ export default function VerificationDocumentsModal({
             width: { xs: "calc(100vw - 28px)", md: 820 },
             maxHeight: "calc(100dvh - 36px)",
             borderRadius: "12px",
-            bgcolor: "#FFFFFF",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
             boxShadow: "0 18px 45px rgba(15, 23, 42, 0.22)",
             outline: "none",
             overflow: "hidden",
@@ -62,12 +62,18 @@ export default function VerificationDocumentsModal({
                 right: 0,
                 bottom: 0,
                 height: "3px",
-                backgroundImage:
-                  "repeating-linear-gradient(to left, #CFCFCF 0 18px, transparent 18px 29px)",
+                backgroundImage: (theme) =>
+                  `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 29px)`,
               },
             }}
           >
-            <Typography sx={{ color: "#263238", fontSize: 22, fontWeight: 900 }}>
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 22,
+                fontWeight: 900,
+              }}
+            >
               وثائق طلب التوثيق
             </Typography>
             <IconButton
@@ -77,8 +83,9 @@ export default function VerificationDocumentsModal({
                 width: 34,
                 height: 34,
                 borderRadius: "6px",
-                border: "1px solid #DFDFDF",
-                color: "#263238",
+                border: (theme) =>
+                  `1px solid ${theme.palette.dashboard.chartBorder}`,
+                color: (theme) => theme.palette.dashboard.textPrimary,
               }}
             >
               <CloseRoundedIcon />
@@ -124,8 +131,9 @@ export default function VerificationDocumentsModal({
                     sx={{
                       minHeight: 320,
                       borderRadius: "8px",
-                      border: "1px solid #E5E5E5",
-                      bgcolor: "#FAFAFA",
+                      border: (theme) =>
+                        `1px solid ${theme.palette.dashboard.chartBorder}`,
+                      bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                       overflow: "hidden",
                       display: "flex",
                       flexDirection: "column",
@@ -135,9 +143,10 @@ export default function VerificationDocumentsModal({
                       sx={{
                         px: 1.5,
                         py: 1.2,
-                        color: "#263238",
-                        bgcolor: "#FFFFFF",
-                        borderBottom: "1px solid #EAEAEA",
+                        color: (theme) => theme.palette.dashboard.textPrimary,
+                        bgcolor: (theme) => theme.palette.dashboard.surface,
+                        borderBottom: (theme) =>
+                          `1px solid ${theme.palette.dashboard.chartBorder}`,
                         fontSize: 15,
                         fontWeight: 800,
                         textAlign: "right",

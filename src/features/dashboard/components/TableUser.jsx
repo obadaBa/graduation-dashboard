@@ -81,7 +81,9 @@ function StatusPill({ blocked, status }) {
         height: 24,
         px: 1.2,
         borderRadius: "999px",
-        bgcolor: blocked ? "#FFF0F0" : "#EFFFF1",
+        bgcolor: blocked
+          ? "rgba(255, 94, 88, 0.12)"
+          : "rgba(37, 216, 78, 0.12)",
         color,
         display: "inline-flex",
         alignItems: "center",
@@ -120,7 +122,13 @@ export function GenderCell({ gender }) {
       alignItems="center"
       justifyContent="center"
     >
-      <Typography sx={{ color: "#263238", fontSize: 14, fontWeight: 600 }}>
+      <Typography
+        sx={{
+          color: (theme) => theme.palette.dashboard.textPrimary,
+          fontSize: 14,
+          fontWeight: 600,
+        }}
+      >
         {gender}
       </Typography>
       <Icon sx={{ fontSize: 18, color }} />
@@ -143,12 +151,18 @@ export function NameCell({ user }) {
         sx={{
           width: 25,
           height: 25,
-          bgcolor: "#ECECEC",
-          color: "#A0A0A0",
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+          color: (theme) => theme.palette.dashboard.textSecondary,
           fontSize: 12,
         }}
       />
-      <Typography sx={{ color: "#263238", fontSize: 14, fontWeight: 700 }}>
+      <Typography
+        sx={{
+          color: (theme) => theme.palette.dashboard.textPrimary,
+          fontSize: 14,
+          fontWeight: 700,
+        }}
+      >
         {user.name}
       </Typography>
     </Stack>
@@ -169,7 +183,7 @@ export function TableCell({ children }) {
       {typeof children === "string" ? (
         <Typography
           sx={{
-            color: "#263238",
+            color: (theme) => theme.palette.dashboard.textPrimary,
             fontSize: 14,
             fontWeight: 600,
             whiteSpace: "nowrap",
@@ -218,9 +232,9 @@ export default function TableUser({
         flex: 1,
         minHeight: 0,
         borderRadius: "10px",
-        border: "1px solid #EAEAEA",
-        bgcolor: "#FFFFFF",
-        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.surface,
+        boxShadow: (theme) => theme.palette.dashboard.shadow,
         overflow: "hidden",
         direction: "rtl",
         display: "flex",
@@ -233,7 +247,7 @@ export default function TableUser({
           gridTemplateColumns,
           alignItems: "center",
           minHeight: 48,
-          bgcolor: "#F6F6F6",
+          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           px: 1.4,
           flexShrink: 0,
         }}
@@ -242,7 +256,7 @@ export default function TableUser({
           <Typography
             key={column.key}
             sx={{
-              color: "#8F8F8F",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 16,
               fontWeight: 800,
               textAlign: "center",
@@ -274,11 +288,12 @@ export default function TableUser({
               alignItems: "center",
               minHeight: 41,
               px: 1.4,
-              borderTop: "1px solid #EFEFEF",
+              borderTop: (theme) =>
+                `1px solid ${theme.palette.dashboard.chartBorder}`,
               cursor: onRowClick ? "pointer" : "default",
               "&:hover": onRowClick
                 ? {
-                    bgcolor: "#FAFBFF",
+                    bgcolor: (theme) => theme.palette.dashboard.hoverItem.background,
                   }
                 : undefined,
             }}
@@ -311,7 +326,7 @@ export default function TableUser({
                 }}
                 aria-label={`عرض ملف ${user.name}`}
                 size="small"
-                sx={{ color: "#8A8A8A" }}
+                sx={{ color: (theme) => theme.palette.dashboard.textSecondary }}
               >
                 <ArrowBackRoundedIcon sx={{ fontSize: 22 }} />
               </IconButton>
@@ -329,7 +344,7 @@ export default function TableUser({
           <Typography
             sx={{
               py: 8,
-              color: "#8A8A8A",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 15,
               fontWeight: 700,
               textAlign: "center",

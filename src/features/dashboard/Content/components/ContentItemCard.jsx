@@ -43,11 +43,11 @@ function PreviewSheet({ imageSrc, title, type }) {
         width: { xs: 104, md: 112 },
         height: { xs: 94, md: 108 },
         borderRadius: "10px",
-        border: "1px solid #D5D9E0",
-        bgcolor: "#FFFFFF",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.surface,
         objectFit: "cover",
         display: "block",
-        boxShadow: "0 5px 14px rgba(15, 23, 42, 0.08)",
+        boxShadow: (theme) => theme.palette.dashboard.shadow,
       }}
     />
   );
@@ -62,7 +62,8 @@ export default function ContentItemCard({ item, onClick }) {
       sx={{
         width: "100%",
         minHeight: 148,
-        borderBottom: "1px solid #ECECEC",
+        borderBottom: (theme) =>
+          `1px solid ${theme.palette.dashboard.chartBorder}`,
         py: 1.5,
         cursor: onClick ? "pointer" : "default",
         direction: "rtl",
@@ -88,7 +89,7 @@ export default function ContentItemCard({ item, onClick }) {
         <Box sx={{ minWidth: 0, textAlign: "right" }}>
           <Typography
             sx={{
-              color: "#263238",
+              color: (theme) => theme.palette.dashboard.textPrimary,
               fontSize: { xs: 15, md: 17 },
               fontWeight: 800,
               lineHeight: 1.4,
@@ -104,7 +105,7 @@ export default function ContentItemCard({ item, onClick }) {
           <Typography
             sx={{
               mt: 0.6,
-              color: "#929292",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: { xs: 11, md: 12 },
               fontWeight: 500,
               lineHeight: 1.55,
@@ -137,8 +138,9 @@ export default function ContentItemCard({ item, onClick }) {
                     height: 22,
                     px: 0.9,
                     borderRadius: "5px",
-                    bgcolor: "#EEF2FF",
-                    color: "#5583FF",
+                    bgcolor: (theme) =>
+                      theme.palette.dashboard.activeItem.background,
+                    color: (theme) => theme.palette.dashboard.logoPrimary,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -160,9 +162,18 @@ export default function ContentItemCard({ item, onClick }) {
               gap={0.45}
               sx={{ flexShrink: 0 }}
             >
-              <AccessTimeRoundedIcon sx={{ color: "#59636B", fontSize: 16 }} />
+              <AccessTimeRoundedIcon
+                sx={{
+                  color: (theme) => theme.palette.dashboard.chartTextSecondary,
+                  fontSize: 16,
+                }}
+              />
               <Typography
-                sx={{ color: "#777777", fontSize: 10, fontWeight: 700 }}
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textSecondary,
+                  fontSize: 10,
+                  fontWeight: 700,
+                }}
               >
                 {item?.duration}
               </Typography>

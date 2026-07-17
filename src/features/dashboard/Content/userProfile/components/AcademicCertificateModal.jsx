@@ -39,7 +39,7 @@ export default function AcademicCertificateModal({
             width: { xs: "calc(100vw - 28px)", md: 720 },
             maxHeight: "calc(100dvh - 36px)",
             borderRadius: "12px",
-            bgcolor: "#FFFFFF",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
             boxShadow: "0 18px 45px rgba(15, 23, 42, 0.22)",
             outline: "none",
             overflow: "hidden",
@@ -60,12 +60,18 @@ export default function AcademicCertificateModal({
                 right: 0,
                 bottom: 0,
                 height: "3px",
-                backgroundImage:
-                  "repeating-linear-gradient(to left, #CFCFCF 0 18px, transparent 18px 29px)",
+                backgroundImage: (theme) =>
+                  `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 29px)`,
               },
             }}
           >
-            <Typography sx={{ color: "#263238", fontSize: 22, fontWeight: 900 }}>
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 22,
+                fontWeight: 900,
+              }}
+            >
               الشهادة الجامعية
             </Typography>
             <IconButton
@@ -75,8 +81,9 @@ export default function AcademicCertificateModal({
                 width: 34,
                 height: 34,
                 borderRadius: "6px",
-                border: "1px solid #DFDFDF",
-                color: "#263238",
+                border: (theme) =>
+                  `1px solid ${theme.palette.dashboard.chartBorder}`,
+                color: (theme) => theme.palette.dashboard.textPrimary,
               }}
             >
               <CloseRoundedIcon />
@@ -88,7 +95,7 @@ export default function AcademicCertificateModal({
               minHeight: 420,
               maxHeight: "calc(100dvh - 110px)",
               p: 2,
-              bgcolor: "#FAFAFA",
+              bgcolor: (theme) => theme.palette.dashboard.pageBackground,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -111,7 +118,11 @@ export default function AcademicCertificateModal({
               />
             ) : (
               <Typography
-                sx={{ color: "#8A8A8A", fontSize: 15, fontWeight: 700 }}
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textSecondary,
+                  fontSize: 15,
+                  fontWeight: 700,
+                }}
               >
                 تعذر عرض الشهادة الجامعية
               </Typography>

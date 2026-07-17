@@ -17,6 +17,8 @@ import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import { useUserProfileOverviewQuery } from "../../hooks/useUserProfileOverviewQuery";
 import { useBanUserMutation } from "../../../Users/hooks/useBanUserMutation";
+import { useLiftBanUserMutation } from "../../../Users/hooks/useLiftBanUserMutation";
+import { useUserBanHistoryQuery } from "../../../Users/hooks/useUserBanHistoryQuery";
 import UserBlockHistoryModal from "./UserBlockHistoryModal";
 
 const MAX_REASON_LENGTH = 250;
@@ -62,10 +64,6 @@ function getStartHint(value) {
   return "بدأ مسبقاً";
 }
 
-function formatNumericDate(value) {
-  return value ? value.replaceAll("-", "/") : "لم يتم التحديد";
-}
-
 function DateValue({ label, value, onChange, disabled = false }) {
   const inputRef = useRef(null);
 
@@ -97,13 +95,21 @@ function DateValue({ label, value, onChange, disabled = false }) {
         font: "inherit",
       }}
     >
-      <Typography sx={{ color: "#969696", fontSize: 12, fontWeight: 500 }}>
+      <Typography
+        sx={{
+          color: (theme) => theme.palette.dashboard.textSecondary,
+          fontSize: 12,
+          fontWeight: 500,
+        }}
+      >
         {label}
       </Typography>
       <Typography
         sx={{
           mt: 0.2,
-          color: disabled ? "#777777" : "#263238",
+          color: disabled
+            ? "#777777"
+            : (theme) => theme.palette.dashboard.textPrimary,
           fontSize: 13,
           fontWeight: 700,
           whiteSpace: "nowrap",
@@ -147,20 +153,37 @@ export default function BlockUserModal({
   const [reason, setReason] = useState("");
   const [isBlocked, setIsBlocked] = useState(initiallyBlocked);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
   const profileQuery = useUserProfileOverviewQuery(userId);
+  const banHistoryQuery = useUserBanHistoryQuery(userId, open);
   const banUserMutation = useBanUserMutation({
-    onSuccess: () => setIsBlocked(true),
+    onSuccess: () => {
+      setIsBlocked(true);
+      banHistoryQuery.refetch?.();
+    },
   });
+  const liftBanUserMutation = useLiftBanUserMutation({
+    onSuccess: () => {
+      setIsBlocked(false);
+      banHistoryQuery.refetch?.();
+    },
+  });
+
   const header = profileQuery.data?.data?.header || {};
+  const firstBanRecord = Array.isArray(banHistoryQuery.data?.data)
+    ? banHistoryQuery.data.data[0] || null
+    : null;
+  const shouldShowBlockedState = ["active", "future"].includes(firstBanRecord?.ban_status);
   const blockedIsPermanent =
-    isPermanent || blockedUser?.ban_type === "حظر دائم";
+    shouldShowBlockedState &&
+    (!firstBanRecord?.ends_at || blockedUser?.ban_type === "حظر دائم");
   const canSubmit =
     Boolean(userId) &&
     Boolean(reason.trim()) &&
     (isPermanent || (Boolean(startDate) && Boolean(endDate)));
 
   const handleBlockUser = () => {
-    if (isBlocked || !canSubmit || banUserMutation.isPending) return;
+    if (!canSubmit || banUserMutation.isPending) return;
 
     banUserMutation.mutate({
       userId,
@@ -171,17 +194,22 @@ export default function BlockUserModal({
     });
   };
 
+  const handleLiftBanUser = () => {
+    if (!userId || liftBanUserMutation.isPending) return;
+    liftBanUserMutation.mutate(userId);
+  };
+
   useEffect(() => {
     setIsBlocked(initiallyBlocked);
   }, [initiallyBlocked, userId]);
 
   useEffect(() => {
-    if (!open || isBlocked) return;
+    if (!open || shouldShowBlockedState) return;
     setStartDate(today);
     setEndDate("");
     setIsPermanent(false);
     setReason("");
-  }, [isBlocked, open, today]);
+  }, [open, shouldShowBlockedState, today]);
 
   return (
     <Modal
@@ -203,10 +231,10 @@ export default function BlockUserModal({
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: { xs: "calc(100% - 24px)", sm: 444 },
-          height: isBlocked ? "min(530px, calc(100vh - 24px))" : "auto",
+          height: shouldShowBlockedState ? "min(530px, calc(100vh - 24px))" : "auto",
           maxHeight: "calc(100vh - 24px)",
           borderRadius: "14px",
-          bgcolor: "#FFFFFF",
+          bgcolor: (theme) => theme.palette.dashboard.surface,
           boxShadow: "0 16px 44px rgba(22, 29, 37, 0.24)",
           direction: "rtl",
           outline: 0,
@@ -217,7 +245,13 @@ export default function BlockUserModal({
       >
         <Box sx={{ px: 2.4, pt: 2.2 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography sx={{ color: "#263238", fontSize: 21, fontWeight: 900 }}>
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 21,
+                fontWeight: 900,
+              }}
+            >
               قائمة حظر المستخدم
             </Typography>
             <IconButton
@@ -227,8 +261,9 @@ export default function BlockUserModal({
                 width: 31,
                 height: 31,
                 borderRadius: "3px",
-                border: "1px solid #D3D7DA",
-                color: "#263238",
+                border: (theme) =>
+                  `1px solid ${theme.palette.dashboard.chartBorder}`,
+                color: (theme) => theme.palette.dashboard.textPrimary,
                 p: 0,
               }}
             >
@@ -240,8 +275,8 @@ export default function BlockUserModal({
             sx={{
               mt: 1.6,
               height: 3,
-              background:
-                "repeating-linear-gradient(to left, #CFCFCF 0 14px, transparent 14px 25px)",
+              background: (theme) =>
+                `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 14px, transparent 14px 25px)`,
             }}
           />
         </Box>
@@ -251,7 +286,7 @@ export default function BlockUserModal({
             px: 2.4,
             pt: 1.8,
             pb: 1.2,
-            flex: isBlocked ? 1 : "initial",
+            flex: shouldShowBlockedState ? 1 : "initial",
             minHeight: 0,
             maxHeight: "calc(100vh - 130px)",
             overflowY: "auto",
@@ -273,14 +308,14 @@ export default function BlockUserModal({
                     width: 59,
                     height: 59,
                     borderRadius: "8px",
-                    bgcolor: "#E3E3E3",
+                    bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                   }}
                 />
                 <Box>
                   <Stack direction="row" alignItems="center" spacing={0.5}>
                     <Typography
                       sx={{
-                        color: "#263238",
+                        color: (theme) => theme.palette.dashboard.textPrimary,
                         fontSize: 16,
                         fontWeight: 900,
                         whiteSpace: "nowrap",
@@ -295,7 +330,7 @@ export default function BlockUserModal({
                   <Typography
                     sx={{
                       mt: 0.45,
-                      color: "#777777",
+                      color: (theme) => theme.palette.dashboard.textSecondary,
                       fontSize: 12,
                       fontWeight: 600,
                       whiteSpace: "nowrap",
@@ -314,11 +349,13 @@ export default function BlockUserModal({
                   height: 30,
                   borderRadius: "3px",
                   border: "1px solid #C9CDD0",
-                  bgcolor: "#FFFFFF",
-                  color: "#263238",
+                  bgcolor: (theme) => theme.palette.dashboard.surface,
+                  color: (theme) => theme.palette.dashboard.textPrimary,
                   fontSize: 13,
                   fontWeight: 700,
-                  "&:hover": { bgcolor: "#FFFFFF" },
+                  "&:hover": {
+                    bgcolor: (theme) => theme.palette.dashboard.surface,
+                  },
                 }}
               >
                 سجل الحظر
@@ -326,11 +363,17 @@ export default function BlockUserModal({
             </Stack>
           )}
 
-          {isBlocked ? (
+          {shouldShowBlockedState ? (
             <Box sx={{ mt: 2.2 }}>
               <Stack direction="row" alignItems="center" spacing={0.8}>
                 <BlockRoundedIcon sx={{ color: "#FF4F55", fontSize: 25 }} />
-                <Typography sx={{ color: "#263238", fontSize: 18, fontWeight: 900 }}>
+                <Typography
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    fontSize: 18,
+                    fontWeight: 900,
+                  }}
+                >
                   هذا المستخدم محظور
                 </Typography>
               </Stack>
@@ -344,7 +387,7 @@ export default function BlockUserModal({
                   lineHeight: 1.7,
                 }}
               >
-                {reason.trim() ||
+                {firstBanRecord?.reason ||
                   "لقد قمنا بحظر المستخدم لأسباب تتعلق بانتهاك الخصوصية"}
               </Typography>
 
@@ -368,13 +411,13 @@ export default function BlockUserModal({
                   </Typography>
                   <Typography
                     sx={{
-                      color: "#263238",
+                      color: (theme) => theme.palette.dashboard.textPrimary,
                       fontFamily: "serif",
                       fontSize: 14,
                       direction: "ltr",
                     }}
                   >
-                    {formatNumericDate(startDate)}
+                    {firstBanRecord?.starts_at || "-"}
                   </Typography>
                 </Stack>
                 <Stack direction="row" alignItems="center" gap={1.2}>
@@ -383,16 +426,13 @@ export default function BlockUserModal({
                   </Typography>
                   <Typography
                     sx={{
-                      color: "#263238",
+                      color: (theme) => theme.palette.dashboard.textPrimary,
                       fontFamily: "serif",
                       fontSize: 14,
                       direction: "ltr",
                     }}
                   >
-                    {blockedIsPermanent
-                      ? "حظر دائم"
-                      : blockedUser?.ban_ends_at ||
-                        formatNumericDate(endDate)}
+                    {blockedIsPermanent ? "حظر دائم" : firstBanRecord?.ends_at || "-"}
                   </Typography>
                 </Stack>
               </Stack>
@@ -401,7 +441,13 @@ export default function BlockUserModal({
             <>
               <Stack direction="row" alignItems="center" spacing={0.8} sx={{ mt: 2.1 }}>
                 <BlockRoundedIcon sx={{ color: "#FF4F55", fontSize: 25 }} />
-                <Typography sx={{ color: "#263238", fontSize: 18, fontWeight: 900 }}>
+                <Typography
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    fontSize: 18,
+                    fontWeight: 900,
+                  }}
+                >
                   تاريخ حظر المستخدم
                 </Typography>
               </Stack>
@@ -425,9 +471,10 @@ export default function BlockUserModal({
                     minHeight: 82,
                     px: 1.5,
                     py: 1.15,
-                    border: "1px solid #E0E0E0",
+                    border: (theme) =>
+                      `1px solid ${theme.palette.dashboard.chartBorder}`,
                     borderRadius: "7px",
-                    bgcolor: "#FAFAFA",
+                    bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                   }}
                 >
                   <Stack direction="row" alignItems="center" spacing={1.1}>
@@ -457,16 +504,21 @@ export default function BlockUserModal({
                   mt: 1.15,
                   minHeight: 48,
                   px: 1.2,
-                  border: "1px solid #E0E0E0",
+                  border: (theme) =>
+                    `1px solid ${theme.palette.dashboard.chartBorder}`,
                   borderRadius: "7px",
-                  bgcolor: "#FAFAFA",
+                  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                 }}
               >
                 <Stack direction="row" alignItems="center" gap={1.4}>
                   <GavelRoundedIcon sx={{ color: "#8C9296", fontSize: 19 }} />
                   <Box>
                     <Typography
-                      sx={{ color: "#263238", fontSize: 13, fontWeight: 800 }}
+                      sx={{
+                        color: (theme) => theme.palette.dashboard.textPrimary,
+                        fontSize: 13,
+                        fontWeight: 800,
+                      }}
                     >
                       حظر بشكل دائم
                     </Typography>
@@ -502,12 +554,13 @@ export default function BlockUserModal({
                     width: "100%",
                     height: 51,
                     resize: "none",
-                    border: "1px solid #E0E0E0",
+                    border: (theme) =>
+                      `1px solid ${theme.palette.dashboard.chartBorder}`,
                     borderRadius: "7px",
-                    bgcolor: "#FAFAFA",
+                    bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                     px: 1.3,
                     py: 1.5,
-                    color: "#263238",
+                    color: (theme) => theme.palette.dashboard.textPrimary,
                     fontFamily: "inherit",
                     fontSize: 12,
                     fontWeight: 500,
@@ -536,27 +589,32 @@ export default function BlockUserModal({
           sx={{
             px: 1.4,
             py: 1.05,
-            borderTop: "1px solid #EEEEEE",
+            borderTop: (theme) =>
+              `1px solid ${theme.palette.dashboard.chartBorder}`,
             boxShadow: "0 -5px 12px rgba(28, 38, 49, 0.08)",
-            bgcolor: "#FFFFFF",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
           }}
         >
           <Button
             fullWidth
             type="button"
-            onClick={handleBlockUser}
-            disabled={isBlocked || !canSubmit || banUserMutation.isPending}
+            onClick={shouldShowBlockedState ? handleLiftBanUser : handleBlockUser}
+            disabled={
+              shouldShowBlockedState
+                ? liftBanUserMutation.isPending
+                : !canSubmit || banUserMutation.isPending
+            }
             sx={{
               height: 39,
               borderRadius: "4px",
-              bgcolor: isBlocked ? "#F1F1F1" : "#FF4F55",
-              color: isBlocked ? "#9A9A9A" : "#FFFFFF",
+              bgcolor: shouldShowBlockedState ? "#F1F1F1" : "#FF4F55",
+              color: shouldShowBlockedState ? "#9A9A9A" : "#FFFFFF",
               fontSize: 15,
               fontWeight: 700,
-              boxShadow: isBlocked
+              boxShadow: shouldShowBlockedState
                 ? "none"
                 : "0 2px 7px rgba(255, 79, 85, 0.28)",
-              "&:hover": { bgcolor: isBlocked ? "#F1F1F1" : "#FF4F55" },
+              "&:hover": { bgcolor: shouldShowBlockedState ? "#F1F1F1" : "#FF4F55" },
               "&.Mui-disabled": {
                 bgcolor: "#F1F1F1",
                 color: "#9A9A9A",
@@ -564,8 +622,10 @@ export default function BlockUserModal({
               },
             }}
           >
-            {isBlocked
-              ? "إلغاء الحظر"
+            {shouldShowBlockedState
+              ? liftBanUserMutation.isPending
+                ? "جاري رفع الحظر..."
+                : "إلغاء الحظر"
               : banUserMutation.isPending
                 ? "جاري حفظ عملية الحظر..."
                 : "حفظ عملية الحظر"}

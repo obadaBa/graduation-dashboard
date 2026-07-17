@@ -1,10 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
+import { removeAuthTokenSession } from "../../../lib/api/httpClient";
 import { showErrorToast, showSuccessToast } from "../../../shared/lib/Tost/toastService";
 import { logoutRequest } from "../api/auth.api";
 
-const AUTH_STORAGE_KEYS = ["accessToken", "token", "authToken", "tokenExpiresIn", "authUser"];
+const AUTH_STORAGE_KEYS = ["authUser"];
 
 function clearAuthSession() {
+  removeAuthTokenSession();
   AUTH_STORAGE_KEYS.forEach((key) => {
     localStorage.removeItem(key);
   });

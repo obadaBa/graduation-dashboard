@@ -115,7 +115,10 @@ export default function HomeSection3AudienceChart({ gender }) {
         bgcolor: (theme) => theme.palette.dashboard.chartBackground,
         borderRadius: { xs: "14px", lg: "20px" },
         border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-        boxShadow: "0 6px 18px rgba(15, 23, 42, 0.06)",
+        boxShadow: (theme) =>
+          theme.palette.mode === "dark"
+            ? "0 16px 36px rgba(0, 0, 0, 0.24)"
+            : "0 6px 18px rgba(15, 23, 42, 0.06)",
         width: {
           xs: "clamp(280px, 88vw, 420px)",
           sm: "clamp(360px, 72vw, 500px)",

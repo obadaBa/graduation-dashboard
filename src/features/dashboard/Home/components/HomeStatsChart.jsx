@@ -6,6 +6,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import { useHomeYearlyTestActivityQuery } from "../hooks/useHomeYearlyTestActivityQuery";
 import HomeStatsExportButton from "./HomeStatsExportButton";
@@ -117,9 +118,15 @@ function StackedTooltip({ values }) {
         px: 1,
         py: 0.85,
         borderRadius: "16px",
-        bgcolor: "#F7F1E8",
-        border: "1px solid rgba(38, 50, 56, 0.14)",
-        boxShadow: "0 6px 18px rgba(15, 23, 42, 0.18)",
+        bgcolor: (theme) =>
+          theme.palette.mode === "dark"
+            ? theme.palette.dashboard.surface
+            : "#F7F1E8",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        boxShadow: (theme) =>
+          theme.palette.mode === "dark"
+            ? "0 12px 28px rgba(0, 0, 0, 0.34)"
+            : "0 6px 18px rgba(15, 23, 42, 0.18)",
         zIndex: 3,
         "&::after": {
           content: '""',
@@ -129,7 +136,12 @@ function StackedTooltip({ values }) {
           transform: "translateX(-50%)",
           borderLeft: "6px solid transparent",
           borderRight: "6px solid transparent",
-          borderTop: "7px solid #F7F1E8",
+          borderTop: (theme) =>
+            `7px solid ${
+              theme.palette.mode === "dark"
+                ? theme.palette.dashboard.surface
+                : "#F7F1E8"
+            }`,
         },
       }}
     >
@@ -230,7 +242,10 @@ export default function HomeStatsChart() {
             height: 42,
             borderRadius: "12px",
             bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-            boxShadow: "0 4px 14px rgba(15, 23, 42, 0.06)",
+            boxShadow: (theme) =>
+              theme.palette.mode === "dark"
+                ? "0 10px 24px rgba(0, 0, 0, 0.22)"
+                : "0 4px 14px rgba(15, 23, 42, 0.06)",
             ".MuiOutlinedInput-notchedOutline": {
               borderColor: (theme) => theme.palette.dashboard.chartBorder,
             },
@@ -264,7 +279,10 @@ export default function HomeStatsChart() {
           bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           borderRadius: "16px",
           border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-          boxShadow: "0 4px 14px rgba(15, 23, 42, 0.04)",
+          boxShadow: (theme) =>
+            theme.palette.mode === "dark"
+              ? "0 16px 36px rgba(0, 0, 0, 0.24)"
+              : "0 4px 14px rgba(15, 23, 42, 0.04)",
           px: { xs: 1.5, md: 3 },
           py: { xs: 2, md: 2.5 },
         }}
@@ -404,7 +422,10 @@ export default function HomeStatsChart() {
                               px: 0.75,
                               py: 0.35,
                               borderRadius: "8px",
-                              bgcolor: "#263238",
+                              bgcolor: (theme) =>
+                                theme.palette.mode === "dark"
+                                  ? alpha("#0B1220", 0.96)
+                                  : "#263238",
                               color: "#FFFFFF",
                               fontSize: 11,
                               fontWeight: 600,
@@ -420,7 +441,12 @@ export default function HomeStatsChart() {
                                 transform: "translateX(-50%)",
                                 borderLeft: "5px solid transparent",
                                 borderRight: "5px solid transparent",
-                                borderTop: "6px solid #263238",
+                                borderTop: (theme) =>
+                                  `6px solid ${
+                                    theme.palette.mode === "dark"
+                                      ? alpha("#0B1220", 0.96)
+                                      : "#263238"
+                                  }`,
                               },
                             }}
                           >

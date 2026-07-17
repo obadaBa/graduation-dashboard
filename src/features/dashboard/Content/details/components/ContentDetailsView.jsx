@@ -19,7 +19,7 @@ export default function ContentDetailsView() {
       sx={{
         height: "100%",
         width: "100%",
-        bgcolor: "#FFFFFF",
+        bgcolor: (theme) => theme.palette.dashboard.pageBackground,
         px: { xs: 2, md: 4 },
         py: { xs: 2, md: 3 },
       }}

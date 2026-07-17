@@ -153,17 +153,17 @@ export default function VerificationCenterTable() {
           onChange={(event) => setSortBy(event.target.value)}
           size="small"
           IconComponent={KeyboardArrowDownRoundedIcon}
-          sx={{
+        sx={{
             width: 155,
             height: 38,
             borderRadius: "999px",
-            bgcolor: "#FFFFFF",
-            color: "#8A8A8A",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            color: (theme) => theme.palette.dashboard.textSecondary,
             fontSize: 13,
             fontWeight: 700,
-            boxShadow: "0 4px 14px rgba(15, 23, 42, 0.08)",
+            boxShadow: (theme) => theme.palette.dashboard.shadow,
             ".MuiOutlinedInput-notchedOutline": {
-              borderColor: "#ECECEC",
+              borderColor: (theme) => theme.palette.dashboard.chartBorder,
             },
             ".MuiSelect-select": {
               py: 0.8,
@@ -174,7 +174,7 @@ export default function VerificationCenterTable() {
             ".MuiSvgIcon-root": {
               left: 11,
               right: "auto",
-              color: "#8A8A8A",
+              color: (theme) => theme.palette.dashboard.textSecondary,
             },
           }}
         >
@@ -191,9 +191,9 @@ export default function VerificationCenterTable() {
           width: "100%",
           minHeight: 430,
           borderRadius: "10px",
-          border: "1px solid #EAEAEA",
-          bgcolor: "#FFFFFF",
-          boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+          bgcolor: (theme) => theme.palette.dashboard.surface,
+          boxShadow: (theme) => theme.palette.dashboard.shadow,
           overflow: "hidden",
           direction: "rtl",
         }}
@@ -204,7 +204,7 @@ export default function VerificationCenterTable() {
             gridTemplateColumns,
             alignItems: "center",
             minHeight: 48,
-            bgcolor: "#F6F6F6",
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
             px: 1.4,
           }}
         >
@@ -212,7 +212,7 @@ export default function VerificationCenterTable() {
             <Typography
               key={column.key}
               sx={{
-                color: "#8F8F8F",
+                color: (theme) => theme.palette.dashboard.textSecondary,
                 fontSize: 15,
                 fontWeight: 800,
                 textAlign: "center",
@@ -233,7 +233,8 @@ export default function VerificationCenterTable() {
               alignItems: "center",
               minHeight: 41,
               px: 1.4,
-              borderTop: "1px solid #EFEFEF",
+              borderTop: (theme) =>
+                `1px solid ${theme.palette.dashboard.chartBorder}`,
             }}
           >
             <TableCell>
@@ -277,7 +278,7 @@ export default function VerificationCenterTable() {
             <Typography
               sx={{
                 py: 8,
-                color: "#8A8A8A",
+                color: (theme) => theme.palette.dashboard.textSecondary,
                 fontSize: 14,
                 fontWeight: 700,
                 textAlign: "center",

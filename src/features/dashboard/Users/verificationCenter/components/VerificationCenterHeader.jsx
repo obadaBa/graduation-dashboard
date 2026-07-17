@@ -19,7 +19,7 @@ export default function VerificationCenterHeader() {
       <Box sx={{ textAlign: "right" }}>
         <Typography
           sx={{
-            color: "#263238",
+            color: (theme) => theme.palette.dashboard.textPrimary,
             fontSize: 27,
             fontWeight: 900,
             lineHeight: 1.35,
@@ -35,7 +35,7 @@ export default function VerificationCenterHeader() {
           sx={{
             mt: 1,
             maxWidth: 520,
-            color: "#A0A0A0",
+            color: (theme) => theme.palette.dashboard.textSecondary,
             fontSize: 16,
             fontWeight: 500,
             lineHeight: 1.65,
@@ -56,15 +56,15 @@ export default function VerificationCenterHeader() {
           height: 34,
           px: 1.4,
           borderRadius: "5px",
-          border: "1px solid #D5D5D5",
-          bgcolor: "#FFFFFF",
-          color: "#263238",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+          bgcolor: (theme) => theme.palette.dashboard.surface,
+          color: (theme) => theme.palette.dashboard.textPrimary,
           fontSize: 13,
           fontWeight: 700,
-          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+          boxShadow: (theme) => theme.palette.dashboard.shadow,
           "&:hover": {
-            bgcolor: "#F8F8F8",
-            borderColor: "#D5D5D5",
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+            borderColor: (theme) => theme.palette.dashboard.chartBorder,
           },
           "& .MuiButton-endIcon": {
             marginInlineStart: "6px",

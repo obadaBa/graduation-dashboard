@@ -8,8 +8,20 @@ import UsersActions from "./UsersActions";
 import UsersHeader from "./UsersHeader";
 import SupervisorProfileModal from "./SupervisorProfileModal";
 
+function getStoredAuthUser() {
+  try {
+    const rawUser = localStorage.getItem("authUser");
+
+    return rawUser ? JSON.parse(rawUser) : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function UsersSection1() {
   const queryClient = useQueryClient();
+  const authUser = getStoredAuthUser();
+  const isOwner = authUser?.role === "owner";
   const [userType, setUserType] = useState("mobile_users");
   const [sortBy, setSortBy] = useState("created_at");
   const [searchValue, setSearchValue] = useState("");
@@ -71,6 +83,8 @@ export default function UsersSection1() {
         width: "100%",
         height: "100%",
         minHeight: 0,
+        px: { xs: 1.5, md: 3 },
+        py: 2,
         direction: "rtl",
         display: "flex",
         flexDirection: "column",
@@ -90,17 +104,19 @@ export default function UsersSection1() {
         usersQuery={displayedQuery}
         isSearching={isSearching}
         onRowClick={
-          userType === "supervisors"
+          isOwner && userType === "supervisors"
             ? (user) => setSelectedSupervisorId(user.id)
             : undefined
         }
       />
 
-      <SupervisorProfileModal
-        open={Boolean(selectedSupervisorId)}
-        onClose={() => setSelectedSupervisorId(null)}
-        supervisorId={selectedSupervisorId}
-      />
+      {isOwner && (
+        <SupervisorProfileModal
+          open={Boolean(selectedSupervisorId)}
+          onClose={() => setSelectedSupervisorId(null)}
+          supervisorId={selectedSupervisorId}
+        />
+      )}
     </Box>
   );
 }

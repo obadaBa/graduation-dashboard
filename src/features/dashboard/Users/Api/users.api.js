@@ -1,4 +1,5 @@
 import httpClient from "../../../../lib/api/httpClient";
+import { getIdempotencyHeaders } from "../../../../shared/lib/idempotency";
 
 export function getUsers(params = {}) {
   return httpClient.get("user-management/users", {
@@ -15,19 +16,27 @@ export function searchUsers(params = {}) {
 }
 
 export function addSupervisor(supervisor) {
+  const { idempotencyKey, ...supervisorFields } = supervisor;
   const formData = new FormData();
 
-  Object.entries(supervisor).forEach(([key, value]) => {
+  Object.entries(supervisorFields).forEach(([key, value]) => {
     formData.append(key, value);
   });
 
   return httpClient.post("add/supervisors", formData, {
+    headers: getIdempotencyHeaders(idempotencyKey),
     showErrorToast: true,
   });
 }
 
 export function deleteSupervisor(supervisorId) {
-  return httpClient.delete(`delete/supervisor/${supervisorId}`, {
+  const normalizedSupervisorId =
+    typeof supervisorId === "object" ? supervisorId.supervisorId : supervisorId;
+  const idempotencyKey =
+    typeof supervisorId === "object" ? supervisorId.idempotencyKey : undefined;
+
+  return httpClient.delete(`delete/supervisor/${normalizedSupervisorId}`, {
+    headers: getIdempotencyHeaders(idempotencyKey),
     showErrorToast: true,
   });
 }
@@ -58,6 +67,7 @@ export function banUser({
   startsAt,
   endsAt,
   reason,
+  idempotencyKey,
 }) {
   const formData = new FormData();
 
@@ -70,6 +80,23 @@ export function banUser({
   }
 
   return httpClient.post(`user-management/ban-user/${userId}`, formData, {
+    headers: getIdempotencyHeaders(idempotencyKey),
     showErrorToast: true,
   });
+}
+
+export function liftBanUser(userId) {
+  const normalizedUserId =
+    typeof userId === "object" ? userId.userId : userId;
+  const idempotencyKey =
+    typeof userId === "object" ? userId.idempotencyKey : undefined;
+
+  return httpClient.post(
+    `user-management/lift-ban/${normalizedUserId}`,
+    undefined,
+    {
+      headers: getIdempotencyHeaders(idempotencyKey),
+      showErrorToast: true,
+    },
+  );
 }

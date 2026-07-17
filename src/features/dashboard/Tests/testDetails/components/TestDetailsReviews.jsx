@@ -7,6 +7,7 @@ import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import { Box, Button, Stack, Typography } from "@mui/material";
+import { createIdempotencyKey } from "../../../../../shared/lib/idempotency";
 import { useDeleteTestReviewMutation } from "../../hooks/useDeleteTestReviewMutation";
 import { useTestReviewsQuery } from "../../hooks/useTestReviewsQuery";
 
@@ -533,10 +534,15 @@ export default function TestDetailsReviews({ testId }) {
               <ReviewItem
                 key={review.id}
                 review={review}
-                onDelete={deleteReviewMutation.mutate}
+                onDelete={(reviewId) =>
+                  deleteReviewMutation.mutate({
+                    reviewId,
+                    idempotencyKey: createIdempotencyKey(),
+                  })
+                }
                 isDeleting={
                   deleteReviewMutation.isPending &&
-                  deleteReviewMutation.variables === review.id
+                  deleteReviewMutation.variables?.reviewId === review.id
                 }
               />
             ))}

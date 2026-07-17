@@ -181,7 +181,10 @@ export default function HalfCircleSales({
               borderRadius: "8px",
               border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
               bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-              boxShadow: "0 4px 10px rgba(15, 23, 42, 0.06)",
+              boxShadow: (theme) =>
+                theme.palette.mode === "dark"
+                  ? "0 10px 24px rgba(0, 0, 0, 0.22)"
+                  : "0 4px 10px rgba(15, 23, 42, 0.06)",
               color: (theme) => theme.palette.dashboard.chartTextPrimary,
             }}
           >
@@ -195,7 +198,10 @@ export default function HalfCircleSales({
               borderRadius: "8px",
               border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
               bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-              boxShadow: "0 4px 10px rgba(15, 23, 42, 0.06)",
+              boxShadow: (theme) =>
+                theme.palette.mode === "dark"
+                  ? "0 10px 24px rgba(0, 0, 0, 0.22)"
+                  : "0 4px 10px rgba(15, 23, 42, 0.06)",
               color: (theme) => theme.palette.dashboard.chartTextPrimary,
             }}
           >

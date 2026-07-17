@@ -42,20 +42,25 @@ function StatBox({ icon, value }) {
         width: 52,
         height: 62,
         borderRadius: "6px",
-        border: "1px solid #D8D8D8",
-        bgcolor: "#FFFFFF",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.surface,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         gap: 0.2,
-        color: "#263238",
+        color: (theme) => theme.palette.dashboard.textPrimary,
         flexShrink: 0,
       }}
     >
       {icon}
       <Typography
-        sx={{ fontSize: 12, fontWeight: 500, color: "#5B5B5B", lineHeight: 1 }}
+        sx={{
+          fontSize: 12,
+          fontWeight: 500,
+          color: (theme) => theme.palette.dashboard.textSecondary,
+          lineHeight: 1,
+        }}
       >
         {formatNumber(value)}
       </Typography>
@@ -84,8 +89,8 @@ function AssetPreview({ asset, contentType }) {
           width: 92,
           height: 92,
           borderRadius: "10px",
-          border: "1px solid #D6D6D6",
-          bgcolor: "#F7F9FF",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+          bgcolor: (theme) => theme.palette.dashboard.activeItem.background,
           flexShrink: 0,
           objectFit: "cover",
           display: "block",
@@ -101,15 +106,15 @@ function AssetPreview({ asset, contentType }) {
             width: 92,
             height: 92,
             borderRadius: "10px",
-            border: "1px solid #D6D6D6",
-            bgcolor: "#F7F9FF",
+            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+            bgcolor: (theme) => theme.palette.dashboard.activeItem.background,
             flexShrink: 0,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             gap: 0.6,
-            color: "#5583FF",
+            color: (theme) => theme.palette.dashboard.logoPrimary,
             p: 1,
             cursor: asset?.url ? "pointer" : "default",
             font: "inherit",
@@ -119,7 +124,7 @@ function AssetPreview({ asset, contentType }) {
           <Typography
             sx={{
               width: "100%",
-              color: "#6E7781",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 9,
               fontWeight: 700,
               textAlign: "center",
@@ -154,7 +159,7 @@ function AssetPreview({ asset, contentType }) {
             width: { xs: "calc(100% - 24px)", md: "min(960px, 88vw)" },
             height: { xs: "calc(100vh - 32px)", md: "86vh" },
             borderRadius: "12px",
-            bgcolor: "#FFFFFF",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
             boxShadow: "0 20px 50px rgba(0,0,0,0.28)",
             overflow: "hidden",
             outline: 0,
@@ -166,12 +171,17 @@ function AssetPreview({ asset, contentType }) {
             direction="row"
             alignItems="center"
             justifyContent="space-between"
-            sx={{ px: 1.5, py: 1, borderBottom: "1px solid #E4E4E4" }}
+            sx={{
+              px: 1.5,
+              py: 1,
+              borderBottom: (theme) =>
+                `1px solid ${theme.palette.dashboard.chartBorder}`,
+            }}
           >
             <Typography
               sx={{
                 minWidth: 0,
-                color: "#263238",
+                color: (theme) => theme.palette.dashboard.textPrimary,
                 fontSize: 15,
                 fontWeight: 800,
                 overflow: "hidden",
@@ -184,7 +194,7 @@ function AssetPreview({ asset, contentType }) {
             <IconButton
               onClick={() => setIsPreviewOpen(false)}
               aria-label="إغلاق المعاينة"
-              sx={{ color: "#263238" }}
+              sx={{ color: (theme) => theme.palette.dashboard.textPrimary }}
             >
               <CloseRoundedIcon />
             </IconButton>
@@ -194,7 +204,9 @@ function AssetPreview({ asset, contentType }) {
             sx={{
               flex: 1,
               minHeight: 0,
-              bgcolor: isImage ? "#17191E" : "#F2F3F5",
+              bgcolor: isImage
+                ? "#17191E"
+                : ((theme) => theme.palette.dashboard.pageBackground),
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -221,7 +233,7 @@ function AssetPreview({ asset, contentType }) {
                   width: "100%",
                   height: "100%",
                   border: 0,
-                  bgcolor: "#FFFFFF",
+                  bgcolor: (theme) => theme.palette.dashboard.surface,
                 }}
               />
             )}
@@ -249,8 +261,8 @@ export default function ContentOverviewCard({
           mt: 2.8,
           width: "100%",
           borderRadius: "18px",
-          border: "1px solid #EAEAEA",
-          bgcolor: "#FFFFFF",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+          bgcolor: (theme) => theme.palette.dashboard.surface,
           p: 3,
         }}
       >
@@ -267,9 +279,9 @@ export default function ContentOverviewCard({
         mt: 2.8,
         width: "100%",
         borderRadius: "18px",
-        border: "1px solid #EAEAEA",
-        bgcolor: "#FFFFFF",
-        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.surface,
+        boxShadow: (theme) => theme.palette.dashboard.shadow,
         px: { xs: 2, md: 3 },
         py: { xs: 2, md: 2.2 },
         direction: "rtl",
@@ -297,7 +309,7 @@ export default function ContentOverviewCard({
               objectFit: "cover",
               flexShrink: 0,
               cursor: "pointer",
-              bgcolor: "#F1F1F1",
+              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
             }}
           />
 
@@ -306,7 +318,7 @@ export default function ContentOverviewCard({
               <Typography
                 onClick={() => navigate(`/user-profile/${publisher.id}`)}
                 sx={{
-                  color: "#263238",
+                  color: (theme) => theme.palette.dashboard.textPrimary,
                   fontSize: 20,
                   fontWeight: 800,
                   cursor: "pointer",
@@ -320,13 +332,30 @@ export default function ContentOverviewCard({
             </Stack>
 
             <Typography
-              sx={{ mt: 0.6, color: "#7A7A7A", fontSize: 15, fontWeight: 500 }}
+              sx={{
+                mt: 0.6,
+                color: (theme) => theme.palette.dashboard.textSecondary,
+                fontSize: 15,
+                fontWeight: 500,
+              }}
             >
-              <Box component="span" sx={{ color: "#263238", fontWeight: 800 }}>
+              <Box
+                component="span"
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textPrimary,
+                  fontWeight: 800,
+                }}
+              >
                 {formatNumber(publisher.followers_count)}
               </Box>{" "}
               متابع .{" "}
-              <Box component="span" sx={{ color: "#263238", fontWeight: 800 }}>
+              <Box
+                component="span"
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textPrimary,
+                  fontWeight: 800,
+                }}
+              >
                 {formatNumber(publisher.following_count)}
               </Box>{" "}
               يتابع
@@ -361,7 +390,12 @@ export default function ContentOverviewCard({
       >
         <Box sx={{ textAlign: "right", flex: 1, minWidth: 0 }}>
           <Typography
-            sx={{ color: "#263238", fontSize: 23, fontWeight: 800, lineHeight: 1.35 }}
+            sx={{
+              color: (theme) => theme.palette.dashboard.textPrimary,
+              fontSize: 23,
+              fontWeight: 800,
+              lineHeight: 1.35,
+            }}
           >
             {content.title || "-"}
           </Typography>
@@ -369,7 +403,7 @@ export default function ContentOverviewCard({
           <Typography
             sx={{
               mt: 0.8,
-              color: "#8E8E8E",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 16,
               fontWeight: 500,
               lineHeight: 1.7,
@@ -390,7 +424,10 @@ export default function ContentOverviewCard({
                 height: 30,
                 px: 1.5,
                 borderRadius: "7px",
-                bgcolor: "#EFCFFF",
+                bgcolor: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? "rgba(141, 90, 231, 0.18)"
+                    : "#EFCFFF",
                 color: "#8D5AE7",
                 display: "flex",
                 alignItems: "center",
@@ -409,8 +446,9 @@ export default function ContentOverviewCard({
                   height: 30,
                   px: 1.5,
                   borderRadius: "7px",
-                  bgcolor: "#EEF2FF",
-                  color: "#5C84FF",
+                  bgcolor: (theme) =>
+                    theme.palette.dashboard.activeItem.background,
+                  color: (theme) => theme.palette.dashboard.logoPrimary,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -430,9 +468,9 @@ export default function ContentOverviewCard({
             px: 1.5,
             py: 0.8,
             borderRadius: "6px",
-            border: "1px solid #E3E3E3",
-            bgcolor: "#F7F7F7",
-            color: "#8C8C8C",
+            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+            color: (theme) => theme.palette.dashboard.textSecondary,
             fontSize: 13,
             fontWeight: 700,
             textAlign: "center",
@@ -453,13 +491,31 @@ export default function ContentOverviewCard({
         }}
       >
         <Stack direction="row" alignItems="flex-start">
-          <CategoryOutlinedIcon sx={{ fontSize: 30, color: "#263238" }} />
-          <Box sx={{ width: "2px", minHeight: 130, mx: 1, bgcolor: "#D6D6D6" }} />
+          <CategoryOutlinedIcon
+            sx={{
+              fontSize: 30,
+              color: (theme) => theme.palette.dashboard.textPrimary,
+            }}
+          />
+          <Box
+            sx={{
+              width: "2px",
+              minHeight: 130,
+              mx: 1,
+              bgcolor: (theme) => theme.palette.dashboard.divider,
+            }}
+          />
         </Stack>
 
         <Box sx={{ textAlign: "right" }}>
           <Stack direction="row" alignItems="center" gap={0.8}>
-            <Typography sx={{ color: "#263238", fontSize: 22, fontWeight: 800 }}>
+            <Typography
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 22,
+                fontWeight: 800,
+              }}
+            >
               الوسائط
             </Typography>
             <Box
@@ -486,7 +542,7 @@ export default function ContentOverviewCard({
           <Typography
             sx={{
               mt: 0.8,
-              color: "#8F8F8F",
+              color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 15,
               fontWeight: 500,
               lineHeight: 1.7,

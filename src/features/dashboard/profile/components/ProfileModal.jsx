@@ -11,16 +11,18 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ProfileForm from "./ProfileForm";
 import { useSupervisorProfileQuery } from "../hooks/useSupervisorProfileQuery";
 
-function getStoredSupervisorId() {
+function getStoredAuthUser() {
   try {
-    return JSON.parse(localStorage.getItem("authUser"))?.id;
+    return JSON.parse(localStorage.getItem("authUser"));
   } catch {
     return null;
   }
 }
 
 export default function ProfileModal({ open, onClose }) {
-  const supervisorId = getStoredSupervisorId();
+  const authUser = getStoredAuthUser();
+  const supervisorId = authUser?.id;
+  const storedPhoto = authUser?.photo || authUser?.avatar || authUser?.avatar_url || "";
   const profileQuery = useSupervisorProfileQuery(supervisorId, open);
 
   return (
@@ -120,6 +122,7 @@ export default function ProfileModal({ open, onClose }) {
             <ProfileForm
               profile={profileQuery.data?.data}
               supervisorId={supervisorId}
+              fallbackPhoto={storedPhoto}
               onUpdateSuccess={onClose}
             />
           )}

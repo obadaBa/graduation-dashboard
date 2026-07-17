@@ -14,7 +14,11 @@ export default function HomeThemeSwitch() {
       <Switch
         checked={isDark}
         onChange={toggleColorMode}
-        icon={<LightModeRoundedIcon sx={{ fontSize: 24, color: "#5583FF" }} />}
+        icon={
+          <LightModeRoundedIcon
+            sx={{ fontSize: 24, color: theme.palette.dashboard.logoPrimary }}
+          />
+        }
         checkedIcon={<DarkModeRoundedIcon sx={{ fontSize: 24, color: "#FFFFFF" }} />}
         sx={{
           width: 62,
@@ -27,7 +31,7 @@ export default function HomeThemeSwitch() {
               transform: "translateX(26px)",
               color: "#FFFFFF",
               "& + .MuiSwitch-track": {
-                bgcolor: "#5583FF",
+                bgcolor: theme.palette.dashboard.logoPrimary,
                 opacity: 1,
               },
             },
@@ -36,12 +40,14 @@ export default function HomeThemeSwitch() {
             width: 26,
             height: 26,
             boxShadow: "none",
-            bgcolor: isDark ? "#121212" : "#F3F6FF",
+            bgcolor: isDark ? theme.palette.dashboard.surface : "#F3F6FF",
           },
           "& .MuiSwitch-track": {
             borderRadius: 999,
             opacity: 1,
-            bgcolor: alpha(theme.palette.primary.main, 0.12),
+            bgcolor: isDark
+              ? alpha(theme.palette.dashboard.logoPrimary, 0.22)
+              : alpha(theme.palette.primary.main, 0.12),
           },
         }}
       />

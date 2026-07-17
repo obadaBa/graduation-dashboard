@@ -12,10 +12,15 @@ export function useTestAiEvaluationStatusQuery(
     queryFn: () => getTestAiEvaluationStatus(evaluationRequestId),
     enabled: Boolean(evaluationRequestId) && enabled,
     refetchInterval: (query) => {
+      if (query.state.error) {
+        return false;
+      }
+
       const status = query.state.data?.data?.status?.toLowerCase();
 
       return TERMINAL_STATUSES.has(status) ? false : 2000;
     },
-    retry: 1,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 }

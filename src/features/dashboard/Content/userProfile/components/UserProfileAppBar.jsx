@@ -14,13 +14,15 @@ function TabAction({ label, icon, active = false, onClick }) {
         px: 2.1,
         borderRadius: active ? "10px" : 0,
         border: active ? "1px solid #5C84FF" : "none",
-        bgcolor: active ? "#FFFFFF" : "transparent",
-        color: active ? "#5C84FF" : "#8F8F8F",
+        bgcolor: active ? ((theme) => theme.palette.dashboard.surface) : "transparent",
+        color: active
+          ? "#5C84FF"
+          : ((theme) => theme.palette.dashboard.textSecondary),
         fontSize: 19,
         fontWeight: active ? 700 : 600,
         whiteSpace: "nowrap",
         "&:hover": {
-          bgcolor: active ? "#FFFFFF" : "transparent",
+          bgcolor: active ? ((theme) => theme.palette.dashboard.surface) : "transparent",
         },
         "& .MuiButton-startIcon": {
           marginInlineStart: 0,
@@ -69,7 +71,7 @@ export default function UserProfileAppBar({
         width: "100%",
         minHeight: 68,
         borderRadius: "14px",
-        bgcolor: "#FFFFFF",
+        bgcolor: (theme) => theme.palette.dashboard.surface,
         px: 0,
         display: "flex",
         alignItems: "center",
@@ -82,9 +84,9 @@ export default function UserProfileAppBar({
         alignItems="center"
         sx={{
           minHeight: 46,
-          border: "1px solid #EBEBEB",
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
           overflow: "hidden",
-          bgcolor: "#FFFFFF",
+          bgcolor: (theme) => theme.palette.dashboard.surface,
           p: 0.6,
         }}
       >
@@ -108,12 +110,12 @@ export default function UserProfileAppBar({
           mr: 1.2,
           borderRadius: "8px",
           border: "1.5px dashed #FF6A64",
-          bgcolor: "#FFFFFF",
+          bgcolor: (theme) => theme.palette.dashboard.surface,
           color: "#FF6A64",
           fontSize: 16,
           fontWeight: 700,
           "&:hover": {
-            bgcolor: "#FFFFFF",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
             borderColor: "#FF6A64",
           },
         }}
