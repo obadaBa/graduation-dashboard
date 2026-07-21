@@ -1,7 +1,8 @@
 import httpClient from "../../../../lib/api/httpClient";
 
-export function getHomeYearlyTestActivity() {
+export function getHomeYearlyTestActivity(year) {
   return httpClient.get("home/test-yearly-activity", {
+    params: { year },
     showErrorToast: true,
   });
 }

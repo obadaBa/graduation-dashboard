@@ -14,6 +14,7 @@ function updateStoredUser(name) {
         name,
       }),
     );
+    window.dispatchEvent(new Event("authUserUpdated"));
   } catch {
     // Ignore malformed legacy storage and keep the successful API update.
   }

@@ -28,6 +28,23 @@ import {
   selectSx,
 } from "../../profile/components/profileForm.styles";
 
+const SYRIAN_GOVERNORATES = [
+  "دمشق",
+  "ريف دمشق",
+  "حلب",
+  "حمص",
+  "حماة",
+  "اللاذقية",
+  "طرطوس",
+  "درعا",
+  "السويداء",
+  "القنيطرة",
+  "إدلب",
+  "الرقة",
+  "دير الزور",
+  "الحسكة",
+];
+
 export default function UsersSupervisorModal({ open, onClose }) {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -228,10 +245,11 @@ export default function UsersSupervisorModal({ open, onClose }) {
                       )
                     }
                   >
-                    <MenuItem value="دمشق">دمشق</MenuItem>
-                    <MenuItem value="حلب">حلب</MenuItem>
-                    <MenuItem value="حمص">حمص</MenuItem>
-                    <MenuItem value="اللاذقية">اللاذقية</MenuItem>
+                    {SYRIAN_GOVERNORATES.map((governorate) => (
+                      <MenuItem key={governorate} value={governorate}>
+                        {governorate}
+                      </MenuItem>
+                    ))}
                   </Select>
                 )}
               />

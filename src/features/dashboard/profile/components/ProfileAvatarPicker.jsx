@@ -94,8 +94,8 @@ export default function ProfileAvatarPicker({
             width: 70,
             height: 70,
             borderRadius: "12px",
-            bgcolor: "#D9D9D9",
-            color: "#263238",
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+            color: (theme) => theme.palette.dashboard.textPrimary,
             fontWeight: 700,
             "& img": {
               objectFit: "cover",
@@ -126,10 +126,12 @@ export default function ProfileAvatarPicker({
           bottom: -4,
           width: 24,
           height: 24,
-          bgcolor: "#FFFFFF",
-          border: "1px solid #DFDFDF",
-          color: "#A1A1A1",
-          "&:hover": { bgcolor: "#FFFFFF" },
+          bgcolor: (theme) => theme.palette.dashboard.surface,
+          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+          color: (theme) => theme.palette.dashboard.textSecondary,
+          "&:hover": {
+            bgcolor: (theme) => theme.palette.dashboard.hoverItem.background,
+          },
         }}
       >
         {isBusy ? (
@@ -151,7 +153,13 @@ export default function ProfileAvatarPicker({
               mt: 0.8,
               minWidth: 150,
               borderRadius: "10px",
-              boxShadow: "0 8px 24px rgba(15, 23, 42, 0.14)",
+              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+              color: (theme) => theme.palette.dashboard.textPrimary,
+              border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+              boxShadow: (theme) =>
+                theme.palette.mode === "dark"
+                  ? "0 14px 32px rgba(0, 0, 0, 0.3)"
+                  : "0 8px 24px rgba(15, 23, 42, 0.14)",
             },
           },
         }}
@@ -174,7 +182,7 @@ export default function ProfileAvatarPicker({
           sx: {
             borderRadius: "12px",
             overflow: "hidden",
-            bgcolor: "#FFFFFF",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
           },
         }}
       >
@@ -185,14 +193,25 @@ export default function ProfileAvatarPicker({
             top: 8,
             left: 8,
             zIndex: 1,
-            bgcolor: "#FFFFFF",
-            boxShadow: "0 2px 10px rgba(15, 23, 42, 0.12)",
-            "&:hover": { bgcolor: "#FFFFFF" },
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+            color: (theme) => theme.palette.dashboard.textPrimary,
+            boxShadow: (theme) =>
+              theme.palette.mode === "dark"
+                ? "0 8px 22px rgba(0, 0, 0, 0.28)"
+                : "0 2px 10px rgba(15, 23, 42, 0.12)",
+            "&:hover": {
+              bgcolor: (theme) => theme.palette.dashboard.hoverItem.background,
+            },
           }}
         >
           <CloseRoundedIcon sx={{ fontSize: 20 }} />
         </IconButton>
-        <DialogContent sx={{ p: 0, bgcolor: "#F7F7F7" }}>
+        <DialogContent
+          sx={{
+            p: 0,
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+          }}
+        >
           <Box
             component="img"
             src={avatarSrc}

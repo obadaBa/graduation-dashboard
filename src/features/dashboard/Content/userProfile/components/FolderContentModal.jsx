@@ -10,7 +10,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import { useNavigate } from "react-router";
-import TicketCard from "../../../Home/components/TicketCard";
+import TicketCard from "../../../Home/components/HomeSection2/TicketCard";
 import folderOpenImage from "../../../Assets/folder-open.svg";
 import { useUserProfileFolderDetailsQuery } from "../../hooks/useUserProfileFolderDetailsQuery";
 

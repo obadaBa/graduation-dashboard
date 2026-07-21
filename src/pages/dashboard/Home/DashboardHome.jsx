@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import HomeSection1 from "../../../features/dashboard/Home/components/HomeSection1";
-import HomeSection2 from "../../../features/dashboard/Home/components/HomeSection2";
-import HomeSection3 from "../../../features/dashboard/Home/components/HomeSection3";
+import HomeSection1 from "../../../features/dashboard/Home/components/HomeSection1/HomeSection1";
+import HomeSection2 from "../../../features/dashboard/Home/components/HomeSection2/HomeSection2";
+import HomeSection3 from "../../../features/dashboard/Home/components/HomeSection3/HomeSection3";
 
 function getStoredUserRole() {
   try {

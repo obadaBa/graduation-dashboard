@@ -9,11 +9,11 @@ import {
 } from "@mui/material";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import HomeThemeSwitch from "./HomeThemeSwitch";
-import ProfileModal from "../../profile/components/ProfileModal";
+import ProfileModal from "../../../profile/components/ProfileModal";
 import NotificationsSlide from "./NotificationsSlide";
-import { useFirebaseMessaging } from "../../../notifications/hooks/useFirebaseMessaging";
-import { useUnreadNotificationsCountQuery } from "../../../notifications/hooks/useUnreadNotificationsCountQuery";
-import { showNotificationToast } from "../../../../shared/lib/Tost/toastService";
+import { useFirebaseMessaging } from "../../../../notifications/hooks/useFirebaseMessaging";
+import { useUnreadNotificationsCountQuery } from "../../../../notifications/hooks/useUnreadNotificationsCountQuery";
+import { showNotificationToast } from "../../../../../shared/lib/Tost/toastService";
 
 function HeaderAction({ children, sx }) {
   return (

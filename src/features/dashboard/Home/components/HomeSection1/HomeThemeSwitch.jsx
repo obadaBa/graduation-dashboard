@@ -2,7 +2,7 @@ import { Switch } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
-import { useColorMode } from "../../../../app/theme/colorModeContext";
+import { useColorMode } from "../../../../../app/theme/colorModeContext";
 
 export default function HomeThemeSwitch() {
   const theme = useTheme();

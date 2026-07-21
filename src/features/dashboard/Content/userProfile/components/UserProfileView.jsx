@@ -39,7 +39,10 @@ export default function UserProfileView() {
         bgcolor: (theme) => theme.palette.dashboard.pageBackground,
         px: { xs: 2, md: 4 },
         py: { xs: 2, md: 3 },
-        overflow: "hidden",
+        overflowX: "hidden",
+        overflowY: "auto",
+        minWidth: 0,
+        boxSizing: "border-box",
       }}
     >
       <UserProfileHeader />

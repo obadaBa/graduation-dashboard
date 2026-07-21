@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { useMarkNotificationsAsReadMutation } from "../../../notifications/hooks/useMarkNotificationsAsReadMutation";
-import { useNotificationsQuery } from "../../../notifications/hooks/useNotificationsQuery";
+import { useMarkNotificationsAsReadMutation } from "../../../../notifications/hooks/useMarkNotificationsAsReadMutation";
+import { useNotificationsQuery } from "../../../../notifications/hooks/useNotificationsQuery";
 
 function cleanText(value, fallback = "") {
   if (value == null) return fallback;

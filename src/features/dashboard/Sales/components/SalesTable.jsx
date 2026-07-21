@@ -288,12 +288,13 @@ export default function SalesTable({ salesQuery }) {
         border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
         bgcolor: (theme) => theme.palette.dashboard.surface,
         boxShadow: (theme) => theme.palette.dashboard.shadow,
-        overflow: "hidden",
+        overflowX: { xs: "auto", lg: "hidden" },
+        overflowY: "hidden",
         direction: "rtl",
         display: "flex",
         flexDirection: "column",
-        minHeight: 0,
-        flex: "1 1 0",
+        minHeight: { xs: 360, lg: 0 },
+        flex: { xs: "0 0 auto", lg: "1 1 0" },
       }}
     >
       <Box
@@ -301,6 +302,7 @@ export default function SalesTable({ salesQuery }) {
           display: "grid",
           gridTemplateColumns,
           alignItems: "center",
+          minWidth: { xs: 980, lg: 0 },
           minHeight: 48,
           bgcolor: (theme) => theme.palette.dashboard.chartBackground,
           px: 1.4,
@@ -328,6 +330,7 @@ export default function SalesTable({ salesQuery }) {
         sx={{
           minHeight: 0,
           flex: 1,
+          minWidth: { xs: 980, lg: 0 },
           overflowY: "auto",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
@@ -366,6 +369,7 @@ export default function SalesTable({ salesQuery }) {
                 display: "grid",
                 gridTemplateColumns,
                 alignItems: "center",
+                minWidth: { xs: 980, lg: 0 },
                 minHeight: 41,
                 px: 1.4,
                 borderTop: (theme) =>
@@ -421,7 +425,7 @@ export default function SalesTable({ salesQuery }) {
 
       <Box
         sx={{
-          display: "grid",
+          display: { xs: "none", lg: "grid" },
           gridTemplateColumns: "repeat(4, 1fr)",
           borderTop: (theme) =>
             `1px solid ${theme.palette.dashboard.chartBorder}`,

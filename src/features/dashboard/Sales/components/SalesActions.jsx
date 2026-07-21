@@ -1,11 +1,8 @@
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import {
   Box,
   Button,
-  InputBase,
   MenuItem,
   Popover,
   Select,
@@ -101,49 +98,6 @@ export default function SalesActions({
       }}
     >
       <Stack direction="row" alignItems="center" spacing={1.4} gap={1}>
-        <Box
-          sx={{
-            width: { xs: "100%", sm: 424 },
-            height: 40,
-            borderRadius: "999px",
-            bgcolor: (theme) => theme.palette.dashboard.surface,
-            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-            boxShadow: (theme) => theme.palette.dashboard.shadow,
-            display: "flex",
-            alignItems: "center",
-            px: 1.4,
-            gap: 1,
-          }}
-        >
-          <SearchRoundedIcon
-            sx={{
-              fontSize: 22,
-              color: (theme) => theme.palette.dashboard.textSecondary,
-            }}
-          />
-          <InputBase
-            placeholder="البحث عن عملية الشراء"
-            disabled
-            sx={{
-              flex: 1,
-              color: (theme) => theme.palette.dashboard.textPrimary,
-              fontSize: 14,
-              fontWeight: 500,
-              textAlign: "right",
-              "& input::placeholder": {
-                color: (theme) => theme.palette.dashboard.textSecondary,
-                opacity: 1,
-              },
-            }}
-          />
-          <CloseRoundedIcon
-            sx={{
-              fontSize: 18,
-              color: (theme) => theme.palette.dashboard.textSecondary,
-            }}
-          />
-        </Box>
-
         <Select
           value={sortBy}
           onChange={(event) => onSortChange(event.target.value)}

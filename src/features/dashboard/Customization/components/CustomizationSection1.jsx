@@ -3,7 +3,7 @@ import { useTheme } from "@mui/material/styles";
 import CategoryTitlesCard from "./CategoryTitlesCard";
 import CustomizationHeader from "./CustomizationHeader";
 import ScientificCategoriesCard from "./ScientificCategoriesCard";
-import TaxRateCard from "./TaxRateCard";
+/* import TaxRateCard from "./TaxRateCard"; */
 
 export default function CustomizationSection1() {
   const theme = useTheme();
@@ -60,9 +60,9 @@ export default function CustomizationSection1() {
           <Box sx={{ order: { xs: 2, md: 2 }, minWidth: 0 }}>
             <CategoryTitlesCard />
           </Box>
-          <Box sx={{ order: { xs: 3, md: 3 }, minWidth: 0 }}>
+         {/*  <Box sx={{ order: { xs: 3, md: 3 }, minWidth: 0 }}>
             <TaxRateCard />
-          </Box>
+          </Box> */}
         </Box>
       </Box>
     </Box>

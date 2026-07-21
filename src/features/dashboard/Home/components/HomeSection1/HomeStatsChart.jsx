@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
-import { useHomeYearlyTestActivityQuery } from "../hooks/useHomeYearlyTestActivityQuery";
+import { useHomeYearlyTestActivityQuery } from "../../hooks/useHomeYearlyTestActivityQuery";
 import HomeStatsExportButton from "./HomeStatsExportButton";
 
 const monthLabels = {
@@ -34,8 +34,18 @@ const fallbackMonths = Array.from({ length: 12 }, (_, index) => ({
   downloads_count: 0,
 }));
 
-function buildChartData(apiData) {
-  const year = apiData?.year || new Date().getFullYear();
+function buildAvailableYears() {
+  const currentYear = new Date().getFullYear();
+  const firstYear = 2025;
+
+  return Array.from(
+    { length: Math.max(1, currentYear - firstYear + 1) },
+    (_, index) => currentYear - index,
+  );
+}
+
+function buildChartData(apiData, fallbackYear) {
+  const year = apiData?.year || fallbackYear;
   const monthsByNumber = new Map(
     (apiData?.months || []).map((month) => [month.month_no, month]),
   );
@@ -196,9 +206,11 @@ function StackedTooltip({ values }) {
 }
 
 export default function HomeStatsChart() {
+  const availableYears = buildAvailableYears();
+  const [selectedYear, setSelectedYear] = useState(availableYears[0]);
   const [hoveredBar, setHoveredBar] = useState(null);
-  const yearlyActivityQuery = useHomeYearlyTestActivityQuery();
-  const chartData = buildChartData(yearlyActivityQuery.data?.data);
+  const yearlyActivityQuery = useHomeYearlyTestActivityQuery(selectedYear);
+  const chartData = buildChartData(yearlyActivityQuery.data?.data, selectedYear);
   const { year, labels, testsSeries, stackedSeries } = chartData;
 
   const stackedTotals = labels.map((_, monthIndex) =>
@@ -233,9 +245,9 @@ export default function HomeStatsChart() {
         />
 
         <Select
-          value={String(year)}
+          value={selectedYear}
+          onChange={(event) => setSelectedYear(Number(event.target.value))}
           size="small"
-          disabled
           IconComponent={KeyboardArrowDownRoundedIcon}
           sx={{
             minWidth: 116,
@@ -257,12 +269,6 @@ export default function HomeStatsChart() {
               fontSize: 15,
               fontWeight: 600,
             },
-            ".MuiSelect-select.Mui-disabled": {
-              WebkitTextFillColor: "#5583FF",
-            },
-            "&.Mui-disabled": {
-              opacity: 1,
-            },
             ".MuiSvgIcon-root": {
               left: 10,
               right: "auto",
@@ -270,7 +276,11 @@ export default function HomeStatsChart() {
             },
           }}
         >
-          <MenuItem value={String(year)}>{year}</MenuItem>
+          {availableYears.map((availableYear) => (
+            <MenuItem key={availableYear} value={availableYear}>
+              {availableYear}
+            </MenuItem>
+          ))}
         </Select>
       </Stack>
 

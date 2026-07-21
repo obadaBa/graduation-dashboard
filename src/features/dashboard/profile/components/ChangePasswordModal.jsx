@@ -73,7 +73,10 @@ export default function ChangePasswordModal({ open, onClose }) {
       slotProps={{
         backdrop: {
           sx: {
-            bgcolor: "rgba(255, 255, 255, 0.34)",
+            bgcolor: (theme) =>
+              theme.palette.mode === "dark"
+                ? "rgba(8, 12, 20, 0.6)"
+                : "rgba(255, 255, 255, 0.34)",
             backdropFilter: "blur(8px)",
           },
         },
@@ -107,9 +110,12 @@ export default function ChangePasswordModal({ open, onClose }) {
               sx={{
                 width: "100%",
                 minHeight: 540,
-                bgcolor: "#FFFFFF",
+                bgcolor: (theme) => theme.palette.dashboard.surface,
                 borderRadius: "14px",
-                boxShadow: "0 18px 50px rgba(15, 23, 42, 0.18)",
+                boxShadow: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? "0 24px 60px rgba(0, 0, 0, 0.42)"
+                    : "0 18px 50px rgba(15, 23, 42, 0.18)",
                 outline: "none",
                 display: "flex",
                 flexDirection: "column",
@@ -132,13 +138,17 @@ export default function ChangePasswordModal({ open, onClose }) {
                     right: 0,
                     bottom: 0,
                     height: "3px",
-                    backgroundImage:
-                      "repeating-linear-gradient(to left, #CFCFCF 0 18px, transparent 18px 29px)",
+                    backgroundImage: (theme) =>
+                      `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 29px)`,
                   },
                 }}
               >
                 <Typography
-                  sx={{ color: "#263238", fontSize: 22, fontWeight: 800 }}
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    fontSize: 22,
+                    fontWeight: 800,
+                  }}
                 >
                   تغيير كلمة المرور
                 </Typography>
@@ -151,10 +161,13 @@ export default function ChangePasswordModal({ open, onClose }) {
                     width: 34,
                     height: 34,
                     borderRadius: "6px",
-                    border: "1px solid #DFDFDF",
-                    color: "#263238",
-                    bgcolor: "#FFFFFF",
-                    "&:hover": { bgcolor: "#F8F8F8" },
+                    border: (theme) =>
+                      `1px solid ${theme.palette.dashboard.chartBorder}`,
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+                    "&:hover": {
+                      bgcolor: (theme) => theme.palette.dashboard.hoverItem.background,
+                    },
                   }}
                 >
                   <CloseRoundedIcon sx={{ fontSize: 22 }} />
@@ -183,7 +196,7 @@ export default function ChangePasswordModal({ open, onClose }) {
                   />
                   <Typography
                     sx={{
-                      color: "#8A8A8A",
+                      color: (theme) => theme.palette.dashboard.textSecondary,
                       fontSize: 12,
                       fontWeight: 500,
                       lineHeight: 1.8,
@@ -199,7 +212,7 @@ export default function ChangePasswordModal({ open, onClose }) {
                   <Box>
                     <Typography
                       sx={{
-                        color: "#263238",
+                        color: (theme) => theme.palette.dashboard.textPrimary,
                         fontSize: 15,
                         fontWeight: 800,
                         mb: 0.9,
@@ -220,7 +233,7 @@ export default function ChangePasswordModal({ open, onClose }) {
                   <Box>
                     <Typography
                       sx={{
-                        color: "#263238",
+                        color: (theme) => theme.palette.dashboard.textPrimary,
                         fontSize: 15,
                         fontWeight: 800,
                         mb: 0.9,
@@ -241,7 +254,7 @@ export default function ChangePasswordModal({ open, onClose }) {
                   <Box>
                     <Typography
                       sx={{
-                        color: "#263238",
+                        color: (theme) => theme.palette.dashboard.textPrimary,
                         fontSize: 15,
                         fontWeight: 800,
                         mb: 0.9,
@@ -271,13 +284,15 @@ export default function ChangePasswordModal({ open, onClose }) {
                   sx={{
                     height: 42,
                     borderRadius: "6px",
-                    bgcolor: "#5583FF",
+                    bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
                     color: "#FFFFFF",
                     fontSize: 15,
                     fontWeight: 700,
-                    "&:hover": { bgcolor: "#4777F5" },
+                    "&:hover": {
+                      bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
+                    },
                     "&.Mui-disabled": {
-                      bgcolor: "#AFC3FF",
+                      bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                       color: "#FFFFFF",
                     },
                   }}

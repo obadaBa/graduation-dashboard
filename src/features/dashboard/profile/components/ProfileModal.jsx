@@ -33,7 +33,10 @@ export default function ProfileModal({ open, onClose }) {
       slotProps={{
         backdrop: {
           sx: {
-            bgcolor: "rgba(255, 255, 255, 0.44)",
+            bgcolor: (theme) =>
+              theme.palette.mode === "dark"
+                ? "rgba(8, 12, 20, 0.56)"
+                : "rgba(255, 255, 255, 0.44)",
             backdropFilter: "blur(8px)",
           },
         },
@@ -54,8 +57,11 @@ export default function ProfileModal({ open, onClose }) {
             right: 0,
             width: { xs: "100%", sm: 390 },
             height: "100dvh",
-            bgcolor: "#FFFFFF",
-            boxShadow: "-10px 0 30px rgba(15, 23, 42, 0.08)",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+            boxShadow: (theme) =>
+              theme.palette.mode === "dark"
+                ? "-10px 0 34px rgba(0, 0, 0, 0.38)"
+                : "-10px 0 30px rgba(15, 23, 42, 0.08)",
             display: "flex",
             flexDirection: "column",
             outline: "none",
@@ -76,13 +82,18 @@ export default function ProfileModal({ open, onClose }) {
                 right: 0,
                 bottom: 0,
                 height: "3px",
-                backgroundImage:
-                  "repeating-linear-gradient(to left, #CFCFCF 0 18px, transparent 18px 29px)",
+                backgroundImage: (theme) =>
+                  `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 29px)`,
               },
             }}
           >
             <Typography
-              sx={{ color: "#263238", fontSize: 20, fontWeight: 700, mt: 2 }}
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 20,
+                fontWeight: 700,
+                mt: 2,
+              }}
             >
               ملفي الشخصي
             </Typography>
@@ -91,10 +102,15 @@ export default function ProfileModal({ open, onClose }) {
               sx={{
                 width: 32,
                 height: 32,
-                bgcolor: "#FFFFFF",
-                boxShadow: "0 2px 10px rgba(15, 23, 42, 0.08)",
-                color: "#263238",
-                "&:hover": { bgcolor: "#F7F7F7" },
+                bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+                boxShadow: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? "0 8px 22px rgba(0, 0, 0, 0.26)"
+                    : "0 2px 10px rgba(15, 23, 42, 0.08)",
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                "&:hover": {
+                  bgcolor: (theme) => theme.palette.dashboard.hoverItem.background,
+                },
               }}
             >
               <CloseRoundedIcon sx={{ fontSize: 20 }} />

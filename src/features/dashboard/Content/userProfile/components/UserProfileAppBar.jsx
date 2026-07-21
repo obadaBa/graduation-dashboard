@@ -88,6 +88,7 @@ export default function UserProfileAppBar({
           overflow: "hidden",
           bgcolor: (theme) => theme.palette.dashboard.surface,
           p: 0.6,
+          mr:2
         }}
       >
         {tabs.map((tab) => (

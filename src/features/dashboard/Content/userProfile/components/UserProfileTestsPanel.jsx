@@ -5,6 +5,8 @@ import {
   CircularProgress,
   Grid,
   InputBase,
+  Menu,
+  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
@@ -13,10 +15,23 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useNavigate, useParams } from "react-router";
 import ContentStatsPanel from "../../components/ContentStatsPanel";
-import TicketCard from "../../../Home/components/TicketCard";
+import TicketCard from "../../../Home/components/HomeSection2/TicketCard";
 import { useUserProfileTestsQuery } from "../../hooks/useUserProfileTestsQuery";
 
 const EMPTY_TESTS = [];
+
+const SORT_OPTIONS = [
+  { value: "latest", label: "الأحدث" },
+  { value: "price", label: "السعر" },
+  { value: "rating", label: "التقييم" },
+  { value: "difficulty", label: "مستوى الصعوبة" },
+];
+
+const DIFFICULTY_ORDER = {
+  "سهل": 1,
+  "متوسط": 2,
+  "صعب": 3,
+};
 
 function getDifficultyColor(difficulty) {
   if (difficulty === "سهل") return "#34C759";
@@ -34,6 +49,8 @@ export default function UserProfileTestsPanel() {
   const { userId } = useParams();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
+  const [sortBy, setSortBy] = useState("latest");
+  const [sortAnchorEl, setSortAnchorEl] = useState(null);
   const testsQuery = useUserProfileTestsQuery(userId);
   const responseData = testsQuery.data?.data || testsQuery.data || {};
   const stats = responseData.stats || {};
@@ -66,15 +83,43 @@ export default function UserProfileTestsPanel() {
 
   const displayedTests = useMemo(() => {
     const normalizedSearch = searchValue.trim().toLocaleLowerCase("ar");
+    const filteredTests = normalizedSearch
+      ? tests.filter((test) =>
+          [test.title, test.description, ...(test.interests || [])].some((value) =>
+            String(value || "")
+              .toLocaleLowerCase("ar")
+              .includes(normalizedSearch),
+          ),
+        )
+      : tests;
 
-    if (!normalizedSearch) return tests;
+    return [...filteredTests].sort((firstTest, secondTest) => {
+      if (sortBy === "price") {
+        return Number(secondTest.price || 0) - Number(firstTest.price || 0);
+      }
 
-    return tests.filter((test) =>
-      [test.title, test.description, ...(test.interests || [])].some((value) =>
-        String(value || "").toLocaleLowerCase("ar").includes(normalizedSearch),
-      ),
-    );
-  }, [searchValue, tests]);
+      if (sortBy === "rating") {
+        return (
+          Number(secondTest.average_rating || 0) -
+          Number(firstTest.average_rating || 0)
+        );
+      }
+
+      if (sortBy === "difficulty") {
+        return (
+          (DIFFICULTY_ORDER[secondTest.difficulty_level] || 0) -
+          (DIFFICULTY_ORDER[firstTest.difficulty_level] || 0)
+        );
+      }
+
+      const firstDate = Date.parse(firstTest.published_at) || 0;
+      const secondDate = Date.parse(secondTest.published_at) || 0;
+
+      return secondDate - firstDate;
+    });
+  }, [searchValue, sortBy, tests]);
+  const selectedSortLabel =
+    SORT_OPTIONS.find((option) => option.value === sortBy)?.label || "الأحدث";
 
   return (
     <Box
@@ -92,31 +137,17 @@ export default function UserProfileTestsPanel() {
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
       
 
-        <Stack direction={{ xs: "column", md: "row" }} spacing={1.5} alignItems={{ xs: "stretch", md: "center" }}>
-          <Button
-            endIcon={<KeyboardArrowDownRoundedIcon />}
-            sx={{
-              minWidth: 110,
-              height: 42,
-              borderRadius: "999px",
-              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-              color: (theme) => theme.palette.dashboard.textSecondary,
-              fontSize: 15,
-              fontWeight: 500,
-              "&:hover": {
-                bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-              },
-            }}
-          >
-            المعرف
-          </Button>
+        <Stack direction={{ xs: "column", md: "row" }} spacing={1.5} alignItems={{ xs: "stretch", md: "center" }} gap={1}>
+         
 
           <Box
             sx={{
               width: { xs: "100%", md: 310 },
               height: 46,
               borderRadius: "999px",
-              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+              bgcolor: (theme) => theme.palette.dashboard.surface,
+              border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+              boxShadow: (theme) => theme.palette.dashboard.shadow,
               px: 1.8,
               display: "flex",
               alignItems: "center",
@@ -138,9 +169,77 @@ export default function UserProfileTestsPanel() {
                 "& input": {
                   textAlign: "right",
                 },
+                "& input::placeholder": {
+                  color: (theme) => theme.palette.dashboard.textSecondary,
+                  opacity: 1,
+                },
               }}
             />
           </Box>
+           <Button
+            onClick={(event) => setSortAnchorEl(event.currentTarget)}
+            endIcon={<KeyboardArrowDownRoundedIcon />}
+            sx={{
+              minWidth: 110,
+              height: 42,
+              borderRadius: "999px",
+              bgcolor: (theme) => theme.palette.dashboard.surface,
+              border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+              boxShadow: (theme) => theme.palette.dashboard.shadow,
+              color: (theme) => theme.palette.dashboard.textSecondary,
+              fontSize: 15,
+              fontWeight: 500,
+              "&:hover": {
+                bgcolor: (theme) => theme.palette.dashboard.surface,
+                border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+              },
+              "& .MuiButton-endIcon": {
+                color: (theme) => theme.palette.dashboard.textSecondary,
+              },
+            }}
+          >
+            {selectedSortLabel}
+          </Button>
+          <Menu
+            anchorEl={sortAnchorEl}
+            open={Boolean(sortAnchorEl)}
+            onClose={() => setSortAnchorEl(null)}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+            slotProps={{
+              paper: {
+                sx: {
+                  mt: 0.75,
+                  minWidth: 164,
+                  borderRadius: "10px",
+                  bgcolor: (theme) => theme.palette.dashboard.surface,
+                  border: (theme) =>
+                    `1px solid ${theme.palette.dashboard.chartBorder}`,
+                  boxShadow: (theme) => theme.palette.dashboard.shadow,
+                  direction: "rtl",
+                },
+              },
+            }}
+          >
+            {SORT_OPTIONS.map((option) => (
+              <MenuItem
+                key={option.value}
+                selected={sortBy === option.value}
+                onClick={() => {
+                  setSortBy(option.value);
+                  setSortAnchorEl(null);
+                }}
+                sx={{
+                  justifyContent: "flex-end",
+                  color: (theme) => theme.palette.dashboard.textPrimary,
+                  fontSize: 14,
+                  fontWeight: 600,
+                }}
+              >
+                {option.label}
+              </MenuItem>
+            ))}
+          </Menu>
         </Stack>
           <InfoOutlinedIcon
             sx={{
@@ -161,6 +260,7 @@ export default function UserProfileTestsPanel() {
       >
         <Box
           sx={{
+            display: { xs: "none", lg: "block" },
             width: { xs: "100%", lg: "16%" },
             flexShrink: 0,
             position: "relative",

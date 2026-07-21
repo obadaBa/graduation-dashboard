@@ -40,6 +40,7 @@ function BasicInfoItem({ icon, label, value, color }) {
       sx={{
         minWidth: 125,
         px: 1.5,
+        flexShrink: 0,
       }}
     >
       <Box sx={{ color, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -150,12 +151,13 @@ function ProfileStatCard({ value, label, icon }) {
 }
 
 function VerificationInfo({ header, onShowCertificate }) {
+  const verifiedBy = header.verified_by;
   const verifierRole =
-    header.verified_by?.role === "owner"
+    verifiedBy?.role === "owner"
       ? "مالك التطبيق"
-      : header.verified_by?.role === "supervisor"
+      : verifiedBy?.role === "supervisor"
         ? "مشرف"
-        : header.verified_by?.role || "";
+        : verifiedBy?.role || "";
 
   return (
     <Box sx={{ width: "100%", textAlign: "right", direction: "rtl" }}>
@@ -171,11 +173,15 @@ function VerificationInfo({ header, onShowCertificate }) {
           {header.verified_by ? "تم توثيقه بواسطة" : "تم توثيقه بتاريخ"}
         </Typography>
 
-        {header.verified_by && (
-          <>
+        {verifiedBy && (
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={0.8}
+          >
             <Avatar
-              src={header.verified_by.avatar}
-              alt={header.verified_by.name}
+              src={verifiedBy.avatar}
+              alt={verifiedBy.name}
               sx={{
                 width: 32,
                 height: 32,
@@ -191,7 +197,7 @@ function VerificationInfo({ header, onShowCertificate }) {
                   whiteSpace: "nowrap",
                 }}
               >
-                {header.verified_by.name}
+                {verifiedBy.name}
               </Typography>
               <Typography
                 sx={{
@@ -204,7 +210,7 @@ function VerificationInfo({ header, onShowCertificate }) {
                 {verifierRole}
               </Typography>
             </Box>
-          </>
+          </Stack>
         )}
       </Stack>
       <Typography
@@ -230,13 +236,13 @@ function VerificationInfo({ header, onShowCertificate }) {
             height: 30,
             px: 1.3,
             borderRadius: "999px",
-            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-            color: (theme) => theme.palette.dashboard.textSecondary,
+            bgcolor: "#5C84FF",
+            color: "#FFFFFF",
             fontSize: 12,
             fontWeight: 600,
             whiteSpace: "nowrap",
             "&:hover": {
-              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+              bgcolor: "#4A72E6",
             },
           }}
         >
@@ -350,6 +356,7 @@ export default function UserProfileOverview() {
             bgcolor: (theme) => theme.palette.dashboard.surface,
             boxShadow: (theme) => theme.palette.dashboard.shadow,
             overflow: "hidden",
+            boxSizing: "border-box",
           }}
         >
           <Box sx={{ position: "relative" }}>
@@ -392,23 +399,53 @@ export default function UserProfileOverview() {
               px: { xs: 2, md: 4 },
               pt: { xs: 4.1, md: 4.4 },
               pb: 2.2,
+              minWidth: 0,
             }}
           >
             <Box
               sx={{
-                display: "flex",
+                display: "grid",
+                gridTemplateAreas: {
+                  xs: `"profile" "verification"`,
+                  lg: `"verification profile"`,
+                },
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  lg: "minmax(520px, 1fr) minmax(520px, 0.95fr)",
+                },
+                columnGap: {
+                  xs: 3,
+                  lg: "clamp(48px, 7vw, 132px)",
+                  xl: "clamp(72px, 8vw, 180px)",
+                },
+                rowGap: { xs: 2.4, lg: 0 },
                 alignItems: "center",
-                justifyContent: "space-between",
-                gap: 2,
-                direction: "rtl",
+                direction: "ltr",
+                minWidth: 0,
               }}
             >
-              <Box sx={{ textAlign: "right", pr: { xs: 0, md: 14 }, mt: { xs: -0.4, md: -1.7 } }}>
+              <Box
+                sx={{
+                  gridArea: "profile",
+                  textAlign: "right",
+                  direction: "rtl",
+                  pr: {
+                    xs: "calc(18px + 92px + 4px)",
+                    md: "calc(42px + 118px + -22px)",
+                  },
+                  mt: { xs: -1.2, md: -5.8 },
+                  minWidth: 0,
+                }}
+              >
                 <Stack
                   direction="row-reverse"
                   spacing={0.7}
                   alignItems="center"
                   justifyContent="flex-start"
+                  sx={{
+                    width: "fit-content",
+                    ml: "auto",
+                  }}
                 >
                   <Typography
                     sx={{
@@ -433,6 +470,8 @@ export default function UserProfileOverview() {
                     color: (theme) => theme.palette.dashboard.textSecondary,
                     fontSize: { xs: 16, md: 17 },
                     fontWeight: 500,
+                    width: "fit-content",
+                    ml: "auto",
                   }}
                 >
                   <Box
@@ -502,9 +541,11 @@ export default function UserProfileOverview() {
 
               <Box
                 sx={{
+                  gridArea: "verification",
                   maxWidth: 560,
                   width: "100%",
-                  flexShrink: 1,
+                  minWidth: 0,
+                  justifySelf: "center",
                 }}
               >
                 <Box
@@ -531,13 +572,22 @@ export default function UserProfileOverview() {
               <Box
                 sx={{
                   display: "grid",
-                  gridTemplateColumns: { xs: "1fr", md: "0.82fr 1.18fr" },
-                  gap: { xs: 3, md: 59 },
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    lg: "minmax(520px, 1fr) minmax(520px, 0.95fr)",
+                  },
+                  columnGap: {
+                    xs: 3,
+                    lg: "clamp(48px, 7vw, 132px)",
+                    xl: "clamp(72px, 8vw, 180px)",
+                  },
+                  rowGap: { xs: 3, md: 2 },
                   alignItems: "start",
                   direction: "rtl",
+                  minWidth: 0,
                 }}
               >
-                <Box sx={{ textAlign: "right" }}>
+                <Box sx={{ textAlign: "right", minWidth: 0 }}>
                   <Typography
                     sx={{
                       color: (theme) => theme.palette.dashboard.textPrimary,
@@ -553,7 +603,7 @@ export default function UserProfileOverview() {
                     direction="row"
                     alignItems="flex-start"
                     justifyContent="space-between"
-                    sx={{ mt: 2.4 }}
+                    sx={{ mt: 2.4, minWidth: 0, width: "100%" }}
                   >
                     <BasicInfoItem
                       icon={<SchoolOutlinedIcon sx={{ fontSize: 34 }} />}
@@ -561,13 +611,13 @@ export default function UserProfileOverview() {
                       value={basicInfo.education_level || "-"}
                       color="#2AA8FF"
                     />
-  <Box
-    sx={{
-      width: "1px",
-      height: 92,
-      bgcolor: (theme) => theme.palette.dashboard.divider,
-    }}
-  />
+                    <Box
+                      sx={{
+                        width: "1px",
+                        height: 92,
+                        bgcolor: (theme) => theme.palette.dashboard.divider,
+                      }}
+                    />
                     <BasicInfoItem
                       icon={<HourglassEmptyRoundedIcon sx={{ fontSize: 34 }} />}
                       label="انضم في"
@@ -614,6 +664,7 @@ export default function UserProfileOverview() {
                     maxWidth: 560,
                     justifySelf: "center",
                     width: "100%",
+                    minWidth: 0,
                   }}
                 >
                   <Box
@@ -627,7 +678,7 @@ export default function UserProfileOverview() {
                       rowGap: 2,
                       alignItems: "start",
                       direction: "ltr",
-                      transform: "translateY(12px)",
+                      minWidth: 0,
                     }}
                   >
                     <Stack spacing={1} sx={{ minWidth: 0 }}>
@@ -674,7 +725,7 @@ export default function UserProfileOverview() {
                     <Stack
                       spacing={0.7}
                       alignItems="flex-start"
-                      sx={{ minWidth: 0, width: "100%", direction: "rtl" , ml:8}}
+                      sx={{ minWidth: 0, width: "100%", direction: "rtl" }}
                     >
                       <Typography
                         sx={{

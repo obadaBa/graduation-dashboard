@@ -42,8 +42,9 @@ function HeaderAction({ label, variant = "filled", icon, onClick }) {
       onClick={onClick}
       startIcon={icon}
       sx={{
-        minWidth: 96,
-        height: 35,
+        width: { xs: "100%", sm: "auto" },
+        minWidth: { xs: 0, sm: 96 },
+        minHeight: 35,
         px: 1.8,
         borderRadius: variant === "filled" ? "18px" : "6px",
         fontSize: 13,
@@ -81,15 +82,16 @@ export default function UsersHeader() {
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
-          gap: 3,
+          flexDirection: { xs: "column", lg: "row" },
+          gap: { xs: 2, lg: 3 },
           direction: "rtl",
         }}
       >
-        <Box sx={{ textAlign: "right" }}>
+        <Box sx={{ minWidth: 0, textAlign: "right" }}>
           <Typography
             sx={{
               color: (theme) => theme.palette.dashboard.textPrimary,
-              fontSize: 28,
+              fontSize: { xs: 23, sm: 26, md: 28 },
               fontWeight: 900,
               lineHeight: 1.35,
             }}
@@ -103,27 +105,29 @@ export default function UsersHeader() {
             sx={{
               mt: 1.1,
               color: (theme) => theme.palette.dashboard.textSecondary,
-              fontSize: 17,
+              fontSize: { xs: 14, sm: 16, md: 17 },
               fontWeight: 500,
               lineHeight: 1.75,
               maxWidth: 560,
             }}
           >
             كل ما يتعلق بإدارة المستخدمين والعمليات المخصصة لهم
-            <br />
+            <Box component="br" sx={{ display: { xs: "none", sm: "block" } }} />
             موجودة في مكان واحد
           </Typography>
         </Box>
 
         <Stack
-          direction="row-reverse"
-          alignItems="center"
+          direction={{ xs: "column", sm: "row-reverse" }}
+          alignItems={{ xs: "stretch", sm: "center" }}
           sx={{
+            width: { xs: "100%", lg: "auto" },
+            maxWidth: "100%",
             borderRadius: "6px",
             border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
             bgcolor: (theme) => theme.palette.dashboard.surface,
             boxShadow: (theme) => theme.palette.dashboard.shadow,
-            overflow: "hidden",
+            overflow: "visible",
           }}
         >
           <Box sx={{ p: 1, display: isOwner ? "block" : "none" }}>
@@ -136,7 +140,7 @@ export default function UsersHeader() {
           </Box>
           <Box
             sx={{
-              display: isOwner ? "block" : "none",
+              display: { xs: "none", sm: isOwner ? "block" : "none" },
               width: "1px",
               alignSelf: "stretch",
               borderLeft: (theme) =>

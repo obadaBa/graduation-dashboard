@@ -49,15 +49,15 @@ export default function SalesSection1() {
     <Box
       sx={{
         width: "100%",
-        height: "100%",
-        minHeight: 0,
+        height: { xs: "auto", lg: "100%" },
+        minHeight: { xs: "100vh", lg: 0 },
         px: { xs: 1.5, md: 3 },
         py: 2,
         direction: "rtl",
         display: "flex",
         flexDirection: "column",
         minWidth: 0,
-        overflow: "hidden",
+        overflow: { xs: "visible", lg: "hidden" },
       }}
     >
       <SalesHeader

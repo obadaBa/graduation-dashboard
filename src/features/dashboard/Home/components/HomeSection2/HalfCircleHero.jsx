@@ -231,17 +231,38 @@ export default function HalfCircleHero({ summary }) {
           }}
         >
           <Box
+            component="svg"
+            viewBox="0 -9 820 257"
+            preserveAspectRatio="none"
             sx={{
               position: "absolute",
-              left: "50%",
-              top: 0,
-              transform: "translateX(-50%)",
-              width: { xs: 530, md: 690, lg: 820 },
-              height: { xs: 530, md: 690, lg: 820 },
-              borderRadius: "50%",
-              border: (theme) => `3px solid ${theme.palette.dashboard.logoPrimary}`,
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              color: (theme) => theme.palette.dashboard.logoPrimary,
+              zIndex: 3,
             }}
-          />
+          >
+            <circle
+              cx="410"
+              cy="410"
+              r="410"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              vectorEffect="non-scaling-stroke"
+            />
+            <circle cx="410" cy="0" r="9" fill="currentColor" />
+            <circle cx="96.8" cy="145" r="9" fill="currentColor" />
+            <circle cx="723.2" cy="145" r="9" fill="currentColor" />
+          </Box>
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              overflow: "hidden",
+            }}
+          >
           <Box
             sx={{
               position: "absolute",
@@ -307,6 +328,7 @@ export default function HalfCircleHero({ summary }) {
               </Typography>
             </Stack>
           </Box>
+          </Box>
         </Box>
 
         <FloatingStatCard
@@ -346,43 +368,6 @@ export default function HalfCircleHero({ summary }) {
           }}
         />
 
-        <Box
-          sx={{
-            position: "absolute",
-            top: 104,
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: 18,
-            height: 18,
-            borderRadius: "50%",
-            bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
-            zIndex: 3,
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            top: 248,
-            left: { xs: 62, md: 76, lg: 166 },
-            width: 18,
-            height: 18,
-            borderRadius: "50%",
-            bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
-            zIndex: 3,
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            top: 248,
-            right: { xs: 62, md: 76, lg: 164 },
-            width: 18,
-            height: 18,
-            borderRadius: "50%",
-            bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
-            zIndex: 3,
-          }}
-        />
       </Box>
     </>
   );

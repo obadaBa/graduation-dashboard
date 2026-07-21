@@ -215,13 +215,21 @@ export default function ProfileForm({
                 sx={{
                   height: 40,
                   px: 1.15,
-                  borderRight: "1px solid #DFDFDF",
-                  color: "#868686",
+                  borderRight: (theme) =>
+                    `1px solid ${theme.palette.dashboard.chartBorder}`,
+                  color: (theme) => theme.palette.dashboard.textSecondary,
                   direction: "ltr",
-                  bgcolor: "#FAFAFA",
+                  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
                 }}
               >
-                <Typography sx={{ fontSize: 13, color: "#868686" }}>+963</Typography>
+                <Typography
+                  sx={{
+                    fontSize: 13,
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                  }}
+                >
+                  +963
+                </Typography>
                 <Box
                   component="img"
                   src={SyriaFlagIcon}
@@ -252,11 +260,14 @@ export default function ProfileForm({
         sx={{
           px: 2,
           py: 2,
-          borderTop: "1px solid #F0F0F0",
-          boxShadow: "0 -8px 18px rgba(15, 23, 42, 0.08)",
+          borderTop: (theme) => `1px solid ${theme.palette.dashboard.divider}`,
+          boxShadow: (theme) =>
+            theme.palette.mode === "dark"
+              ? "0 -12px 28px rgba(0, 0, 0, 0.26)"
+              : "0 -8px 18px rgba(15, 23, 42, 0.08)",
           position: "relative",
           zIndex: 1,
-          bgcolor: "#FFFFFF",
+          bgcolor: (theme) => theme.palette.dashboard.surface,
         }}
       >
         <Button
@@ -269,14 +280,16 @@ export default function ProfileForm({
           sx={{
             height: 46,
             borderRadius: "8px",
-            bgcolor: "#5583FF",
+            bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
             color: "#FFFFFF",
             fontSize: 15,
             fontWeight: 700,
-            "&:hover": { bgcolor: "#4C77E8" },
+            "&:hover": {
+              bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
+            },
             "&.Mui-disabled": {
-              bgcolor: "#F1F1F1",
-              color: "#A1A1A1",
+              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+              color: (theme) => theme.palette.dashboard.textSecondary,
             },
           }}
         >

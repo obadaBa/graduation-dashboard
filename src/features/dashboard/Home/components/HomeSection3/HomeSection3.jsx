@@ -4,12 +4,21 @@ import HomeSection3Header from "./HomeSection3Header";
 import HomeSection3AudienceChart from "./HomeSection3AudienceChart";
 import HomeSection3SourceChart from "./HomeSection3SourceChart";
 import HomeSection3ContentChart from "./HomeSection3ContentChart";
-import { useHomeLibraryStatsQuery } from "../hooks/useHomeLibraryStatsQuery";
+import { useHomeLibraryStatsQuery } from "../../hooks/useHomeLibraryStatsQuery";
+
+function buildAvailableYears() {
+  const currentYear = new Date().getFullYear();
+  const firstYear = 2025;
+
+  return Array.from(
+    { length: Math.max(1, currentYear - firstYear + 1) },
+    (_, index) => currentYear - index,
+  );
+}
 
 export default function HomeSection3() {
-  const currentYear = new Date().getFullYear();
-  const [selectedYear, setSelectedYear] = useState(currentYear);
-  const availableYears = [currentYear, currentYear - 1, currentYear - 2];
+  const availableYears = buildAvailableYears();
+  const [selectedYear, setSelectedYear] = useState(availableYears[0]);
   const libraryStatsQuery = useHomeLibraryStatsQuery(selectedYear);
   const libraryStatsData = libraryStatsQuery.data?.data;
 

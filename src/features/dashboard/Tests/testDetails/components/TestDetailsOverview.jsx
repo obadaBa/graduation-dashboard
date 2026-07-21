@@ -12,8 +12,7 @@ import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import WalletOutlinedIcon from "@mui/icons-material/WalletOutlined";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import { Box, Stack, Typography } from "@mui/material";
+import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined';import { Box, Stack, Typography } from "@mui/material";
 
 const authorImage =
   "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=180&q=80";
@@ -214,7 +213,7 @@ export default function TestDetailsOverview({ testDetails, isLoading = false }) 
     },
     {
       value: formatNumber(statistics.reviews_count || 12),
-      icon: <WhatsAppIcon sx={{ fontSize: 24 }} />,
+      icon: <ModeCommentOutlinedIcon sx={{ fontSize: 24 }} />,
     },
     {
       value: formatNumber(statistics.bookmarks_count || 65),

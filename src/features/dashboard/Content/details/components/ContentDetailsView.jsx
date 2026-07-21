@@ -27,6 +27,7 @@ export default function ContentDetailsView() {
       <ContentDetailsHeader />
       <ContentDetailsAppBar
         contentId={contentId}
+        contentDetails={contentDetails}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />

@@ -43,7 +43,7 @@ function PreviewSheet({ imageSrc, title, type }) {
         width: { xs: 104, md: 112 },
         height: { xs: 94, md: 108 },
         borderRadius: "10px",
-        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+      
         bgcolor: (theme) => theme.palette.dashboard.surface,
         objectFit: "cover",
         display: "block",

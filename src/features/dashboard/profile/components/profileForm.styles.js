@@ -2,25 +2,29 @@ export const profileInputSx = {
   "& .MuiOutlinedInput-root": {
     height: 40,
     borderRadius: "6px",
-    backgroundColor: "#FAFAFA",
+    backgroundColor: (theme) => theme.palette.dashboard.chartBackground,
     "& fieldset": {
-      borderColor: "#DFDFDF",
+      borderColor: (theme) => theme.palette.dashboard.chartBorder,
     },
     "&:hover fieldset": {
-      borderColor: "#DFDFDF",
+      borderColor: (theme) => theme.palette.dashboard.chartBorder,
     },
     "&.Mui-focused fieldset": {
-      borderColor: "#5583FF",
+      borderColor: (theme) => theme.palette.dashboard.logoPrimary,
       borderWidth: "1px",
     },
   },
   "& .MuiOutlinedInput-input": {
-    color: "#868686",
+    color: (theme) => theme.palette.dashboard.textPrimary,
     fontSize: 14,
     py: 0,
+    "&::placeholder": {
+      color: (theme) => theme.palette.dashboard.textSecondary,
+      opacity: 1,
+    },
   },
   "& .MuiInputAdornment-root": {
-    color: "#A1A1A1",
+    color: (theme) => theme.palette.dashboard.textSecondary,
     mr: 0.75,
   },
 };
@@ -39,7 +43,7 @@ export const phoneInputSx = {
     ml: 0,
   },
   "& .MuiOutlinedInput-input": {
-    color: "#868686",
+    color: (theme) => theme.palette.dashboard.textPrimary,
     fontSize: 14,
     py: 0,
     textAlign: "right",
@@ -49,18 +53,21 @@ export const phoneInputSx = {
 export const selectSx = {
   height: 40,
   borderRadius: "6px",
-  bgcolor: "#FAFAFA",
-  color: "#868686",
+  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+  color: (theme) => theme.palette.dashboard.textPrimary,
   fontSize: 14,
   "& fieldset": {
-    borderColor: "#DFDFDF",
+    borderColor: (theme) => theme.palette.dashboard.chartBorder,
   },
   "&:hover fieldset": {
-    borderColor: "#DFDFDF",
+    borderColor: (theme) => theme.palette.dashboard.chartBorder,
   },
   "&.Mui-focused fieldset": {
-    borderColor: "#5583FF",
+    borderColor: (theme) => theme.palette.dashboard.logoPrimary,
     borderWidth: 1,
+  },
+  "& .MuiSvgIcon-root": {
+    color: (theme) => theme.palette.dashboard.textSecondary,
   },
   "& .MuiSelect-select": {
     textAlign: "right",

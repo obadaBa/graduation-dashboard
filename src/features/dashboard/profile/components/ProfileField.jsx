@@ -5,7 +5,7 @@ export default function ProfileField({ label, children }) {
     <Box sx={{ width: "100%" }}>
       <Typography
         sx={{
-          color: "#263238",
+          color: (theme) => theme.palette.dashboard.textPrimary,
           fontSize: 15,
           fontWeight: 700,
           textAlign: "right",

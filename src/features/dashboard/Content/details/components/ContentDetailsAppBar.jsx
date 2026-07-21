@@ -11,6 +11,7 @@ import ApproveTestConfirmationModal from "../../../Tests/testDetails/components/
 import DeleteTestConfirmationModal from "../../../Tests/testDetails/components/DeleteTestConfirmationModal";
 import { useApproveLibraryMaterialMutation } from "../../hooks/useApproveLibraryMaterialMutation";
 import { useDeleteLibraryMaterialMutation } from "../../hooks/useDeleteLibraryMaterialMutation";
+import ContentDetailsDownloadButton from "./ContentDetailsDownloadButton";
 
 function GhostIconButton({
   children,
@@ -85,6 +86,7 @@ function TabAction({ label, icon, active = false, onClick }) {
 
 export default function ContentDetailsAppBar({
   contentId,
+  contentDetails,
   activeTab,
   onTabChange,
 }) {
@@ -168,6 +170,7 @@ export default function ContentDetailsAppBar({
     setDeleteReason("");
   };
 
+
   return (
     <>
       <Box
@@ -247,26 +250,8 @@ export default function ContentDetailsAppBar({
           </GhostIconButton>
         </Stack>
 
-        <Button
-          type="button"
-          sx={{
-            minWidth: 132,
-            height: 36,
-            px: 2,
-            marginInlineStart: { xs: 0, lg: "auto" },
-            borderRadius: "8px",
-            bgcolor: "#5C84FF",
-            color: "#FFFFFF",
-            fontSize: 18,
-            fontWeight: 700,
-            boxShadow: "0 8px 16px rgba(92, 132, 255, 0.28)",
-            "&:hover": {
-              bgcolor: "#5C84FF",
-            },
-          }}
-        >
-          تنزيل المحتوى
-        </Button>
+        <ContentDetailsDownloadButton contentDetails={contentDetails} />
+
       </Box>
 
       <ApproveTestConfirmationModal
@@ -292,3 +277,4 @@ export default function ContentDetailsAppBar({
     </>
   );
 }
+

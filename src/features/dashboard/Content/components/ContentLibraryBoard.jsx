@@ -89,13 +89,13 @@ export default function ContentLibraryBoard({
     >
       <Box
         sx={{
-          display: { xs: "block", lg: "grid" },
+          display: "grid",
           gridTemplateColumns: "180px 1fr 1fr",
-          height: "100%",
+          height: { xs: "auto", lg: "100%" },
           direction: "ltr",
         }}
       >
-        <Box sx={{ order: 1, height: "100%" }}>
+        <Box sx={{ display: { xs: "none", lg: "block" }, order: 1, height: "100%" }}>
           <ContentStatsPanel stats={stats} />
         </Box>
 
@@ -103,7 +103,7 @@ export default function ContentLibraryBoard({
           sx={{
             position: "relative",
             order: 2,
-            gridColumn: { lg: "2 / 4" },
+            gridColumn: { xs: "1 / -1", lg: "2 / 4" },
             height: { xs: "auto", lg: "100%" },
             minHeight: 0,
             "&::before": {
@@ -128,9 +128,9 @@ export default function ContentLibraryBoard({
               gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" },
               columnGap: { lg: 2.8 },
               rowGap: 0,
-              height: "100%",
-              maxHeight: "calc(100vh - 230px)",
-              overflowY: "auto",
+              height: { xs: "auto", lg: "100%" },
+              maxHeight: { xs: "none", lg: "calc(100vh - 230px)" },
+              overflowY: { xs: "visible", lg: "auto" },
               overflowX: "hidden",
               minHeight: 0,
               pr: { lg: 0.75 },

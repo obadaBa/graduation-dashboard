@@ -4,6 +4,8 @@ import {
   Button,
   CircularProgress,
   InputBase,
+  Menu,
+  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
@@ -18,6 +20,11 @@ import { useUserProfileFoldersQuery } from "../../hooks/useUserProfileFoldersQue
 import FolderContentModal from "./FolderContentModal";
 
 const EMPTY_FOLDERS = [];
+
+const SORT_OPTIONS = [
+  { value: "latest", label: "الأحدث" },
+  { value: "tests_count", label: "عدد الاختبارات" },
+];
 
 function normalizeFolderColor(value) {
   const hex = String(value || "")
@@ -203,6 +210,8 @@ function UserListRow({ item, withDivider = true, onClick }) {
 export default function UserProfileListsPanel() {
   const { userId } = useParams();
   const [searchValue, setSearchValue] = useState("");
+  const [sortBy, setSortBy] = useState("latest");
+  const [sortAnchorEl, setSortAnchorEl] = useState(null);
   const [selectedFolder, setSelectedFolder] = useState(null);
   const foldersQuery = useUserProfileFoldersQuery(userId);
   const responseData = foldersQuery.data?.data || foldersQuery.data || {};
@@ -210,15 +219,28 @@ export default function UserProfileListsPanel() {
   const listItems = useMemo(() => folders.map(mapFolder), [folders]);
   const displayedItems = useMemo(() => {
     const search = searchValue.trim().toLocaleLowerCase("ar");
+    const filteredItems = search
+      ? listItems.filter((item) =>
+          [item.title, ...item.tags].some((value) =>
+            value.toLocaleLowerCase("ar").includes(search),
+          ),
+        )
+      : listItems;
 
-    if (!search) return listItems;
+    return [...filteredItems].sort((firstItem, secondItem) => {
+      if (sortBy === "tests_count") {
+        return secondItem.testsCount - firstItem.testsCount;
+      }
 
-    return listItems.filter((item) =>
-      [item.title, ...item.tags].some((value) =>
-        value.toLocaleLowerCase("ar").includes(search),
-      ),
-    );
-  }, [listItems, searchValue]);
+      const firstDate = Date.parse(firstItem.duration) || 0;
+      const secondDate = Date.parse(secondItem.duration) || 0;
+
+      return secondDate - firstDate;
+    });
+  }, [listItems, searchValue, sortBy]);
+  const selectedSortLabel =
+    SORT_OPTIONS.find((option) => option.value === sortBy)?.label ||
+    "الترتيب حسب";
   const listsStats = [
     {
       id: "all-lists",
@@ -260,30 +282,16 @@ export default function UserProfileListsPanel() {
             alignItems={{ xs: "stretch", md: "center" }}
             gap={1.5}
           >
-            <Button
-              endIcon={<KeyboardArrowDownRoundedIcon />}
-              sx={{
-                minWidth: 126,
-                height: 42,
-                borderRadius: "999px",
-                bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-                color: (theme) => theme.palette.dashboard.textSecondary,
-                fontSize: 15,
-                fontWeight: 500,
-                "&:hover": {
-                  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-                },
-              }}
-            >
-              الترتيب حسب
-            </Button>
+           
 
             <Box
               sx={{
                 width: { xs: "100%", md: 310 },
                 height: 46,
                 borderRadius: "999px",
-                bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+                bgcolor: (theme) => theme.palette.dashboard.surface,
+                border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+                boxShadow: (theme) => theme.palette.dashboard.shadow,
                 px: 1.8,
                 display: "flex",
                 alignItems: "center",
@@ -304,9 +312,77 @@ export default function UserProfileListsPanel() {
                   "& input": {
                     textAlign: "right",
                   },
+                  "& input::placeholder": {
+                    color: (theme) => theme.palette.dashboard.textSecondary,
+                    opacity: 1,
+                  },
                 }}
               />
             </Box>
+             <Button
+              onClick={(event) => setSortAnchorEl(event.currentTarget)}
+              endIcon={<KeyboardArrowDownRoundedIcon />}
+              sx={{
+                minWidth: 126,
+                height: 42,
+                borderRadius: "999px",
+                bgcolor: (theme) => theme.palette.dashboard.surface,
+                border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+                boxShadow: (theme) => theme.palette.dashboard.shadow,
+                color: (theme) => theme.palette.dashboard.textSecondary,
+                fontSize: 15,
+                fontWeight: 500,
+                "&:hover": {
+                  bgcolor: (theme) => theme.palette.dashboard.surface,
+                  border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+                },
+                "& .MuiButton-endIcon": {
+                  color: (theme) => theme.palette.dashboard.textSecondary,
+                },
+              }}
+            >
+              {selectedSortLabel}
+            </Button>
+            <Menu
+              anchorEl={sortAnchorEl}
+              open={Boolean(sortAnchorEl)}
+              onClose={() => setSortAnchorEl(null)}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+              slotProps={{
+                paper: {
+                  sx: {
+                    mt: 0.75,
+                    minWidth: 156,
+                    borderRadius: "10px",
+                    bgcolor: (theme) => theme.palette.dashboard.surface,
+                    border: (theme) =>
+                      `1px solid ${theme.palette.dashboard.chartBorder}`,
+                    boxShadow: (theme) => theme.palette.dashboard.shadow,
+                    direction: "rtl",
+                  },
+                },
+              }}
+            >
+              {SORT_OPTIONS.map((option) => (
+                <MenuItem
+                  key={option.value}
+                  selected={sortBy === option.value}
+                  onClick={() => {
+                    setSortBy(option.value);
+                    setSortAnchorEl(null);
+                  }}
+                  sx={{
+                    justifyContent: "flex-end",
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    fontSize: 14,
+                    fontWeight: 600,
+                  }}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Menu>
           </Stack>
         </Box>
 
@@ -323,6 +399,7 @@ export default function UserProfileListsPanel() {
         >
           <Box
             sx={{
+              display: { xs: "none", lg: "block" },
               width: { xs: "100%", lg: "12%" },
               flexShrink: 0,
               position: "relative",
