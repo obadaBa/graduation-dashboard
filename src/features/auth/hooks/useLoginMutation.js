@@ -1,7 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { saveAuthTokenSession } from "../../../lib/api/httpClient";
 import { showSuccessToast } from "../../../shared/lib/Tost/toastService";
-import { loginRequest } from "../api/auth.api";
+import {
+  loginRequest,
+  storeFcmTokenAfterLoginFailureRequest,
+} from "../api/auth.api";
 
 function persistAuthSession(response) {
   const token = response?.data?.token;
@@ -22,6 +25,11 @@ export function useLoginMutation({ onSuccess } = {}) {
     mutationFn: loginRequest,
     onSuccess: (response) => {
       persistAuthSession(response);
+
+      if (!response?.fcmTokenSentDuringLogin) {
+        storeFcmTokenAfterLoginFailureRequest().catch(() => {});
+      }
+
       showSuccessToast(response?.title || "تم تسجيل الدخول بنجاح");
       onSuccess?.(response);
     },

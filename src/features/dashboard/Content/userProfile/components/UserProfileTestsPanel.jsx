@@ -127,7 +127,10 @@ export default function UserProfileTestsPanel() {
         mt: 0.8,
         borderRadius: "18px",
         border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-        bgcolor: (theme) => theme.palette.dashboard.surface,
+        bgcolor: (theme) =>
+          theme.palette.mode === "dark"
+            ? theme.palette.dashboard.chartBackground
+            : theme.palette.dashboard.surface,
         boxShadow: (theme) => theme.palette.dashboard.shadow,
         overflow: "hidden",
         p: { xs: 1.5, md: 2.2 },
@@ -145,7 +148,10 @@ export default function UserProfileTestsPanel() {
               width: { xs: "100%", md: 310 },
               height: 46,
               borderRadius: "999px",
-              bgcolor: (theme) => theme.palette.dashboard.surface,
+              bgcolor: (theme) =>
+                theme.palette.mode === "dark"
+                  ? theme.palette.dashboard.chartBackground
+                  : theme.palette.dashboard.surface,
               border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
               boxShadow: (theme) => theme.palette.dashboard.shadow,
               px: 1.8,
@@ -183,14 +189,20 @@ export default function UserProfileTestsPanel() {
               minWidth: 110,
               height: 42,
               borderRadius: "999px",
-              bgcolor: (theme) => theme.palette.dashboard.surface,
+              bgcolor: (theme) =>
+                theme.palette.mode === "dark"
+                  ? theme.palette.dashboard.chartBackground
+                  : theme.palette.dashboard.surface,
               border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
               boxShadow: (theme) => theme.palette.dashboard.shadow,
               color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 15,
               fontWeight: 500,
               "&:hover": {
-                bgcolor: (theme) => theme.palette.dashboard.surface,
+                bgcolor: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? theme.palette.dashboard.chartBackground
+                    : theme.palette.dashboard.surface,
                 border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
               },
               "& .MuiButton-endIcon": {
@@ -212,7 +224,10 @@ export default function UserProfileTestsPanel() {
                   mt: 0.75,
                   minWidth: 164,
                   borderRadius: "10px",
-                  bgcolor: (theme) => theme.palette.dashboard.surface,
+                  bgcolor: (theme) =>
+                    theme.palette.mode === "dark"
+                      ? theme.palette.dashboard.chartBackground
+                      : theme.palette.dashboard.surface,
                   border: (theme) =>
                     `1px solid ${theme.palette.dashboard.chartBorder}`,
                   boxShadow: (theme) => theme.palette.dashboard.shadow,

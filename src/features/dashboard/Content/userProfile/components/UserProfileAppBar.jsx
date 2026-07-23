@@ -14,7 +14,12 @@ function TabAction({ label, icon, active = false, onClick }) {
         px: 2.1,
         borderRadius: active ? "10px" : 0,
         border: active ? "1px solid #5C84FF" : "none",
-        bgcolor: active ? ((theme) => theme.palette.dashboard.surface) : "transparent",
+        bgcolor: active
+          ? ((theme) =>
+              theme.palette.mode === "dark"
+                ? theme.palette.dashboard.chartBackground
+                : theme.palette.dashboard.surface)
+          : "transparent",
         color: active
           ? "#5C84FF"
           : ((theme) => theme.palette.dashboard.textSecondary),
@@ -22,7 +27,12 @@ function TabAction({ label, icon, active = false, onClick }) {
         fontWeight: active ? 700 : 600,
         whiteSpace: "nowrap",
         "&:hover": {
-          bgcolor: active ? ((theme) => theme.palette.dashboard.surface) : "transparent",
+          bgcolor: active
+            ? ((theme) =>
+                theme.palette.mode === "dark"
+                  ? theme.palette.dashboard.chartBackground
+                  : theme.palette.dashboard.surface)
+            : "transparent",
         },
         "& .MuiButton-startIcon": {
           marginInlineStart: 0,
@@ -71,7 +81,10 @@ export default function UserProfileAppBar({
         width: "100%",
         minHeight: 68,
         borderRadius: "14px",
-        bgcolor: (theme) => theme.palette.dashboard.surface,
+        bgcolor: (theme) =>
+          theme.palette.mode === "dark"
+            ? theme.palette.dashboard.chartBackground
+            : theme.palette.dashboard.surface,
         px: 0,
         display: "flex",
         alignItems: "center",
@@ -86,7 +99,10 @@ export default function UserProfileAppBar({
           minHeight: 46,
           border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
           overflow: "hidden",
-          bgcolor: (theme) => theme.palette.dashboard.surface,
+          bgcolor: (theme) =>
+            theme.palette.mode === "dark"
+              ? theme.palette.dashboard.chartBackground
+              : theme.palette.dashboard.surface,
           p: 0.6,
           mr:2
         }}
@@ -111,12 +127,18 @@ export default function UserProfileAppBar({
           mr: 1.2,
           borderRadius: "8px",
           border: "1.5px dashed #FF6A64",
-          bgcolor: (theme) => theme.palette.dashboard.surface,
+          bgcolor: (theme) =>
+            theme.palette.mode === "dark"
+              ? theme.palette.dashboard.chartBackground
+              : theme.palette.dashboard.surface,
           color: "#FF6A64",
           fontSize: 16,
           fontWeight: 700,
           "&:hover": {
-            bgcolor: (theme) => theme.palette.dashboard.surface,
+            bgcolor: (theme) =>
+              theme.palette.mode === "dark"
+                ? theme.palette.dashboard.chartBackground
+                : theme.palette.dashboard.surface,
             borderColor: "#FF6A64",
           },
         }}

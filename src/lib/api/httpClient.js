@@ -176,7 +176,7 @@ export const httpClient = axios.create({
 });
 
 httpClient.interceptors.request.use(async (config) => {
-  if (shouldRefreshTokenSoon() && !config.skipAuthRefresh) {
+  if (!config.skipAuth && shouldRefreshTokenSoon() && !config.skipAuthRefresh) {
     try {
       await refreshAccessToken();
     } catch {
@@ -184,7 +184,7 @@ httpClient.interceptors.request.use(async (config) => {
     }
   }
 
-  const token = getStoredToken();
+  const token = config.skipAuth ? null : getStoredToken();
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

@@ -84,6 +84,7 @@ async function getOptionalFcmToken({ allowPermissionPrompt = true } = {}) {
 export async function loginRequest({ email, password }) {
   const formData = new FormData();
   const fcmToken = await getOptionalFcmToken();
+  const didSendFcmToken = Boolean(fcmToken);
   const deviceId = getDeviceId();
   const deviceName = getDeviceName();
 
@@ -93,12 +94,41 @@ export async function loginRequest({ email, password }) {
   formData.append("device_id", deviceId);
   formData.append("device_name", deviceName);
 
-  console.log("Login device_id:", deviceId);
-  console.log("Login device_name:", deviceName);
-
-  return httpClient.post("auth/login", formData, {
+  const response = await httpClient.post("auth/login", formData, {
+    skipAuth: true,
     skipAuthRefresh: true,
     showErrorToast: true,
+  });
+
+  return {
+    ...response,
+    fcmTokenSentDuringLogin: didSendFcmToken,
+  };
+}
+
+export function storeFcmTokenRequest({ fcmToken, deviceId, deviceName }) {
+  const formData = new FormData();
+
+  formData.append("fcm_token", fcmToken);
+  formData.append("device_id", deviceId);
+  formData.append("device_name", deviceName);
+
+  return httpClient.post("notification/fcm-token", formData, {
+    showErrorToast: false,
+  });
+}
+
+export async function storeFcmTokenAfterLoginFailureRequest() {
+  const fcmToken = await getOptionalFcmToken();
+
+  if (!fcmToken) {
+    return null;
+  }
+
+  return storeFcmTokenRequest({
+    fcmToken,
+    deviceId: getDeviceId(),
+    deviceName: getDeviceName(),
   });
 }
 
@@ -109,12 +139,10 @@ export async function logoutRequest() {
 
   formData.append("fcm_token", fcmToken);
   formData.append("device_id", deviceId);
-
-  console.log("Logout device_id:", deviceId);
-
   return httpClient.post("logout", formData, {
     showErrorToast: true,
   });
+ 
 }
 
 export function requestPasswordResetOtp({ email }) {
