@@ -36,6 +36,302 @@ const COLOR_OPTIONS = [
 
 const EMPTY_SECTIONS = [];
 
+const fieldIconSx = {
+  width: 40,
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: (theme) => theme.palette.dashboard.textSecondary,
+  flexShrink: 0,
+};
+
+const fieldLabelSx = {
+  mb: 1,
+  color: (theme) => theme.palette.dashboard.textPrimary,
+  fontSize: 14,
+  fontWeight: 900,
+  lineHeight: 1.2,
+};
+
+const fieldErrorSx = {
+  mt: 0.6,
+  color: "#FF5E58",
+  fontSize: 11,
+  fontWeight: 700,
+};
+
+const fallbackIconSx = {
+  width: 18,
+  height: 18,
+  position: "relative",
+};
+
+const categoryFieldSpacingSx = {
+  mb: 2.4,
+};
+
+const categoryHeaderSx = {
+  mb: 2.2,
+};
+
+const allButtonArrowSx = {
+  fontSize: 20,
+  lineHeight: 1,
+};
+
+const loadingIconSx = {
+  color: (theme) => theme.palette.dashboard.textSecondary,
+};
+
+const dropdownIconSx = {
+  fontSize: 24,
+};
+
+const imageIconSx = {
+  fontSize: 21,
+};
+
+const hiddenInputSx = {
+  display: "none",
+};
+
+const scientificCardSx = {
+  width: "100%",
+  minWidth: 0,
+  minHeight: { xs: 488, md: 598 },
+  borderRadius: "8px",
+  bgcolor: (theme) => theme.palette.dashboard.surface,
+  boxShadow: (theme) => theme.palette.dashboard.shadow,
+  border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+  px: { xs: 2, md: 2.4 },
+  py: { xs: 2, md: 2.5 },
+  direction: "rtl",
+  position: "relative",
+  display: "flex",
+  alignItems: "flex-start",
+  justifyContent: "space-between",
+  gap: { xs: 3, md: 4.2 },
+  flexDirection: { xs: "column", md: "row" },
+};
+
+const allCategoriesButtonSx = {
+  position: "absolute",
+  top: 24,
+  left: 24,
+  minWidth: "auto",
+  p: 0,
+  color: (theme) => theme.palette.dashboard.logoPrimary,
+  fontSize: 14,
+  fontWeight: 700,
+  zIndex: 1,
+  gap: 0.35,
+  "&:hover": {
+    bgcolor: "transparent",
+  },
+};
+
+const formColumnSx = {
+  width: { xs: "100%", md: 253 },
+  flexShrink: 0,
+  alignSelf: { xs: "stretch", md: "flex-start" },
+};
+
+const titleTextSx = {
+  color: (theme) => theme.palette.dashboard.textPrimary,
+  fontSize: 20,
+  fontWeight: 900,
+};
+
+const counterTextSx = {
+  color: (theme) => theme.palette.dashboard.logoPrimary,
+  fontSize: 11,
+  fontWeight: 700,
+};
+
+const colorFieldSpacingSx = {
+  mb: 4.8,
+};
+
+const colorGridSx = {
+  display: "grid",
+  gridTemplateColumns: "repeat(6, 26px)",
+  gap: "16px 17px",
+  justifyContent: "start",
+  direction: "rtl",
+};
+
+const submitButtonSx = {
+  height: 42,
+  borderRadius: "6px",
+  bgcolor: "#5583FF",
+  color: "#FFFFFF",
+  fontSize: 16,
+  fontWeight: 700,
+  boxShadow: "0 5px 10px rgba(85, 131, 255, 0.38)",
+  "&:hover": {
+    bgcolor: "#5583FF",
+    boxShadow: "0 5px 10px rgba(85, 131, 255, 0.38)",
+  },
+  "&.Mui-disabled": {
+    bgcolor: "#8FAEFF",
+    color: "#FFFFFF",
+  },
+};
+
+const phonePreviewFrameSx = {
+  width: 224,
+  height: 434,
+  position: "relative",
+  flexShrink: 0,
+  mt: { xs: 0, md: 7.2 },
+};
+
+const phoneFrameImageSx = {
+  width: "100%",
+  height: "100%",
+  display: "block",
+};
+
+const phoneHeaderSx = {
+  height: 29,
+  px: 1.1,
+};
+
+const phoneSearchSx = {
+  mx: 1,
+  height: 23,
+  borderRadius: "999px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  px: 1,
+};
+
+const phoneContentSx = {
+  mt: 2.2,
+  px: 1.3,
+  textAlign: "right",
+};
+
+const getPhoneScreenSx = ({ previewBackground, theme }) => ({
+  position: "absolute",
+  top: 32,
+  left: 22,
+  right: 22,
+  bottom: 22,
+  direction: "rtl",
+  overflow: "hidden",
+  bgcolor: previewBackground,
+  borderRadius: "0 0 28px 28px",
+  transition: theme.transitions.create(["background-color", "color"], {
+    duration: theme.transitions.duration.shorter,
+  }),
+});
+
+const getPhoneHeaderTitleSx = (theme) => ({
+  color: theme.palette.dashboard.textPrimary,
+  fontSize: 13,
+  fontWeight: 900,
+});
+
+const getPhoneBackButtonSx = ({ theme, previewPanel }) => ({
+  width: 20,
+  height: 20,
+  borderRadius: "50%",
+  bgcolor: previewPanel,
+  color: theme.palette.dashboard.textSecondary,
+  display: "grid",
+  placeItems: "center",
+  fontSize: 16,
+  fontWeight: 900,
+});
+
+const getPhoneSearchSx = (previewPanel) => ({
+  ...phoneSearchSx,
+  bgcolor: previewPanel,
+});
+
+const getPhoneSearchTextSx = (theme) => ({
+  color: theme.palette.dashboard.textSecondary,
+  fontSize: 8.5,
+  fontWeight: 600,
+});
+
+const getPhoneSearchCloseSx = (theme) => ({
+  color: theme.palette.dashboard.textSecondary,
+  fontSize: 14,
+  lineHeight: 1,
+});
+
+const getPhoneSectionTitleSx = (theme) => ({
+  color: theme.palette.dashboard.textPrimary,
+  fontSize: 11.5,
+  fontWeight: 900,
+});
+
+const getPhoneCategoryCardSx = ({ theme, previewBorder }) => ({
+  mt: 0.7,
+  mr: 0,
+  width: 102,
+  minHeight: 56,
+  borderRadius: "7px",
+  border: `1px solid ${previewBorder}`,
+  bgcolor: theme.palette.dashboard.chartBackground,
+  display: "flex",
+  alignItems: "flex-start",
+  justifyContent: "center",
+  flexDirection: "column",
+  gap: 0.6,
+  px: 0.95,
+});
+
+const getPhoneIconPreviewSx = ({ color, isExternalIcon }) => ({
+  width: 20,
+  height: 20,
+  objectFit: "contain",
+  filter: isExternalIcon ? buildImageTintFilter(color) : "none",
+});
+
+const getPhoneCategoryNameSx = (theme) => ({
+  color: theme.palette.dashboard.textSecondary,
+  fontSize: 9,
+  fontWeight: 600,
+  maxWidth: "100%",
+  width: "100%",
+  textAlign: "right",
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+});
+
+const getFieldShellSx = (error) => ({
+  height: 33,
+  borderRadius: "6px",
+  border: (theme) =>
+    `1px solid ${error ? "#FF5E58" : theme.palette.dashboard.chartBorder}`,
+  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "row-reverse",
+  overflow: "hidden",
+});
+
+const getFallbackIconSx = (color) => ({
+  ...fallbackIconSx,
+  color,
+});
+
+const getFallbackDotSx = ({ color, item }) => ({
+  position: "absolute",
+  width: 7,
+  height: 7,
+  border: `1.7px solid ${color}`,
+  borderRadius: "50%",
+  top: item < 2 ? 0 : 10,
+  left: item % 2 === 0 ? 0 : 10,
+});
+
 function buildColoredSvgDataUrl(svgText, color) {
   if (!svgText) return "";
 
@@ -116,29 +412,9 @@ function buildImageTintFilter(color) {
 function FieldShell({ children, icon, error = false }) {
   return (
     <Box
-      sx={{
-        height: 33,
-        borderRadius: "6px",
-        border: (theme) =>
-          `1px solid ${error ? "#FF5E58" : theme.palette.dashboard.chartBorder}`,
-        bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-        display: "flex",
-        alignItems: "center",
-        flexDirection: "row-reverse",
-        overflow: "hidden",
-      }}
+      sx={getFieldShellSx(error)}
     >
-      <Box
-        sx={{
-          width: 40,
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: (theme) => theme.palette.dashboard.textSecondary,
-          flexShrink: 0,
-        }}
-      >
+      <Box sx={fieldIconSx}>
         {icon}
       </Box>
       {children}
@@ -149,13 +425,7 @@ function FieldShell({ children, icon, error = false }) {
 function FieldLabel({ children }) {
   return (
     <Typography
-      sx={{
-        mb: 1,
-        color: (theme) => theme.palette.dashboard.textPrimary,
-        fontSize: 14,
-        fontWeight: 900,
-        lineHeight: 1.2,
-      }}
+      sx={fieldLabelSx}
     >
       {children}
     </Typography>
@@ -167,12 +437,7 @@ function FieldError({ children }) {
 
   return (
     <Typography
-      sx={{
-        mt: 0.6,
-        color: "#FF5E58",
-        fontSize: 11,
-        fontWeight: 700,
-      }}
+      sx={fieldErrorSx}
     >
       {children}
     </Typography>
@@ -182,25 +447,12 @@ function FieldError({ children }) {
 function FallbackIcon({ color }) {
   return (
     <Box
-      sx={{
-        width: 18,
-        height: 18,
-        color,
-        position: "relative",
-      }}
+      sx={getFallbackIconSx(color)}
     >
       {[0, 1, 2, 3].map((item) => (
         <Box
           key={item}
-          sx={{
-            position: "absolute",
-            width: 7,
-            height: 7,
-            border: `1.7px solid ${color}`,
-            borderRadius: "50%",
-            top: item < 2 ? 0 : 10,
-            left: item % 2 === 0 ? 0 : 10,
-          }}
+          sx={getFallbackDotSx({ color, item })}
         />
       ))}
     </Box>
@@ -225,160 +477,73 @@ function PhonePreview({ title, name, iconPreview, color }) {
 
   return (
     <Box
-      sx={{
-        width: 224,
-        height: 434,
-        position: "relative",
-        flexShrink: 0,
-        mt: { xs: 0, md: 7.2 },
-      }}
+      sx={phonePreviewFrameSx}
     >
       <Box
         component="img"
         src={phoneFrameSrc}
         alt="Mobile preview"
-        sx={{
-          width: "100%",
-          height: "100%",
-          display: "block",
-        }}
+        sx={phoneFrameImageSx}
       />
 
       <Box
-        sx={{
-          position: "absolute",
-          top: 32,
-          left: 22,
-          right: 22,
-          bottom: 22,
-          direction: "rtl",
-          overflow: "hidden",
-          bgcolor: previewBackground,
-          borderRadius: "0 0 28px 28px",
-          transition: theme.transitions.create(["background-color", "color"], {
-            duration: theme.transitions.duration.shorter,
-          }),
-        }}
+        sx={getPhoneScreenSx({ previewBackground, theme })}
       >
         <Stack
           direction="row"
           alignItems="center"
           justifyContent="space-between"
-          sx={{ height: 29, px: 1.1 }}
+          sx={phoneHeaderSx}
         >
           <Typography
-            sx={{
-              color: theme.palette.dashboard.textPrimary,
-              fontSize: 13,
-              fontWeight: 900,
-            }}
+            sx={getPhoneHeaderTitleSx(theme)}
           >
             قائمة التصنيفات
           </Typography>
           <Box
-            sx={{
-              width: 20,
-              height: 20,
-              borderRadius: "50%",
-              bgcolor: previewPanel,
-              color: theme.palette.dashboard.textSecondary,
-              display: "grid",
-              placeItems: "center",
-              fontSize: 16,
-              fontWeight: 900,
-            }}
+            sx={getPhoneBackButtonSx({ theme, previewPanel })}
           >
             ‹
           </Box>
         </Stack>
 
         <Box
-          sx={{
-            mx: 1,
-            height: 23,
-            borderRadius: "999px",
-            bgcolor: previewPanel,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            px: 1,
-          }}
+          sx={getPhoneSearchSx(previewPanel)}
         >
           <Typography
-            sx={{
-              color: theme.palette.dashboard.textSecondary,
-              fontSize: 8.5,
-              fontWeight: 600,
-            }}
+            sx={getPhoneSearchTextSx(theme)}
           >
             ابحث عن تصنيف
           </Typography>
           <Typography
-            sx={{
-              color: theme.palette.dashboard.textSecondary,
-              fontSize: 14,
-              lineHeight: 1,
-            }}
+            sx={getPhoneSearchCloseSx(theme)}
           >
             ×
           </Typography>
         </Box>
 
-        <Box sx={{ mt: 2.2, px: 1.3, textAlign: "right" }}>
+        <Box sx={phoneContentSx}>
           <Typography
-            sx={{
-              color: theme.palette.dashboard.textPrimary,
-              fontSize: 11.5,
-              fontWeight: 900,
-            }}
+            sx={getPhoneSectionTitleSx(theme)}
           >
             {displayTitle}
           </Typography>
 
           <Box
-            sx={{
-              mt: 0.7,
-              mr: 0,
-              width: 102,
-              minHeight: 56,
-              borderRadius: "7px",
-              border: `1px solid ${previewBorder}`,
-              bgcolor: theme.palette.dashboard.chartBackground,
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "center",
-              flexDirection: "column",
-              gap: 0.6,
-              px: 0.95,
-            }}
+            sx={getPhoneCategoryCardSx({ theme, previewBorder })}
           >
             {iconPreview ? (
               <Box
                 component="img"
                 src={iconPreview}
                 alt="Selected category icon"
-                sx={{
-                  width: 20,
-                  height: 20,
-                  objectFit: "contain",
-                  filter: isExternalIcon ? buildImageTintFilter(color) : "none",
-                }}
+                sx={getPhoneIconPreviewSx({ color, isExternalIcon })}
               />
             ) : (
               <FallbackIcon color={color} />
             )}
             <Typography
-              sx={{
-                color: theme.palette.dashboard.textSecondary,
-                fontSize: 9,
-                fontWeight: 600,
-                maxWidth: "100%",
-                width: "100%",
-                textAlign: "right",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
+              sx={getPhoneCategoryNameSx(theme)}
             >
               {displayName}
             </Typography>
@@ -545,96 +710,47 @@ export default function ScientificCategoriesCard() {
   return (
     <>
       <Box
-        sx={{
-          width: "100%",
-          minWidth: 0,
-          minHeight: { xs: 488, md: 598 },
-          borderRadius: "8px",
-          bgcolor: theme.palette.dashboard.surface,
-          boxShadow: theme.palette.dashboard.shadow,
-          border: `1px solid ${theme.palette.dashboard.chartBorder}`,
-          px: { xs: 2, md: 2.4 },
-          py: { xs: 2, md: 2.5 },
-          direction: "rtl",
-          position: "relative",
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: { xs: 3, md: 4.2 },
-          flexDirection: { xs: "column", md: "row" },
-        }}
+        sx={scientificCardSx}
       >
         <Button
           type="button"
           onClick={() => setIsAllCategoriesOpen(true)}
-          sx={{
-            position: "absolute",
-            top: 24,
-            left: 24,
-            minWidth: "auto",
-            p: 0,
-            color: theme.palette.dashboard.logoPrimary,
-            fontSize: 14,
-            fontWeight: 700,
-            zIndex: 1,
-            gap: 0.35,
-            "&:hover": {
-              bgcolor: "transparent",
-            },
-          }}
+          sx={allCategoriesButtonSx}
         >
           عرض الكل
-          <Box component="span" sx={{ fontSize: 20, lineHeight: 1 }}>
+          <Box component="span" sx={allButtonArrowSx}>
             ›
           </Box>
         </Button>
 
-        <Box
-          sx={{
-            width: { xs: "100%", md: 253 },
-            flexShrink: 0,
-            alignSelf: { xs: "stretch", md: "flex-start" },
-          }}
-        >
+        <Box sx={formColumnSx}>
           <Stack
             direction="row"
             alignItems="baseline"
             justifyContent="flex-start"
             spacing={0.7}
             gap={0.7}
-            sx={{ mb: 2.2 }}
+            sx={categoryHeaderSx}
           >
-            <Typography
-              sx={{
-                color: theme.palette.dashboard.textPrimary,
-                fontSize: 20,
-                fontWeight: 900,
-              }}
-            >
+            <Typography sx={titleTextSx}>
               التصنيفات العلمية
             </Typography>
-            <Typography
-              sx={{
-                color: theme.palette.dashboard.logoPrimary,
-                fontSize: 11,
-                fontWeight: 700,
-              }}
-            >
+            <Typography sx={counterTextSx}>
               ({` ${totalInterestsCount || 0} تصنيف `})
             </Typography>
           </Stack>
 
-          <Box sx={{ mb: 2.4 }}>
+          <Box sx={categoryFieldSpacingSx}>
             <FieldLabel>العنوان</FieldLabel>
             <FieldShell
               icon={
                 isCategoriesLoading ? (
                   <CircularProgress
                     size={16}
-                    sx={{ color: theme.palette.dashboard.textSecondary }}
+                    sx={loadingIconSx}
                   />
                 ) : (
-                  <KeyboardArrowDownRoundedIcon sx={{ fontSize: 24 }} />
+                  <KeyboardArrowDownRoundedIcon sx={dropdownIconSx} />
                 )
               }
               error={Boolean(categoryError)}
@@ -711,7 +827,7 @@ export default function ScientificCategoriesCard() {
             ))}
           </Menu>
 
-          <Box sx={{ mb: 2.4 }}>
+          <Box sx={categoryFieldSpacingSx}>
             <FieldLabel>الاسم</FieldLabel>
             <FieldShell
               icon={
@@ -761,10 +877,10 @@ export default function ScientificCategoriesCard() {
             <FieldError>{nameError}</FieldError>
           </Box>
 
-          <Box sx={{ mb: 2.4 }}>
+          <Box sx={categoryFieldSpacingSx}>
             <FieldLabel>الأيقونة</FieldLabel>
             <FieldShell
-              icon={<ImageOutlinedIcon sx={{ fontSize: 21 }} />}
+              icon={<ImageOutlinedIcon sx={imageIconSx} />}
               error={Boolean(iconError)}
             >
               <Button
@@ -797,23 +913,15 @@ export default function ScientificCategoriesCard() {
                 type="file"
                 accept=".svg,image/svg+xml"
                 onChange={handleIconChange}
-                sx={{ display: "none" }}
+                sx={hiddenInputSx}
               />
             </FieldShell>
             <FieldError>{iconError}</FieldError>
           </Box>
 
-          <Box sx={{ mb: 4.8 }}>
+          <Box sx={colorFieldSpacingSx}>
             <FieldLabel>اللون</FieldLabel>
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(6, 26px)",
-                gap: "16px 17px",
-                justifyContent: "start",
-                direction: "rtl",
-              }}
-            >
+            <Box sx={colorGridSx}>
               {COLOR_OPTIONS.map((color) => {
                 const isSelected = selectedColor === color;
 
@@ -857,23 +965,7 @@ export default function ScientificCategoriesCard() {
             fullWidth
             onClick={handleSave}
             disabled={isSaving || isUpdating}
-            sx={{
-              height: 42,
-              borderRadius: "6px",
-              bgcolor: "#5583FF",
-              color: "#FFFFFF",
-              fontSize: 16,
-              fontWeight: 700,
-              boxShadow: "0 5px 10px rgba(85, 131, 255, 0.38)",
-              "&:hover": {
-                bgcolor: "#5583FF",
-                boxShadow: "0 5px 10px rgba(85, 131, 255, 0.38)",
-              },
-              "&.Mui-disabled": {
-                bgcolor: "#8FAEFF",
-                color: "#FFFFFF",
-              },
-            }}
+            sx={submitButtonSx}
           >
             {isSaving || isUpdating
               ? "جاري الحفظ..."

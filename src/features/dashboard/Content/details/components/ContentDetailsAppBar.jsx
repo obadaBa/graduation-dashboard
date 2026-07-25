@@ -13,6 +13,92 @@ import { useApproveLibraryMaterialMutation } from "../../hooks/useApproveLibrary
 import { useDeleteLibraryMaterialMutation } from "../../hooks/useDeleteLibraryMaterialMutation";
 import ContentDetailsDownloadButton from "./ContentDetailsDownloadButton";
 
+const tabStartIconSx = {
+  marginInlineStart: 0,
+  marginInlineEnd: "8px",
+};
+
+const appBarSx = {
+  mt: 2.5,
+  width: "100%",
+  minHeight: 68,
+  borderRadius: "14px",
+  bgcolor: (theme) => theme.palette.dashboard.surface,
+  px: { xs: 1, md: 2 },
+  py: 1,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flexWrap: { xs: "wrap", lg: "nowrap" },
+  gap: 1.5,
+  direction: "rtl",
+};
+
+const tabsStackSx = {
+  minHeight: 46,
+  flex: { xs: "1 1 100%", lg: "0 1 auto" },
+  border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+  overflow: "hidden",
+  bgcolor: (theme) => theme.palette.dashboard.surface,
+  p: 0.6,
+};
+
+const actionStackSx = {
+  px: { xs: 0, md: 1.4 },
+  flexShrink: 0,
+};
+
+const approveIconSx = {
+  fontSize: 26,
+};
+
+const deleteIconSx = {
+  fontSize: 26,
+};
+
+const tabIconSx = {
+  fontSize: 22,
+};
+
+const getGhostIconButtonSx = ({ color, borderColor, bgcolor }) => ({
+  minWidth: 48,
+  width: 48,
+  height: 42,
+  borderRadius: "10px",
+  border: `1.5px dashed ${borderColor}`,
+  bgcolor: bgcolor || ((theme) => theme.palette.dashboard.surface),
+  color,
+  p: 0,
+  "&:hover": {
+    bgcolor: bgcolor || ((theme) => theme.palette.dashboard.surface),
+    borderColor,
+  },
+  "&.Mui-disabled": {
+    bgcolor: bgcolor || ((theme) => theme.palette.dashboard.surface),
+    color,
+    borderColor,
+    opacity: 0.55,
+  },
+});
+
+const getTabActionSx = (active) => ({
+  height: 46,
+  px: 2.1,
+  borderRadius: active ? "10px" : 0,
+  border: active ? "1px solid #5C84FF" : "none",
+  bgcolor: active ? ((theme) => theme.palette.dashboard.surface) : "transparent",
+  color: active
+    ? "#5C84FF"
+    : ((theme) => theme.palette.dashboard.textSecondary),
+  fontSize: 19,
+  fontWeight: active ? 700 : 600,
+  whiteSpace: "nowrap",
+  "&:hover": {
+    bgcolor: active ? ((theme) => theme.palette.dashboard.surface) : "transparent",
+  },
+  "& .MuiButton-startIcon": tabStartIconSx,
+});
+
 function GhostIconButton({
   children,
   color,
@@ -26,26 +112,7 @@ function GhostIconButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      sx={{
-        minWidth: 48,
-        width: 48,
-        height: 42,
-        borderRadius: "10px",
-        border: `1.5px dashed ${borderColor}`,
-        bgcolor: bgcolor || ((theme) => theme.palette.dashboard.surface),
-        color,
-        p: 0,
-        "&:hover": {
-          bgcolor: bgcolor || ((theme) => theme.palette.dashboard.surface),
-          borderColor,
-        },
-        "&.Mui-disabled": {
-          bgcolor: bgcolor || ((theme) => theme.palette.dashboard.surface),
-          color,
-          borderColor,
-          opacity: 0.55,
-        },
-      }}
+      sx={getGhostIconButtonSx({ color, borderColor, bgcolor })}
     >
       {children}
     </Button>
@@ -58,26 +125,7 @@ function TabAction({ label, icon, active = false, onClick }) {
       type="button"
       onClick={onClick}
       startIcon={icon}
-      sx={{
-        height: 46,
-        px: 2.1,
-        borderRadius: active ? "10px" : 0,
-        border: active ? "1px solid #5C84FF" : "none",
-        bgcolor: active ? ((theme) => theme.palette.dashboard.surface) : "transparent",
-        color: active
-          ? "#5C84FF"
-          : ((theme) => theme.palette.dashboard.textSecondary),
-        fontSize: 19,
-        fontWeight: active ? 700 : 600,
-        whiteSpace: "nowrap",
-        "&:hover": {
-          bgcolor: active ? ((theme) => theme.palette.dashboard.surface) : "transparent",
-        },
-        "& .MuiButton-startIcon": {
-          marginInlineStart: 0,
-          marginInlineEnd: "8px",
-        },
-      }}
+      sx={getTabActionSx(active)}
     >
       {label}
     </Button>
@@ -173,52 +221,29 @@ export default function ContentDetailsAppBar({
 
   return (
     <>
-      <Box
-        sx={{
-          mt: 2.5,
-          width: "100%",
-          minHeight: 68,
-          borderRadius: "14px",
-          bgcolor: (theme) => theme.palette.dashboard.surface,
-          px: { xs: 1, md: 2 },
-          py: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: { xs: "wrap", lg: "nowrap" },
-          gap: 1.5,
-          direction: "rtl",
-        }}
-      >
+      <Box sx={appBarSx}>
         <Stack
           direction="row-reverse"
           alignItems="center"
-          sx={{
-            minHeight: 46,
-            flex: { xs: "1 1 100%", lg: "0 1 auto" },
-            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-            overflow: "hidden",
-            bgcolor: (theme) => theme.palette.dashboard.surface,
-            p: 0.6,
-          }}
+          sx={tabsStackSx}
         >
           <TabAction
             label="سجل الحالة"
-            icon={<ViewAgendaOutlinedIcon sx={{ fontSize: 22 }} />}
+            icon={<ViewAgendaOutlinedIcon sx={tabIconSx} />}
             active={activeTab === "status"}
             onClick={() => onTabChange("status")}
           />
 
           <TabAction
             label="سجل الإبلاغات"
-            icon={<FlagOutlinedIcon sx={{ fontSize: 22 }} />}
+            icon={<FlagOutlinedIcon sx={tabIconSx} />}
             active={activeTab === "creations"}
             onClick={() => onTabChange("creations")}
           />
 
           <TabAction
             label="نظرة عامة"
-            icon={<WidgetsOutlinedIcon sx={{ fontSize: 22 }} />}
+            icon={<WidgetsOutlinedIcon sx={tabIconSx} />}
             active={activeTab === "overview"}
             onClick={() => onTabChange("overview")}
           />
@@ -228,7 +253,7 @@ export default function ContentDetailsAppBar({
           direction="row-reverse"
           alignItems="center"
           spacing={1.2}
-          sx={{ px: { xs: 0, md: 1.4 }, flexShrink: 0 }}
+          sx={actionStackSx}
           gap={1}
         >
           <GhostIconButton
@@ -237,7 +262,7 @@ export default function ContentDetailsAppBar({
             onClick={handleApprove}
             disabled={isActionPending}
           >
-            <CheckBoxRoundedIcon sx={{ fontSize: 26 }} />
+            <CheckBoxRoundedIcon sx={approveIconSx} />
           </GhostIconButton>
 
           <GhostIconButton
@@ -246,7 +271,7 @@ export default function ContentDetailsAppBar({
             onClick={handleDelete}
             disabled={isActionPending}
           >
-            <DeleteOutlineRoundedIcon sx={{ fontSize: 26 }} />
+            <DeleteOutlineRoundedIcon sx={deleteIconSx} />
           </GhostIconButton>
         </Stack>
 

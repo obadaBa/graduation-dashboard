@@ -12,10 +12,6 @@ export function useTestAiEvaluationStatusQuery(
     queryFn: async () => {
       const response = await getTestAiEvaluationStatus(evaluationRequestId);
 
-      if (process.env.NODE_ENV === "development") {
-        console.log("[AI Evaluation Status]", response);
-      }
-
       return response;
     },
     enabled: Boolean(evaluationRequestId) && enabled,

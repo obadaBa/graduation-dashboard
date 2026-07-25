@@ -45,6 +45,124 @@ const SYRIAN_GOVERNORATES = [
   "الحسكة",
 ];
 
+const modalBackdropSx = {
+  bgcolor: "rgba(20, 24, 29, 0.34)",
+  backdropFilter: "blur(8px)",
+};
+
+const modalPanelSx = {
+  position: "fixed",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: { xs: "calc(100vw - 28px)", sm: 382 },
+  maxHeight: "calc(100dvh - 28px)",
+  borderRadius: "12px",
+  bgcolor: (theme) => theme.palette.dashboard.surface,
+  boxShadow: (theme) => theme.palette.dashboard.shadow,
+  outline: "none",
+  overflow: "hidden",
+  display: "flex",
+  flexDirection: "column",
+};
+
+const modalHeaderSx = {
+  px: 2,
+  pt: 2.1,
+  pb: 1.7,
+  position: "relative",
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: "3px",
+    backgroundImage: (theme) =>
+      `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 29px)`,
+  },
+};
+
+const modalTitleSx = {
+  color: (theme) => theme.palette.dashboard.textPrimary,
+  fontSize: 22,
+  fontWeight: 900,
+};
+
+const closeButtonSx = {
+  width: 34,
+  height: 34,
+  borderRadius: "6px",
+  border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+  bgcolor: (theme) => theme.palette.dashboard.surface,
+  color: (theme) => theme.palette.dashboard.textPrimary,
+  "&:hover": {
+    bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+  },
+};
+
+const closeIconSx = {
+  fontSize: 22,
+};
+
+const formSx = {
+  flex: 1,
+  overflowY: "auto",
+  px: 4,
+  py: 2.4,
+  display: "flex",
+  flexDirection: "column",
+  gap: 1.85,
+  scrollbarWidth: "none",
+  msOverflowStyle: "none",
+  "&::-webkit-scrollbar": {
+    display: "none",
+  },
+};
+
+const selectPlaceholderSx = {
+  color: (theme) => theme.palette.dashboard.textSecondary,
+  fontSize: 14,
+};
+
+const phonePrefixSx = {
+  height: 40,
+  px: 1.15,
+  borderRight: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+  color: "#868686",
+  direction: "ltr",
+  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+};
+
+const phonePrefixTextSx = {
+  fontSize: 13,
+  color: "#868686",
+};
+
+const flagIconSx = {
+  width: 18,
+  height: 18,
+  objectFit: "contain",
+};
+
+const footerSx = {
+  px: 2,
+  py: 1.4,
+  borderTop: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+  boxShadow: "0 -8px 18px rgba(15, 23, 42, 0.08)",
+  bgcolor: (theme) => theme.palette.dashboard.surface,
+};
+
+const submitButtonSx = {
+  height: 44,
+  borderRadius: "6px",
+  bgcolor: "#527DFF",
+  color: "#FFFFFF",
+  fontSize: 15,
+  fontWeight: 700,
+  "&:hover": { bgcolor: "#527DFF" },
+};
+
 export default function UsersSupervisorModal({ open, onClose }) {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -102,79 +220,30 @@ export default function UsersSupervisorModal({ open, onClose }) {
       closeAfterTransition
       slotProps={{
         backdrop: {
-          sx: {
-            bgcolor: "rgba(20, 24, 29, 0.34)",
-            backdropFilter: "blur(8px)",
-          },
+          sx: modalBackdropSx,
         },
       }}
     >
       <Fade in={open} timeout={{ enter: 260, exit: 200 }}>
         <Box
           dir="rtl"
-          sx={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: { xs: "calc(100vw - 28px)", sm: 382 },
-            maxHeight: "calc(100dvh - 28px)",
-            borderRadius: "12px",
-            bgcolor: (theme) => theme.palette.dashboard.surface,
-            boxShadow: (theme) => theme.palette.dashboard.shadow,
-            outline: "none",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-          }}
+          sx={modalPanelSx}
         >
           <Stack
             direction="row"
             alignItems="center"
             justifyContent="space-between"
-            sx={{
-              px: 2,
-              pt: 2.1,
-              pb: 1.7,
-              position: "relative",
-              "&::after": {
-                content: '""',
-                position: "absolute",
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: "3px",
-                backgroundImage: (theme) =>
-                  `repeating-linear-gradient(to left, ${theme.palette.dashboard.divider} 0 18px, transparent 18px 29px)`,
-              },
-            }}
+            sx={modalHeaderSx}
           >
-            <Typography
-              sx={{
-                color: (theme) => theme.palette.dashboard.textPrimary,
-                fontSize: 22,
-                fontWeight: 900,
-              }}
-            >
+            <Typography sx={modalTitleSx}>
               إضافة مشرف جديد
             </Typography>
             <IconButton
               onClick={handleClose}
               disabled={addSupervisorMutation.isPending}
-              sx={{
-                width: 34,
-                height: 34,
-                borderRadius: "6px",
-                border: (theme) =>
-                  `1px solid ${theme.palette.dashboard.chartBorder}`,
-                bgcolor: (theme) => theme.palette.dashboard.surface,
-                color: (theme) => theme.palette.dashboard.textPrimary,
-                "&:hover": {
-                  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-                },
-              }}
+              sx={closeButtonSx}
             >
-              <CloseRoundedIcon sx={{ fontSize: 22 }} />
+              <CloseRoundedIcon sx={closeIconSx} />
             </IconButton>
           </Stack>
 
@@ -182,20 +251,7 @@ export default function UsersSupervisorModal({ open, onClose }) {
             id="new-supervisor-form"
             component="form"
             onSubmit={handleSubmit(onSubmit)}
-            sx={{
-              flex: 1,
-              overflowY: "auto",
-              px: 4,
-              py: 2.4,
-              display: "flex",
-              flexDirection: "column",
-              gap: 1.85,
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-              "&::-webkit-scrollbar": {
-                display: "none",
-              },
-            }}
+            sx={formSx}
           >
             <ProfileField label="الاسم">
               <AuthFormInput
@@ -235,10 +291,7 @@ export default function UsersSupervisorModal({ open, onClose }) {
                         selected
                       ) : (
                         <Typography
-                          sx={{
-                            color: (theme) => theme.palette.dashboard.textSecondary,
-                            fontSize: 14,
-                          }}
+                          sx={selectPlaceholderSx}
                         >
                           اختر المحافظة التي يسكن فيها...
                         </Typography>
@@ -266,22 +319,14 @@ export default function UsersSupervisorModal({ open, onClose }) {
                     direction="row"
                     alignItems="center"
                     spacing={0.7}
-                    sx={{
-                      height: 40,
-                      px: 1.15,
-                      borderRight: (theme) =>
-                        `1px solid ${theme.palette.dashboard.chartBorder}`,
-                      color: "#868686",
-                      direction: "ltr",
-                      bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-                    }}
+                    sx={phonePrefixSx}
                   >
-                    <Typography sx={{ fontSize: 13, color: "#868686" }}>+963</Typography>
+                    <Typography sx={phonePrefixTextSx}>+963</Typography>
                     <Box
                       component="img"
                       src={SyriaFlagIcon}
                       alt="علم سوريا"
-                      sx={{ width: 18, height: 18, objectFit: "contain" }}
+                      sx={flagIconSx}
                     />
                   </Stack>
                 }
@@ -314,14 +359,7 @@ export default function UsersSupervisorModal({ open, onClose }) {
           </Box>
 
           <Box
-            sx={{
-              px: 2,
-              py: 1.4,
-              borderTop: (theme) =>
-                `1px solid ${theme.palette.dashboard.chartBorder}`,
-              boxShadow: "0 -8px 18px rgba(15, 23, 42, 0.08)",
-              bgcolor: (theme) => theme.palette.dashboard.surface,
-            }}
+            sx={footerSx}
           >
             <Button
               type="submit"
@@ -332,15 +370,7 @@ export default function UsersSupervisorModal({ open, onClose }) {
               disabled={
                 !isFormComplete || addSupervisorMutation.isPending
               }
-              sx={{
-                height: 44,
-                borderRadius: "6px",
-                bgcolor: "#527DFF",
-                color: "#FFFFFF",
-                fontSize: 15,
-                fontWeight: 700,
-                "&:hover": { bgcolor: "#527DFF" },
-              }}
+              sx={submitButtonSx}
             >
               {addSupervisorMutation.isPending
                 ? "جاري حفظ المستخدم..."
