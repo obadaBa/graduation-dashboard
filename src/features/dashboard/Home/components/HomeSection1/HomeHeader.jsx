@@ -13,7 +13,7 @@ import ProfileModal from "../../../profile/components/ProfileModal";
 import NotificationsSlide from "./NotificationsSlide";
 import { useFirebaseMessaging } from "../../../../notifications/hooks/useFirebaseMessaging";
 import { useUnreadNotificationsCountQuery } from "../../../../notifications/hooks/useUnreadNotificationsCountQuery";
-import { showNotificationToast } from "../../../../../shared/lib/Tost/toastService";
+import { showNotificationToast } from "../../../../../shared/lib/Toast/toastService";
 
 function HeaderAction({ children, sx }) {
   return (

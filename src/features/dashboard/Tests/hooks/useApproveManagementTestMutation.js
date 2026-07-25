@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { showSuccessToast } from "../../../../shared/lib/Tost/toastService";
+import { showSuccessToast } from "../../../../shared/lib/Toast/toastService";
 import { approveManagementTest } from "../Api/tests.api";
 import { moveTestInManagementBoard } from "../utils/managementBoardCache";
 

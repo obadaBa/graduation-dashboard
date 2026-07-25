@@ -48,19 +48,6 @@ export function useTestManagementRealtime() {
 
     const channel = echo.private(CHANNEL_NAME);
 
-    if (process.env.NODE_ENV === "development") {
-      channel
-        .subscribed(() => {
-          console.info(`[Realtime] Subscribed to private-${CHANNEL_NAME}`);
-        })
-        .error((error) => {
-          console.error(
-            `[Realtime] Failed to subscribe to private-${CHANNEL_NAME}`,
-            error,
-          );
-        });
-    }
-
     channel.listen(EVENT_NAME, async (event) => {
       const {
         testId: rawTestId,
@@ -76,10 +63,6 @@ export function useTestManagementRealtime() {
 
       const testId = String(rawTestId);
       const targetColumn = getStatusColumn(toStatus);
-
-      if (process.env.NODE_ENV === "development") {
-        console.info("[Realtime] Test status changed", event);
-      }
 
       const boardQueries = queryClient.getQueriesData({
         queryKey: ["tests", "management-board"],

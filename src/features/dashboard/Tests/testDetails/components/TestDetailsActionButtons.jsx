@@ -17,6 +17,118 @@ import RequestTestChangesModal from "./RequestTestChangesModal";
 import TestQuestionsExportButton from "./TestQuestionsExportButton";
 import TestAiAssistantModal from "./TestAiAssistantModal";
 
+const buttonStartIconSx = {
+  marginInlineStart: 0,
+  marginInlineEnd: "6px",
+};
+
+const aiButtonGradient = "linear-gradient(90deg, #8ED8FF 0%, #FFE28A 100%)";
+
+const actionBarSx = {
+  mt: 2.5,
+  width: "100%",
+  minHeight: 68,
+  borderRadius: "14px",
+  bgcolor: "transparent",
+  px: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 1.5,
+  direction: "rtl",
+};
+
+const actionGroupSx = {
+  minHeight: 46,
+  border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+  overflow: "hidden",
+  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+  p: 0.6,
+};
+
+const actionCellSx = {
+  px: 1.2,
+};
+
+const aiButtonSx = {
+  minWidth: { xs: 150, sm: 160 },
+  maxWidth: { xs: 190, sm: "none" },
+  height: 32,
+  px: 1.5,
+  borderRadius: "8px",
+  color: "#FFFFFF",
+  background: aiButtonGradient,
+  boxShadow: "0 6px 12px rgba(151, 200, 245, 0.22)",
+  "&:hover": {
+    background: aiButtonGradient,
+  },
+  "&.Mui-disabled": {
+    color: "#FFFFFF",
+    background: aiButtonGradient,
+    opacity: 0.64,
+  },
+  "& .MuiButton-startIcon": buttonStartIconSx,
+};
+
+const aiButtonTextSx = {
+  fontSize: 12,
+  fontWeight: 800,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
+
+const actionDividerSx = {
+  width: "2px",
+  height: 48,
+  mx: 0.6,
+  background:
+    "repeating-linear-gradient(to bottom, #D9D9D9 0 6px, transparent 6px 11px)",
+};
+
+const deleteActionSx = {
+  position: "relative",
+  minWidth: 48,
+  width: 48,
+  height: 54,
+  borderRadius: "10px",
+  border: "1.5px dashed #FF6A64",
+  bgcolor: "transparent",
+  color: "#FF6A64",
+  p: 0,
+  "&:hover": {
+    bgcolor: (theme) => theme.palette.dashboard.hoverItem.background,
+    borderColor: "#FF6A64",
+  },
+  "&.Mui-disabled": {
+    bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+    color: "#FFAAA6",
+    borderColor: "#FFAAA6",
+  },
+};
+
+const getStatusPillSx = ({ color, bgcolor }) => ({
+  minWidth: 106,
+  height: 32,
+  px: 1.5,
+  borderRadius: "999px",
+  bgcolor,
+  color: "#FFFFFF",
+  fontSize: 12,
+  fontWeight: 800,
+  whiteSpace: "nowrap",
+  boxShadow: `0 6px 12px ${color}33`,
+  "&:hover": {
+    bgcolor,
+  },
+  "&.Mui-disabled": {
+    bgcolor,
+    color: "#FFFFFF",
+    opacity: 0.6,
+  },
+  "& .MuiButton-startIcon": buttonStartIconSx,
+});
+
 function StatusPill({
   label,
   icon,
@@ -31,30 +143,7 @@ function StatusPill({
       startIcon={icon}
       onClick={onClick}
       disabled={disabled}
-      sx={{
-        minWidth: 106,
-        height: 32,
-        px: 1.5,
-        borderRadius: "999px",
-        bgcolor,
-        color: "#FFFFFF",
-        fontSize: 12,
-        fontWeight: 800,
-        whiteSpace: "nowrap",
-        boxShadow: `0 6px 12px ${color}33`,
-        "&:hover": {
-          bgcolor,
-        },
-        "&.Mui-disabled": {
-          bgcolor,
-          color: "#FFFFFF",
-          opacity: 0.6,
-        },
-        "& .MuiButton-startIcon": {
-          marginInlineStart: 0,
-          marginInlineEnd: "6px",
-        },
-      }}
+      sx={getStatusPillSx({ color, bgcolor })}
     >
       {label}
     </Button>
@@ -68,26 +157,7 @@ function DeleteAction({ onClick, disabled = false }) {
       aria-label="حذف الاختبار"
       onClick={onClick}
       disabled={disabled}
-      sx={{
-        position: "relative",
-        minWidth: 48,
-        width: 48,
-        height: 54,
-        borderRadius: "10px",
-        border: "1.5px dashed #FF6A64",
-        bgcolor: "transparent",
-        color: "#FF6A64",
-        p: 0,
-        "&:hover": {
-          bgcolor: (theme) => theme.palette.dashboard.hoverItem.background,
-          borderColor: "#FF6A64",
-        },
-        "&.Mui-disabled": {
-          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-          color: "#FFAAA6",
-          borderColor: "#FFAAA6",
-        },
-      }}
+      sx={deleteActionSx}
     >
       <DeleteOutlineRoundedIcon sx={{ fontSize: 26 }} />
     </Button>
@@ -124,6 +194,11 @@ export default function TestDetailsActionButtons({ testId, testTitle }) {
     approveMutation.isPending ||
     deleteMutation.isPending ||
     revisionsMutation.isPending;
+  const aiButtonLabel = isCurrentTestAiProcessing
+    ? "جاري المعالجة"
+    : isCurrentTestEvaluation && aiEvaluationStatus === "completed"
+      ? "عرض نتيجة الذكاء الاصطناعي"
+      : "مساعد الذكاء الاصطناعي";
 
   useEffect(() => {
     if (
@@ -232,74 +307,31 @@ export default function TestDetailsActionButtons({ testId, testTitle }) {
 
   return (
     <>
-      <Box
-      sx={{
-        mt: 2.5,
-        width: "100%",
-        minHeight: 68,
-        borderRadius: "14px",
-        bgcolor: "transparent",
-        px: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 1.5,
-        direction: "rtl",
-      }}
-    >
-      <Stack
-        direction="row-reverse"
-        alignItems="center"
-        sx={{
-          minHeight: 46,
-        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-          overflow: "hidden",
-          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-          p: 0.6,
-        }}
-      >
-        <Box sx={{ px: 1.2 }}>
+      <Box sx={actionBarSx}>
+        <Stack
+          direction="row-reverse"
+          alignItems="center"
+          sx={actionGroupSx}
+        >
+        <Box sx={actionCellSx}>
           <Button
+            type="button"
             startIcon={<AutoAwesomeRoundedIcon sx={{ fontSize: 18 }} />}
             onClick={handleOpenAiModal}
             disabled={isCurrentTestAiProcessing}
-            sx={{
-              minWidth: 160,
-              height: 32,
-              px: 1.5,
-              borderRadius: "8px",
-              color: "#FFFFFF",
-              background: "linear-gradient(90deg, #8ED8FF 0%, #FFE28A 100%)",
-              boxShadow: "0 6px 12px rgba(151, 200, 245, 0.22)",
-              "&:hover": {
-                background: "linear-gradient(90deg, #8ED8FF 0%, #FFE28A 100%)",
-              },
-              "& .MuiButton-startIcon": {
-                marginInlineStart: 0,
-                marginInlineEnd: "6px",
-              },
-            }}
+            aria-label={aiButtonLabel}
+            sx={aiButtonSx}
           >
-            <Typography sx={{ fontSize: 12, fontWeight: 800 }}>
-              {isCurrentTestAiProcessing
-                ? "جاري المعالجة"
-                : isCurrentTestEvaluation &&
-                    aiEvaluationStatus === "completed"
-                  ? "عرض نتيجة الذكاء الاصطناعي"
-                  : "مساعد الذكاء الاصطناعي"}
+            <Typography
+              component="span"
+              sx={aiButtonTextSx}
+            >
+              {aiButtonLabel}
             </Typography>
           </Button>
         </Box>
-        <Box
-          sx={{
-            width: "2px",
-            height: 48,
-            mx: 0.6,
-            background:
-              "repeating-linear-gradient(to bottom, #D9D9D9 0 6px, transparent 6px 11px)",
-          }}
-        />
-        <Box sx={{ px: 1.2 }}>
+        <Box sx={actionDividerSx} />
+        <Box sx={actionCellSx}>
           <StatusPill
             label="الموافقة عليه"
             color="#32D74B"
@@ -312,7 +344,7 @@ export default function TestDetailsActionButtons({ testId, testTitle }) {
 
        
 
-        <Box sx={{ px: 1.2 }}>
+        <Box sx={actionCellSx}>
           <StatusPill
             label="طلب محتويات"
             color="#F4E500"

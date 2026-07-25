@@ -9,7 +9,7 @@ import stepIllustrationDark from "../../../features/auth/Assets/Group 57 (2) dar
 import resetIllustrationLight from "../../../features/auth/Assets/Group 56.svg";
 import resetIllustrationDark from "../../../features/auth/Assets/Group 56 dark.svg";
 
-export default function ConfarmPassword() {
+export default function ConfirmPassword() {
   const theme = useTheme();
   const location = useLocation();
   const stepIllustration =

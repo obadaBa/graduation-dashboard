@@ -4,7 +4,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
-import { showErrorToast } from "../../../shared/lib/Tost/toastService";
+import { showErrorToast } from "../../../shared/lib/Toast/toastService";
 import { useResetPasswordMutation } from "../hooks/useResetPasswordMutation";
 import AuthFormHeader from "./AuthFormHeader";
 import AuthFormInput from "./AuthFormInput";
@@ -38,7 +38,7 @@ export default function CreateNewPasswordFormPanel() {
 
   useEffect(() => {
     if (!email || !otpCode) {
-      navigate("/restpassword", { replace: true });
+      navigate("/resetpassword", { replace: true });
     }
   }, [email, navigate, otpCode]);
 
@@ -86,7 +86,7 @@ export default function CreateNewPasswordFormPanel() {
         <AuthFormHeader
           showBackButton
           backLabel="العودة إلى تأكيد الرمز"
-          backTo="/confarmpassword"
+          backTo="/confirmpassword"
           backState={{ email, fromStep: 1 }}
         />
 

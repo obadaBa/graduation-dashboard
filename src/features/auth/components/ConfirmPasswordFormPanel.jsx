@@ -32,7 +32,7 @@ export default function ConfirmPasswordFormPanel() {
   });
   const verifyOtpMutation = useVerifyPasswordResetOtpMutation({
     onSuccess: (_, variables) => {
-      navigate("/creatnewpassword", {
+      navigate("/createnewpassword", {
         state: {
           email: variables.email,
           otpCode: variables.otpCode,
@@ -52,7 +52,7 @@ export default function ConfirmPasswordFormPanel() {
 
   useEffect(() => {
     if (!email) {
-      navigate("/restpassword", { replace: true });
+      navigate("/resetpassword", { replace: true });
     }
   }, [email, navigate]);
 
@@ -103,7 +103,7 @@ export default function ConfirmPasswordFormPanel() {
         <AuthFormHeader
           showBackButton
           backLabel="العودة إلى تسجيل الدخول"
-          backTo="/restpassword"
+          backTo="/resetpassword"
           backState={{ email, fromStep: 1, fromVisual: "confirm" }}
         />
 

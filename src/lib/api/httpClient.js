@@ -2,7 +2,7 @@ import axios from "axios";
 import {
   showErrorToast,
   showSuccessToast,
-} from "../../shared/lib/Tost/toastService";
+} from "../../shared/lib/Toast/toastService";
 
 export const API_BASE_URL =
   process.env.REACT_APP_DASHBOARD_API_URL || "http://localhost/api/v1/dashboard/";
@@ -106,6 +106,10 @@ function shouldRefreshTokenSoon() {
   );
 }
 
+function canRefreshRequest(config) {
+  return Boolean(config) && !config.skipAuth && !config.skipAuthRefresh;
+}
+
 export async function refreshAccessToken() {
   const currentToken = getStoredToken();
 
@@ -176,7 +180,7 @@ export const httpClient = axios.create({
 });
 
 httpClient.interceptors.request.use(async (config) => {
-  if (!config.skipAuth && shouldRefreshTokenSoon() && !config.skipAuthRefresh) {
+  if (canRefreshRequest(config) && shouldRefreshTokenSoon()) {
     try {
       await refreshAccessToken();
     } catch {
@@ -206,7 +210,11 @@ httpClient.interceptors.response.use(
       (Number.isFinite(businessStatusCode) && businessStatusCode >= 400);
 
     if (isBusinessError) {
-      if (businessStatusCode === 401 && !response.config?._retry) {
+      if (
+        businessStatusCode === 401 &&
+        canRefreshRequest(response.config) &&
+        !response.config?._retry
+      ) {
         try {
           const token = await refreshAccessToken();
           response.config._retry = true;
@@ -238,7 +246,11 @@ httpClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      canRefreshRequest(originalRequest) &&
+      !originalRequest._retry
+    ) {
       try {
         const token = await refreshAccessToken();
         originalRequest._retry = true;

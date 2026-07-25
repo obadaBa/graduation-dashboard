@@ -21,12 +21,9 @@ export function useFirebaseMessaging({ onForegroundMessage } = {}) {
       setPermission(permissionResult);
 
       setFcmToken(token);
-      console.log("FCM Token:", token);
-      console.log("Copy this FCM token:", token);
 
       return token;
     } catch (exception) {
-      console.error("Firebase messaging error:", exception);
       setError(exception.message || "حدث خطأ أثناء تجهيز الإشعارات.");
       return null;
     } finally {
@@ -44,11 +41,9 @@ export function useFirebaseMessaging({ onForegroundMessage } = {}) {
         if (!messaging) return;
 
         unsubscribe = onMessage(messaging, (payload) => {
-          console.log("Foreground notification:", payload);
           onForegroundMessage?.(payload);
         });
       } catch (exception) {
-        console.error("Firebase foreground listener error:", exception);
         setError(exception.message || "تعذر تشغيل مستمع الإشعارات.");
       }
     };
@@ -61,12 +56,6 @@ export function useFirebaseMessaging({ onForegroundMessage } = {}) {
       }
     };
   }, [onForegroundMessage]);
-
-  useEffect(() => {
-    if (fcmToken) {
-      console.log("Current FCM Token:", fcmToken);
-    }
-  }, [fcmToken]);
 
   return {
     fcmToken,

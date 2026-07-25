@@ -2,14 +2,14 @@ import { useTheme } from "@mui/material";
 import { useLocation } from "react-router";
 import AuthPageLayout from "../../../features/auth/components/AuthPageLayout";
 import AuthVisualSection from "../../../features/auth/components/AuthVisualSection";
-import RestPasswordFormPanel from "../../../features/auth/components/RestPasswordFormPanel";
+import ResetPasswordFormPanel from "../../../features/auth/components/ResetPasswordFormPanel";
 import stepIllustrationLight from "../../../features/auth/Assets/Group 56.svg";
 import stepIllustrationDark from "../../../features/auth/Assets/Group 56 dark.svg";
 import confirmIllustrationLight from "../../../features/auth/Assets/Group 57 (2).svg";
 import confirmIllustrationDark from "../../../features/auth/Assets/Group 57 (2) dark.svg";
 import sectionDecoration from "../../../features/auth/Assets/circle & rectangle (2).svg";
 
-export default function RestPassword() {
+export default function ResetPassword() {
   const theme = useTheme();
   const location = useLocation();
   const stepIllustration =
@@ -31,7 +31,7 @@ export default function RestPassword() {
         description={"يرجى إدخال عنوان بريدك الإلكتروني\nلتتلقى رمز التحقق عليه"}
         backgroundDecoration={sectionDecoration}
       />
-      <RestPasswordFormPanel />
+      <ResetPasswordFormPanel />
     </AuthPageLayout>
   );
 }

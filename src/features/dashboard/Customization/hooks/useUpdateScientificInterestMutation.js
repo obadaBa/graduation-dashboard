@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { showSuccessToast } from "../../../../shared/lib/Tost/toastService";
+import { showSuccessToast } from "../../../../shared/lib/Toast/toastService";
 import { updateScientificInterest } from "../api/customization.api";
 
 function patchScientificInterestCache(cachedResponse, variables) {

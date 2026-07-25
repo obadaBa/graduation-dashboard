@@ -75,8 +75,7 @@ async function getOptionalFcmToken({ allowPermissionPrompt = true } = {}) {
 
   try {
     return await requestFirebaseMessagingToken();
-  } catch (error) {
-    console.warn("Request will continue without FCM token:", error);
+  } catch {
     return "";
   }
 }
@@ -150,6 +149,8 @@ export function requestPasswordResetOtp({ email }) {
   formData.append("email", email);
 
   return httpClient.post("auth/forgot-password/request-otp", formData, {
+    skipAuth: true,
+    skipAuthRefresh: true,
     showErrorToast: true,
   });
 }
@@ -160,6 +161,8 @@ export function verifyPasswordResetOtp({ email, otpCode }) {
   formData.append("otp_code", otpCode);
 
   return httpClient.post("auth/forgot-password/verify-otp", formData, {
+    skipAuth: true,
+    skipAuthRefresh: true,
     showErrorToast: true,
   });
 }
@@ -169,6 +172,8 @@ export function resendPasswordResetOtp({ email }) {
   formData.append("email", email);
 
   return httpClient.post("auth/forgot-password/resend-otp", formData, {
+    skipAuth: true,
+    skipAuthRefresh: true,
     showErrorToast: true,
   });
 }
@@ -186,6 +191,8 @@ export function resetPasswordRequest({
   formData.append("password_confirmation", passwordConfirmation);
 
   return httpClient.post("auth/forgot-password/reset", formData, {
+    skipAuth: true,
+    skipAuthRefresh: true,
     showErrorToast: true,
   });
 }

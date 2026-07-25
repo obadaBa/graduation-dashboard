@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import AuthFormInput from "../../../auth/components/AuthFormInput";
-import { showErrorToast } from "../../../../shared/lib/Tost/toastService";
+import { showErrorToast } from "../../../../shared/lib/Toast/toastService";
 import SyriaFlagIcon from "../../Assets/flag-for-flag-syria-svgrepo-com.svg";
 import ProfileField from "../../profile/components/ProfileField";
 import ProfileGenderSelector from "../../profile/components/ProfileGenderSelector";

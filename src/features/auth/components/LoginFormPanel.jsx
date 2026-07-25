@@ -158,7 +158,7 @@ export default function LoginFormPanel() {
           <Button
             type="button"
             variant="text"
-            onClick={() => navigate("/restpassword")}
+            onClick={() => navigate("/resetpassword")}
             sx={{
               mt: 1.2,
               alignSelf: "flex-start",

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { showSuccessToast } from "../../../../shared/lib/Tost/toastService.jsx";
+import { showSuccessToast } from "../../../../shared/lib/Toast/toastService.jsx";
 import { liftBanUser } from "../Api/users.api";
 
 export function useLiftBanUserMutation({ onSuccess } = {}) {

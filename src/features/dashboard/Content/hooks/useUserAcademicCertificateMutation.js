@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { showErrorToast } from "../../../../shared/lib/Tost/toastService";
+import { showErrorToast } from "../../../../shared/lib/Toast/toastService";
 import { getUserAcademicCertificate } from "../Api/content.api";
 
 export function useUserAcademicCertificateMutation() {

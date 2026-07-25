@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { saveAuthTokenSession } from "../../../lib/api/httpClient";
-import { showSuccessToast } from "../../../shared/lib/Tost/toastService";
+import { showSuccessToast } from "../../../shared/lib/Toast/toastService";
 import {
   loginRequest,
   storeFcmTokenAfterLoginFailureRequest,

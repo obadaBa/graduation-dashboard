@@ -9,7 +9,15 @@ export function useTestAiEvaluationStatusQuery(
 ) {
   return useQuery({
     queryKey: ["tests", "ai-evaluation", evaluationRequestId],
-    queryFn: () => getTestAiEvaluationStatus(evaluationRequestId),
+    queryFn: async () => {
+      const response = await getTestAiEvaluationStatus(evaluationRequestId);
+
+      if (process.env.NODE_ENV === "development") {
+        console.log("[AI Evaluation Status]", response);
+      }
+
+      return response;
+    },
     enabled: Boolean(evaluationRequestId) && enabled,
     refetchInterval: (query) => {
       if (query.state.error) {

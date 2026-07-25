@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { showSuccessToast } from "../../../shared/lib/Tost/toastService";
+import { showSuccessToast } from "../../../shared/lib/Toast/toastService";
 import { requestPasswordResetOtp } from "../api/auth.api";
 
 export function useRequestPasswordResetOtpMutation({ onSuccess } = {}) {

@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { showSuccessToast } from "../../../../shared/lib/Tost/toastService";
+import { showSuccessToast } from "../../../../shared/lib/Toast/toastService";
 import { updateSupervisorPassword } from "../api/profile.api";
 
 export function useUpdateSupervisorPasswordMutation({ onSuccess } = {}) {

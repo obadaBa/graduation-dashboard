@@ -1,16 +1,18 @@
 import { lazy, Suspense } from "react";
 import { Navigate, createBrowserRouter } from "react-router";
-import DashboardLayout from "../../features/dashboard/layout/DashboardLayout";
 
-const LoginPage = lazy(() => import("../../pages/auth/Login_page/Login_page"));
-const RestPassword = lazy(() =>
-  import("../../pages/auth/RestPassword/RestPassword"),
+const LoginPage = lazy(() => import("../../pages/auth/LoginPage/LoginPage"));
+const DashboardLayout = lazy(() =>
+  import("../../features/dashboard/layout/DashboardLayout"),
 );
-const ConfarmPassword = lazy(() =>
-  import("../../pages/auth/confarmPassword/confarmPassword"),
+const ResetPassword = lazy(() =>
+  import("../../pages/auth/ResetPassword/ResetPassword"),
 );
-const CreatNewPassword = lazy(() =>
-  import("../../pages/auth/CreatNewPassword/CreatNewPassword"),
+const ConfirmPassword = lazy(() =>
+  import("../../pages/auth/ConfirmPassword/ConfirmPassword"),
+);
+const CreateNewPassword = lazy(() =>
+  import("../../pages/auth/CreateNewPassword/CreateNewPassword"),
 );
 const DashboardHome = lazy(() =>
   import("../../pages/dashboard/Home/DashboardHome"),
@@ -53,6 +55,12 @@ const suspenseWrapper = (element) => (
   <Suspense fallback={<LoadingFallback />}>{element}</Suspense>
 );
 
+const TOKEN_STORAGE_KEYS = ["accessToken", "token", "authToken"];
+
+function getStoredAuthToken() {
+  return TOKEN_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean);
+}
+
 function getStoredAuthUser() {
   try {
     const rawUser = localStorage.getItem("authUser");
@@ -61,6 +69,17 @@ function getStoredAuthUser() {
   } catch {
     return null;
   }
+}
+
+function ProtectedRoute({ children }) {
+  const authToken = getStoredAuthToken();
+  const authUser = getStoredAuthUser();
+
+  if (!authToken && !authUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 }
 
 function OwnerOnlyRoute({ children }) {
@@ -83,20 +102,24 @@ export const router = createBrowserRouter([
     element: suspenseWrapper(<LoginPage />),
   },
   {
-    path: "/restpassword",
-    element: suspenseWrapper(<RestPassword />),
+    path: "/resetpassword",
+    element: suspenseWrapper(<ResetPassword />),
   },
   {
-    path: "/confarmpassword",
-    element: suspenseWrapper(<ConfarmPassword />),
+    path: "/confirmpassword",
+    element: suspenseWrapper(<ConfirmPassword />),
   },
   {
-    path: "/creatnewpassword",
-    element: suspenseWrapper(<CreatNewPassword />),
+    path: "/createnewpassword",
+    element: suspenseWrapper(<CreateNewPassword />),
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: suspenseWrapper(
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>,
+    ),
     children: [
       {
         index: true,
@@ -134,22 +157,36 @@ export const router = createBrowserRouter([
   },
   {
     path: "/content/:contentId",
-    element: suspenseWrapper(<ContentDetails />),
+    element: suspenseWrapper(
+      <ProtectedRoute>
+        <ContentDetails />
+      </ProtectedRoute>,
+    ),
   },
   {
     path: "/user-profile/:userId",
-    element: suspenseWrapper(<UserProfile />),
+    element: suspenseWrapper(
+      <ProtectedRoute>
+        <UserProfile />
+      </ProtectedRoute>,
+    ),
   },
   {
     path: "/test-details/:testId",
-    element: suspenseWrapper(<TestDetails />),
+    element: suspenseWrapper(
+      <ProtectedRoute>
+        <TestDetails />
+      </ProtectedRoute>,
+    ),
   },
   {
     path: "/account-verification",
     element: suspenseWrapper(
-      <OwnerOnlyRoute>
-        <UsersVerificationCenter />
-      </OwnerOnlyRoute>,
+      <ProtectedRoute>
+        <OwnerOnlyRoute>
+          <UsersVerificationCenter />
+        </OwnerOnlyRoute>
+      </ProtectedRoute>,
     ),
   },
 ]);

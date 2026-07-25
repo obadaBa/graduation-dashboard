@@ -11,7 +11,7 @@ import AuthStepIndicator from "./AuthStepIndicator";
 import fingerLight from "../Assets/finger.svg";
 import fingerDark from "../Assets/fingerdark.svg";
 
-export default function RestPasswordFormPanel() {
+export default function ResetPasswordFormPanel() {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,7 +19,7 @@ export default function RestPasswordFormPanel() {
   const indicatorInitialStep = location.state?.fromStep ?? 2;
   const requestOtpMutation = useRequestPasswordResetOtpMutation({
     onSuccess: (_, variables) => {
-      navigate("/confarmpassword", {
+      navigate("/confirmpassword", {
         state: {
           email: variables.email,
           fromStep: 2,

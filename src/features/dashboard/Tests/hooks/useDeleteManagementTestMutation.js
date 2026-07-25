@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { showSuccessToast } from "../../../../shared/lib/Tost/toastService";
+import { showSuccessToast } from "../../../../shared/lib/Toast/toastService";
 import { deleteManagementTest } from "../Api/tests.api";
 import { updateTestDeletionInBoard } from "../utils/managementBoardCache";
 
@@ -10,8 +10,6 @@ export function useDeleteManagementTestMutation(testId) {
     mutationFn: deleteManagementTest,
     retry: false,
     onSuccess: async (response) => {
-      console.log("[Delete Test API Response]", response);
-
       const deletedTestId = response?.data?.id ?? testId;
       const deletionType = response?.data?.deletion_type;
 

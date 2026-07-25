@@ -6,37 +6,70 @@ import ViewAgendaOutlinedIcon from "@mui/icons-material/ViewAgendaOutlined";
 import WidgetsOutlinedIcon from "@mui/icons-material/WidgetsOutlined";
 import { Box, Button, Stack } from "@mui/material";
 
+const tabStartIconSx = {
+  marginInlineStart: 0,
+  marginInlineEnd: "8px",
+};
+
+const appBarSx = {
+  mt: 1.4,
+  width: "100%",
+  minHeight: 58,
+  borderRadius: "14px",
+  bgcolor: "transparent",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-start",
+  direction: "rtl",
+};
+
+const tabsStackSx = {
+  width: "100%",
+  minHeight: 46,
+  border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+  borderRadius: "6px",
+  overflowX: "auto",
+  overflowY: "hidden",
+  bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+  boxShadow: (theme) => theme.palette.dashboard.shadow,
+  p: 0.6,
+  scrollbarWidth: "none",
+  msOverflowStyle: "none",
+  "&::-webkit-scrollbar": {
+    display: "none",
+  },
+};
+
+const getTabActionSx = (active) => ({
+  flex: 1,
+  minWidth: 0,
+  height: 35,
+  px: { xs: 1, md: 2 },
+  borderRadius: active ? "7px" : 0,
+  border: (theme) =>
+    active ? `1px solid ${theme.palette.dashboard.logoPrimary}` : "none",
+  bgcolor: (theme) =>
+    active ? theme.palette.dashboard.activeItem.background : "transparent",
+  color: (theme) =>
+    active
+      ? theme.palette.dashboard.logoPrimary
+      : theme.palette.dashboard.textSecondary,
+  fontSize: { xs: 13, md: 18 },
+  fontWeight: active ? 800 : 600,
+  whiteSpace: "nowrap",
+  "&:hover": {
+    bgcolor: (theme) =>
+      active ? theme.palette.dashboard.activeItem.background : "transparent",
+  },
+  "& .MuiButton-startIcon": tabStartIconSx,
+});
+
 function TabAction({ label, icon, active = false, onClick }) {
   return (
     <Button
       onClick={onClick}
       startIcon={icon}
-      sx={{
-        flex: 1,
-        minWidth: 0,
-        height: 35,
-        px: { xs: 1, md: 2 },
-        borderRadius: active ? "7px" : 0,
-        border: (theme) =>
-          active ? `1px solid ${theme.palette.dashboard.logoPrimary}` : "none",
-        bgcolor: (theme) =>
-          active ? theme.palette.dashboard.activeItem.background : "transparent",
-        color: (theme) =>
-          active
-            ? theme.palette.dashboard.logoPrimary
-            : theme.palette.dashboard.textSecondary,
-        fontSize: { xs: 13, md: 18 },
-        fontWeight: active ? 800 : 600,
-        whiteSpace: "nowrap",
-        "&:hover": {
-          bgcolor: (theme) =>
-            active ? theme.palette.dashboard.activeItem.background : "transparent",
-        },
-        "& .MuiButton-startIcon": {
-          marginInlineStart: 0,
-          marginInlineEnd: "8px",
-        },
-      }}
+      sx={getTabActionSx(active)}
     >
       {label}
     </Button>
@@ -81,38 +114,11 @@ export default function TestDetailsAppBar({
   ];
 
   return (
-    <Box
-      sx={{
-        mt: 1.4,
-        width: "100%",
-        minHeight: 58,
-        borderRadius: "14px",
-        bgcolor: "transparent",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        direction: "rtl",
-      }}
-    >
+    <Box sx={appBarSx}>
       <Stack
         direction="row"
         alignItems="center"
-        sx={{
-          width: "100%",
-          minHeight: 46,
-          border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-          borderRadius: "6px",
-          overflowX: "auto",
-          overflowY: "hidden",
-          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-          boxShadow: (theme) => theme.palette.dashboard.shadow,
-          p: 0.6,
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-        }}
+        sx={tabsStackSx}
       >
         {tabs.map((tab) => (
           <TabAction
