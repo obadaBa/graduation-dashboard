@@ -2,8 +2,7 @@ import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
-import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import { useMemo, useState } from "react";
 import {
@@ -373,7 +372,7 @@ export default function ContentOverviewCard({
             value={statistics.bookmarks_count}
           />
           <StatBox
-            icon={<DownloadRoundedIcon sx={{ fontSize: 26 }} />}
+            icon={<DownloadOutlinedIcon sx={{ fontSize: 26 }} />}
             value={statistics.download_count}
           />
         </Stack>
@@ -468,9 +467,9 @@ export default function ContentOverviewCard({
             px: 1.5,
             py: 0.8,
             borderRadius: "6px",
-            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-            color: (theme) => theme.palette.dashboard.textSecondary,
+            border: (theme) => `1px solid ${theme.palette.dashboard.mutedChip.border}`,
+            bgcolor: (theme) => theme.palette.dashboard.mutedChip.background,
+            color: (theme) => theme.palette.dashboard.mutedChip.color,
             fontSize: 13,
             fontWeight: 700,
             textAlign: "center",

@@ -96,7 +96,10 @@ export default function ContentLibraryBoard({
         }}
       >
         <Box sx={{ display: { xs: "none", lg: "block" }, order: 1, height: "100%" }}>
-          <ContentStatsPanel stats={stats} />
+          <ContentStatsPanel
+            stats={stats}
+            infoTooltipTitle="هذه الاحصائية خاصة بهذه السنة"
+          />
         </Box>
 
         <Box

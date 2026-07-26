@@ -1,9 +1,10 @@
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Tooltip, Typography } from "@mui/material";
 
 export default function ContentStatsPanel({
   stats,
   showInfoIcon = true,
+  infoTooltipTitle,
   borderSide = "left",
   sx,
 }) {
@@ -27,15 +28,27 @@ export default function ContentStatsPanel({
         ...sx,
       }}
     >
-      {showInfoIcon && (
-        <InfoOutlinedIcon
-          sx={{
-            fontSize: 20,
-            color: (theme) => theme.palette.dashboard.textPrimary,
-            mt: 0.25,
-          }}
-        />
-      )}
+      {showInfoIcon &&
+        (infoTooltipTitle ? (
+          <Tooltip title={infoTooltipTitle} arrow>
+            <InfoOutlinedIcon
+              sx={{
+                fontSize: 20,
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                mt: 0.25,
+                cursor: "help",
+              }}
+            />
+          </Tooltip>
+        ) : (
+          <InfoOutlinedIcon
+            sx={{
+              fontSize: 20,
+              color: (theme) => theme.palette.dashboard.textPrimary,
+              mt: 0.25,
+            }}
+          />
+        ))}
       <Stack spacing={3.5} sx={{ height: "100%" }} gap={3}>
         {stats.map((item, index) => (
           <Box key={item.id} sx={{ textAlign: "center" }}>
@@ -63,7 +76,7 @@ export default function ContentStatsPanel({
               sx={{
                 mt: 2,
                 color: (theme) => theme.palette.dashboard.logoPrimary,
-                fontSize: 20,
+                fontSize: 24,
                 fontWeight: 500,
                 lineHeight: 1,
                 width: "100%",

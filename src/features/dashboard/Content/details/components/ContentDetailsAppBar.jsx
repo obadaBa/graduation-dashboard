@@ -23,9 +23,7 @@ const appBarSx = {
   width: "100%",
   minHeight: 68,
   borderRadius: "14px",
-  bgcolor: (theme) => theme.palette.dashboard.surface,
-  px: { xs: 1, md: 2 },
-  py: 1,
+  bgcolor: "transparent",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
@@ -34,26 +32,37 @@ const appBarSx = {
   direction: "rtl",
 };
 
+const rightControlsSx = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-start",
+  flexWrap: { xs: "wrap", lg: "nowrap" },
+  gap: 1.2,
+  minWidth: 0,
+};
+
 const tabsStackSx = {
   minHeight: 46,
   flex: { xs: "1 1 100%", lg: "0 1 auto" },
   border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+  borderRadius: "6px",
   overflow: "hidden",
   bgcolor: (theme) => theme.palette.dashboard.surface,
   p: 0.6,
+  boxShadow: (theme) => theme.palette.dashboard.shadow,
 };
 
 const actionStackSx = {
-  px: { xs: 0, md: 1.4 },
+  px: 0,
   flexShrink: 0,
 };
 
 const approveIconSx = {
-  fontSize: 26,
+  fontSize: 28,
 };
 
 const deleteIconSx = {
-  fontSize: 26,
+  fontSize: 28,
 };
 
 const tabIconSx = {
@@ -61,9 +70,9 @@ const tabIconSx = {
 };
 
 const getGhostIconButtonSx = ({ color, borderColor, bgcolor }) => ({
-  minWidth: 48,
-  width: 48,
-  height: 42,
+  minWidth: 54,
+  width: 54,
+  height: 48,
   borderRadius: "10px",
   border: `1.5px dashed ${borderColor}`,
   bgcolor: bgcolor || ((theme) => theme.palette.dashboard.surface),
@@ -222,11 +231,12 @@ export default function ContentDetailsAppBar({
   return (
     <>
       <Box sx={appBarSx}>
-        <Stack
-          direction="row-reverse"
-          alignItems="center"
-          sx={tabsStackSx}
-        >
+        <Box sx={rightControlsSx}>
+          <Stack
+            direction="row-reverse"
+            alignItems="center"
+            sx={tabsStackSx}
+          >
           <TabAction
             label="سجل الحالة"
             icon={<ViewAgendaOutlinedIcon sx={tabIconSx} />}
@@ -247,18 +257,19 @@ export default function ContentDetailsAppBar({
             active={activeTab === "overview"}
             onClick={() => onTabChange("overview")}
           />
-        </Stack>
+          </Stack>
 
-        <Stack
-          direction="row-reverse"
-          alignItems="center"
-          spacing={1.2}
-          sx={actionStackSx}
-          gap={1}
-        >
+          <Stack
+            direction="row-reverse"
+            alignItems="center"
+            spacing={1.2}
+            sx={actionStackSx}
+            gap={1}
+          >
           <GhostIconButton
             color="#3FD547"
             borderColor="#3FD547"
+            bgcolor="rgba(63, 213, 71, 0.12)"
             onClick={handleApprove}
             disabled={isActionPending}
           >
@@ -268,12 +279,14 @@ export default function ContentDetailsAppBar({
           <GhostIconButton
             color="#FF6A64"
             borderColor="#FF6A64"
+            bgcolor="rgba(255, 106, 100, 0.12)"
             onClick={handleDelete}
             disabled={isActionPending}
           >
             <DeleteOutlineRoundedIcon sx={deleteIconSx} />
           </GhostIconButton>
-        </Stack>
+          </Stack>
+        </Box>
 
         <ContentDetailsDownloadButton contentDetails={contentDetails} />
 

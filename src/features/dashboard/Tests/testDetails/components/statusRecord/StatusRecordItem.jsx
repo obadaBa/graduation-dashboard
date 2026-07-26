@@ -27,8 +27,8 @@ export default function StatusRecordItem({
         cursor: "pointer",
       }}
     >
-      <Stack direction="row-reverse" spacing={0.85} alignItems="center">
-        {icon}
+      <Stack direction="row-reverse" spacing={0.85} alignItems="center" gap={1}>
+
         <Typography
           sx={{
             color: (theme) => theme.palette.dashboard.textPrimary,
@@ -38,9 +38,10 @@ export default function StatusRecordItem({
         >
           {label}
         </Typography>
+         {icon}
       </Stack>
 
-      <Stack direction="row-reverse" spacing={0.45} alignItems="center">
+      <Stack direction="row-reverse" spacing={0.45} alignItems="center" gap={1}>
         <Typography
           sx={{
             color: (theme) => theme.palette.dashboard.textSecondary,

@@ -14,8 +14,8 @@ import {
 import { useEffect, useState } from "react";
 import { useLibraryMaterialStatusHistoryQuery } from "../../hooks/useLibraryMaterialStatusHistoryQuery";
 
-const defaultAvatar =
-  "http://localhost/storage/defaults/default-avatar.svg";
+const appUrl = process.env.REACT_APP_APP_URL || "http://localhost";
+const defaultAvatar = `${appUrl}/storage/defaults/default-avatar.svg`;
 
 function getStatusPresentation(status = "") {
   if (status.includes("الموافقة")) {

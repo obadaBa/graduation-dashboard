@@ -93,7 +93,7 @@ function buildChartData(apiData, fallbackYear) {
 
 function LegendItem({ color, label }) {
   return (
-    <Stack direction="row" spacing={0.75} alignItems="center">
+    <Stack direction="row" spacing={1.35} alignItems="center" gap={1}>
       <Box
         sx={{
           width: 10,

@@ -43,6 +43,11 @@ export const createAppTheme = (mode) => {
               shadow: "0 6px 18px rgba(29, 41, 57, 0.08)",
               textPrimary: "#263238",
               textSecondary: "#A1A1A1",
+              mutedChip: {
+                background: "#F4F4F4",
+                border: "#D8D8D8",
+                color: "#858585",
+              },
               logoPrimary: "#5583FF",
               activeItem: {
                 color: "#5583FF",
@@ -92,6 +97,11 @@ export const createAppTheme = (mode) => {
               shadow: "0 6px 18px rgba(0, 0, 0, 0.35)",
               textPrimary: "#F3F6FF",
               textSecondary: "#AAB2C0",
+              mutedChip: {
+                background: "#2A2E36",
+                border: "rgba(255, 255, 255, 0.18)",
+                color: "#AAB2C0",
+              },
               logoPrimary: "#7298FF",
               activeItem: {
                 color: "#7298FF",

@@ -11,7 +11,8 @@ import { createIdempotencyKey } from "../../../../../shared/lib/idempotency";
 import { useDeleteTestReviewMutation } from "../../hooks/useDeleteTestReviewMutation";
 import { useTestReviewsQuery } from "../../hooks/useTestReviewsQuery";
 
-const defaultAvatar = "http://localhost/storage/defaults/default-avatar.svg";
+const appUrl = process.env.REACT_APP_APP_URL || "http://localhost";
+const defaultAvatar = `${appUrl}/storage/defaults/default-avatar.svg`;
 const ratingFilters = ["الكل", "5", "4", "3", "2", "1"];
 
 function formatNumber(value) {

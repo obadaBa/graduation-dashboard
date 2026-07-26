@@ -8,9 +8,10 @@ export function getTestsManagementBoard(date) {
   });
 }
 
-export function getTestManagementDetails(testId) {
+export function getTestManagementDetails(testId, config = {}) {
   return httpClient.get(`test-management/management-board/details/${testId}`, {
     showErrorToast: true,
+    ...config,
   });
 }
 

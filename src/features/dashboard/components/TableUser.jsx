@@ -140,27 +140,50 @@ export function NameCell({ user }) {
   return (
     <Stack
       direction="row"
-      spacing={0.8}
       alignItems="center"
-      justifyContent="center"
-      gap={1}
+      justifyContent="flex-start"
+      sx={{
+        width: 170,
+        maxWidth: "100%",
+        minWidth: 0,
+        mx: "auto",
+        gap: 1,
+      }}
     >
-      <Avatar
-        src={user.avatar}
-        alt={user.name}
+      <Box
         sx={{
           width: 25,
+          minWidth: 25,
           height: 25,
-          bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-          color: (theme) => theme.palette.dashboard.textSecondary,
-          fontSize: 12,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
         }}
-      />
+      >
+        <Avatar
+          src={user.avatar}
+          alt={user.name}
+          sx={{
+            width: 25,
+            height: 25,
+            bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+            color: (theme) => theme.palette.dashboard.textSecondary,
+            fontSize: 12,
+          }}
+        />
+      </Box>
       <Typography
         sx={{
           color: (theme) => theme.palette.dashboard.textPrimary,
           fontSize: 14,
           fontWeight: 700,
+          minWidth: 0,
+          flex: 1,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          textAlign: "right",
         }}
       >
         {user.name}

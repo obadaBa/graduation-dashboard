@@ -16,7 +16,8 @@ import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import { useFollowersQuery } from "../../hooks/useFollowersQuery";
 import { useFollowingQuery } from "../../hooks/useFollowingQuery";
 
-const defaultAvatar = "http://localhost/storage/defaults/default-avatar.svg";
+const appUrl = process.env.REACT_APP_APP_URL || "http://localhost";
+const defaultAvatar = `${appUrl}/storage/defaults/default-avatar.svg`;
 
 function ConnectionItem({ user }) {
   return (

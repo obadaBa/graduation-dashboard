@@ -37,7 +37,7 @@ const TOP_CUT_POSITIONS = [0.08, 0.22, 0.36, 0.5, 0.64];
 function useElementSize(ref) {
   const [size, setSize] = useState({
     width: 610,
-    height: 210,
+    height: 188,
   });
 
   useEffect(() => {
@@ -82,13 +82,13 @@ function DifficultyBadge({ text, color }) {
           sm: 0.35,
           lg: 0.45,
         },
-        bgcolor: alpha(color, 0.15),
+        bgcolor: color,
         borderRadius: "4px",
       }}
     >
       <Typography
         sx={{
-          color,
+          color: "#FFFFFF",
           fontSize: {
             xs: 9,
             sm: 10,
@@ -425,9 +425,9 @@ export default function TicketCard({
         },
 
         height: {
-          xs: 200,
-          sm: 210,
-          lg: 216,
+          xs: 180,
+          sm: 188,
+          lg: 184,
         },
 
         mx: "auto",
@@ -549,9 +549,9 @@ export default function TicketCard({
           },
 
           py: {
-            xs: 1.2,
-            sm: 1.5,
-            lg: 1.8,
+            xs: 1,
+            sm: 1.25,
+            lg: 1.45,
           },
 
           overflow: "hidden",
@@ -612,9 +612,9 @@ export default function TicketCard({
               },
 
               py: {
-                xs: 1.1,
-                sm: 1.4,
-                lg: 1.7,
+                xs: 0.9,
+                sm: 1.1,
+                lg: 1.35,
               },
 
               bgcolor: infoPanelBackground,
@@ -742,12 +742,12 @@ export default function TicketCard({
 
                 mt: "auto",
 
-                display: "grid",
-                gridTemplateColumns: "minmax(0, 4fr) minmax(0, 5fr)",
+                display: "flex",
 
                 alignItems: "center",
+                justifyContent: "space-between",
 
-                columnGap: {
+                gap: {
                   xs: 0.8,
                   sm: 1.2,
                   lg: 1.5,
@@ -757,41 +757,19 @@ export default function TicketCard({
                 direction: "ltr",
               }}
             >
-              {/* التصنيفات */}
-              <Stack
+               <Stack
                 direction="row"
                 alignItems="center"
-                spacing={{
-                  xs: 0.45,
-                  sm: 0.7,
-                  lg: 0.9,
-                }}
-                sx={{
-                  minWidth: 0,
-                  overflow: "hidden",
-                }}
-              >
-                {visibleTags.map((tag, index) => (
-                  <BlueTag
-                    key={`${tag}-${index}`}
-                    text={tag}
-                  />
-                ))}
-              </Stack>
-
-              {/* المدة وعدد الأسئلة */}
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="flex-end"
+                justifyContent="flex-start"
                 spacing={{
                   xs: 0.8,
                   sm: 1.2,
                   lg: 1.5,
                 }}
                 sx={{
-                  direction: "rtl",
+                  direction: "ltr",
                   minWidth: 0,
+                  flexShrink: 0,
                 }}
               >
                 <FooterInfo
@@ -807,6 +785,34 @@ export default function TicketCard({
                   small
                 />
               </Stack>
+              {/* التصنيفات */}
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={{
+                  xs: 0.45,
+                  sm: 0.7,
+                  lg: 0.9,
+                }}
+                sx={{
+                  minWidth: 0,
+                  overflow: "hidden",
+                  flex: 1,
+                  justifyContent: "flex-start",
+                  direction: "rtl",
+                }}
+                gap={0.5}
+              >
+                {visibleTags.map((tag, index) => (
+                  <BlueTag
+                    key={`${tag}-${index}`}
+                    text={tag}
+                  />
+                ))}
+              </Stack>
+
+              {/* المدة وعدد الأسئلة */}
+
             </Box>
           </Box>
 
@@ -828,9 +834,9 @@ export default function TicketCard({
               },
 
               py: {
-                xs: 1.1,
-                sm: 1.4,
-                lg: 1.7,
+                xs: 0.9,
+                sm: 1.1,
+                lg: 1.35,
               },
 
               bgcolor: pricePanelBackground,

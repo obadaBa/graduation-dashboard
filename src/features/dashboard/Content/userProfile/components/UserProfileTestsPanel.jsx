@@ -8,6 +8,7 @@ import {
   Menu,
   MenuItem,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
@@ -19,7 +20,6 @@ import TicketCard from "../../../Home/components/HomeSection2/TicketCard";
 import { useUserProfileTestsQuery } from "../../hooks/useUserProfileTestsQuery";
 
 const EMPTY_TESTS = [];
-
 const SORT_OPTIONS = [
   { value: "latest", label: "الأحدث" },
   { value: "price", label: "السعر" },
@@ -133,15 +133,22 @@ export default function UserProfileTestsPanel() {
             : theme.palette.dashboard.surface,
         boxShadow: (theme) => theme.palette.dashboard.shadow,
         overflow: "hidden",
+        height: {
+          xs: "auto",
+          lg: "clamp(610px, calc(100vh - 190px), 760px)",
+        },
+        minHeight: { xs: 620, lg: 610 },
         p: { xs: 1.5, md: 2.2 },
         direction: "rtl",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-      
+
 
         <Stack direction={{ xs: "column", md: "row" }} spacing={1.5} alignItems={{ xs: "stretch", md: "center" }} gap={1}>
-         
+
 
           <Box
             sx={{
@@ -188,7 +195,9 @@ export default function UserProfileTestsPanel() {
             sx={{
               minWidth: 110,
               height: 42,
+              px: 1.6,
               borderRadius: "999px",
+              columnGap: 0.8,
               bgcolor: (theme) =>
                 theme.palette.mode === "dark"
                   ? theme.palette.dashboard.chartBackground
@@ -206,6 +215,7 @@ export default function UserProfileTestsPanel() {
                 border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
               },
               "& .MuiButton-endIcon": {
+                m: 0,
                 color: (theme) => theme.palette.dashboard.textSecondary,
               },
             }}
@@ -245,7 +255,9 @@ export default function UserProfileTestsPanel() {
                   setSortAnchorEl(null);
                 }}
                 sx={{
-                  justifyContent: "flex-end",
+                  justifyContent: "flex-start",
+                  textAlign: "right",
+                  direction: "rtl",
                   color: (theme) => theme.palette.dashboard.textPrimary,
                   fontSize: 14,
                   fontWeight: 600,
@@ -256,12 +268,15 @@ export default function UserProfileTestsPanel() {
             ))}
           </Menu>
         </Stack>
-          <InfoOutlinedIcon
-            sx={{
-              color: (theme) => theme.palette.dashboard.textPrimary,
-              fontSize: 22,
-            }}
-          />
+          <Tooltip title="هذه الاحصائيات خاصة بهذه السنة" arrow>
+            <InfoOutlinedIcon
+              sx={{
+                color: (theme) => theme.palette.dashboard.textPrimary,
+                fontSize: 22,
+                cursor: "help",
+              }}
+            />
+          </Tooltip>
       </Box>
 
       <Box
@@ -271,6 +286,8 @@ export default function UserProfileTestsPanel() {
           flexDirection: { xs: "column", lg: "row" },
           gap: 2.2,
           alignItems: "flex-start",
+          flex: 1,
+          minHeight: 0,
         }}
       >
         <Box
@@ -309,6 +326,14 @@ export default function UserProfileTestsPanel() {
             flex: 1,
             width: { xs: "100%", lg: "84%" },
             order: { xs: 1, lg: 1 },
+            height: "100%",
+            minHeight: 0,
+            overflowY: { xs: "visible", lg: "auto" },
+            overflowX: "hidden",
+            pr: { xs: 0, lg: 0.5 },
+            pb: 2,
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": { display: "none" },
           }}
         >
           {testsQuery.isLoading ? (

@@ -272,9 +272,10 @@ export default function HomeStatsExportButton({ year, testsSeries, stackedSeries
       <Button
         variant="contained"
         onClick={(event) => setAnchorEl(event.currentTarget)}
-        endIcon={<KeyboardArrowDownRoundedIcon sx={{mr:1}} />}
+        endIcon={<KeyboardArrowDownRoundedIcon />}
         sx={{
           height: 42,
+          minWidth: 164,
           borderRadius: "12px",
           bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
           boxShadow: (theme) =>
@@ -283,8 +284,13 @@ export default function HomeStatsExportButton({ year, testsSeries, stackedSeries
               : "0 4px 14px rgba(85, 131, 255, 0.28)",
           fontSize: 16,
           fontWeight: 600,
+          justifyContent: "center",
+          gap: 0.75,
           "&:hover": {
             bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
+          },
+          "& .MuiButton-endIcon": {
+            m: 0,
           },
         }}
       >

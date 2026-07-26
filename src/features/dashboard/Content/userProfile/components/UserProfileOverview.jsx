@@ -1,26 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Avatar,
   Box,
-  Button,
   CircularProgress,
   Stack,
   Typography,
 } from "@mui/material";
 import { useParams } from "react-router";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import WcRoundedIcon from "@mui/icons-material/WcRounded";
 import HourglassEmptyRoundedIcon from "@mui/icons-material/HourglassEmptyRounded";
+import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import { useUserProfileOverviewQuery } from "../../hooks/useUserProfileOverviewQuery";
-import { useUserAcademicCertificateMutation } from "../../hooks/useUserAcademicCertificateMutation";
-import AcademicCertificateModal from "./AcademicCertificateModal";
 import UserConnectionsSlide from "./UserConnectionsSlide";
 
 const fallbackCoverImage =
@@ -43,7 +40,14 @@ function BasicInfoItem({ icon, label, value, color }) {
         flexShrink: 0,
       }}
     >
-      <Box sx={{ color, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Box
+        sx={{
+          color,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         {icon}
       </Box>
       <Typography
@@ -150,7 +154,7 @@ function ProfileStatCard({ value, label, icon }) {
   );
 }
 
-function VerificationInfo({ header, onShowCertificate }) {
+function VerificationInfo({ header }) {
   const verifiedBy = header.verified_by;
   const verifierRole =
     verifiedBy?.role === "owner"
@@ -161,7 +165,13 @@ function VerificationInfo({ header, onShowCertificate }) {
 
   return (
     <Box sx={{ width: "100%", textAlign: "right", direction: "rtl" }}>
-      <Stack direction="row" alignItems="center" spacing={0.8}>
+      <Stack
+        direction="column"
+        alignItems="flex-start"
+        justifyContent="space-between"
+        spacing={0.8}
+        sx={{ width: { xs: "100%", md: 570   } , mr:2}}
+      >
         <Typography
           sx={{
             color: (theme) => theme.palette.dashboard.textSecondary,
@@ -174,17 +184,14 @@ function VerificationInfo({ header, onShowCertificate }) {
         </Typography>
 
         {verifiedBy && (
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={0.8}
-          >
+          <Stack direction="row" alignItems="center" spacing={0.8} gap={1}>
             <Avatar
               src={verifiedBy.avatar}
               alt={verifiedBy.name}
               sx={{
-                width: 32,
-                height: 32,
+                width: 50,
+                height: 50,
+                borderRadius: "8px",
                 bgcolor: (theme) => theme.palette.dashboard.chartBackground,
               }}
             />
@@ -210,56 +217,40 @@ function VerificationInfo({ header, onShowCertificate }) {
                 {verifierRole}
               </Typography>
             </Box>
+            <Stack
+              direction="row"
+              alignItems="center"
+              gap={0.4}
+              sx={{ transform: "translateY(9px)" }}
+            >
+              <AccessTimeRoundedIcon
+                sx={{
+                  fontSize: 14,
+                  color: (theme) => theme.palette.dashboard.textSecondary,
+                }}
+              />
+              <Typography
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textSecondary,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {header.academically_verified_at || "-"}
+              </Typography>
+            </Stack>
           </Stack>
         )}
       </Stack>
-      <Typography
-        sx={{
-          mt: 0.4,
-          color: (theme) => theme.palette.dashboard.textSecondary,
-          fontSize: 16,
-          fontWeight: 500,
-          whiteSpace: "nowrap",
-        }}
-      >
-        {header.academically_verified_at || "-"}
-      </Typography>
-      {header.is_academically_verified && (
-        <Button
-          onClick={onShowCertificate}
-          endIcon={
-            <ArrowBackRoundedIcon sx={{ fontSize: 16, mr: 1 }} />
-          }
-          sx={{
-            mt: 1.1,
-            minWidth: 150,
-            height: 30,
-            px: 1.3,
-            borderRadius: "999px",
-            bgcolor: "#5C84FF",
-            color: "#FFFFFF",
-            fontSize: 12,
-            fontWeight: 600,
-            whiteSpace: "nowrap",
-            "&:hover": {
-              bgcolor: "#4A72E6",
-            },
-          }}
-        >
-          عرض الشهادة الجامعية
-        </Button>
-      )}
     </Box>
   );
 }
 
 export default function UserProfileOverview() {
   const { userId } = useParams();
-  const [isCertificateOpen, setIsCertificateOpen] = useState(false);
-  const [certificateUrl, setCertificateUrl] = useState("");
   const [connectionsType, setConnectionsType] = useState(null);
   const profileQuery = useUserProfileOverviewQuery(userId);
-  const certificateMutation = useUserAcademicCertificateMutation();
   const profile = profileQuery.data?.data || {};
   const header = profile.header || {};
   const basicInfo = profile.basic_info || {};
@@ -297,30 +288,6 @@ export default function UserProfileOverview() {
   ];
   const roundedRating = Math.round(Number(reviews.average_rating || 0));
 
-  useEffect(() => {
-    return () => {
-      if (certificateUrl) URL.revokeObjectURL(certificateUrl);
-    };
-  }, [certificateUrl]);
-
-  const handleShowCertificate = async () => {
-    setCertificateUrl("");
-    setIsCertificateOpen(true);
-
-    try {
-      const certificateBlob = await certificateMutation.mutateAsync(userId);
-      setCertificateUrl(URL.createObjectURL(certificateBlob));
-    } catch {
-      setCertificateUrl("");
-    }
-  };
-
-  const handleCloseCertificate = () => {
-    setIsCertificateOpen(false);
-    setCertificateUrl("");
-    certificateMutation.reset();
-  };
-
   if (profileQuery.isLoading) {
     return (
       <Box sx={{ py: 12, display: "flex", justifyContent: "center" }}>
@@ -347,501 +314,512 @@ export default function UserProfileOverview() {
 
   return (
     <Box
+      sx={{
+        mt: 0.8,
+        width: "100%",
+        height: {
+          xs: "auto",
+          md: "clamp(520px, calc(100vh - 150px), 640px)",
+        },
+        minHeight: { xs: 660, md: 540 },
+        borderRadius: "18px",
+        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
+        bgcolor: (theme) => theme.palette.dashboard.surface,
+        boxShadow: (theme) => theme.palette.dashboard.shadow,
+        overflow: { xs: "visible", md: "hidden" },
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Box sx={{ position: "relative", flexShrink: 0 }}>
+        <Box
+          component="img"
+          src={coverImage}
+          alt="cover"
+          onError={(event) => {
+            event.currentTarget.src = fallbackCoverImage;
+          }}
           sx={{
-            mt: 0.8,
             width: "100%",
-            minHeight: 420,
-            borderRadius: "18px",
-            border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-            bgcolor: (theme) => theme.palette.dashboard.surface,
+            height: { xs: 170, md: 210 },
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
+
+        <Box
+          component="img"
+          src={avatarImage}
+          alt="user"
+          sx={{
+            position: "absolute",
+            right: { xs: 18, md: 42 },
+            bottom: { xs: -46, md: -56 },
+            width: { xs: 92, md: 118 },
+            height: { xs: 92, md: 118 },
+            borderRadius: "50%",
+            objectFit: "cover",
+            border: (theme) => `4px solid ${theme.palette.dashboard.surface}`,
             boxShadow: (theme) => theme.palette.dashboard.shadow,
-            overflow: "hidden",
-            boxSizing: "border-box",
+            bgcolor: (theme) => theme.palette.dashboard.surface,
+          }}
+        />
+      </Box>
+
+      <Box
+        sx={{
+          px: { xs: 2, md: 4 },
+          pt: { xs: 4.1, md: 4.4 },
+          pb: 2.2,
+          minWidth: 0,
+          flex: 1,
+          minHeight: 0,
+          overflowY: { xs: "visible", md: "auto" },
+          overflowX: "hidden",
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": { display: "none" },
+        }}
+      >
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateAreas: {
+              xs: `"profile" "verification"`,
+              lg: `"verification profile"`,
+            },
+            gridTemplateColumns: {
+              xs: "1fr",
+              lg: "minmax(520px, 1fr) minmax(520px, 0.95fr)",
+            },
+            columnGap: {
+              xs: 3,
+              lg: "clamp(48px, 7vw, 132px)",
+              xl: "clamp(72px, 8vw, 180px)",
+            },
+            rowGap: { xs: 2.4, lg: 0 },
+            alignItems: "center",
+            direction: "ltr",
+            minWidth: 0,
           }}
         >
-          <Box sx={{ position: "relative" }}>
-            <Box
-              component="img"
-              src={coverImage}
-              alt="cover"
-              onError={(event) => {
-                event.currentTarget.src = fallbackCoverImage;
-              }}
+          <Box
+            sx={{
+              gridArea: "profile",
+              textAlign: "right",
+              direction: "rtl",
+              pr: {
+                xs: "calc(18px + 92px + 4px)",
+                md: "calc(42px + 118px + -22px)",
+              },
+              mt: { xs: -1.2, md: -5.8 },
+              minWidth: 0,
+            }}
+          >
+            <Stack
+              direction="row-reverse"
+              spacing={0.7}
+              alignItems="center"
+              justifyContent="flex-start"
               sx={{
-                width: "100%",
-                height: { xs: 170, md: 210 },
-                objectFit: "cover",
-                display: "block",
+                width: "fit-content",
+                ml: "auto",
+                mt:1.5
               }}
-            />
+              gap={0.5}
+            >
+              {header.is_academically_verified && (
+                <VerifiedRoundedIcon sx={{ fontSize: 22, color: "#5C84FF" }} />
+              )}
+              <Typography
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textPrimary,
+                  fontSize: { xs: 24, md: 26 },
+                  fontWeight: 800,
+                }}
+              >
+                {header.name || "-"}
+              </Typography>
+            </Stack>
 
-            <Box
-              component="img"
-              src={avatarImage}
-              alt="user"
+            <Typography
+              component="div"
               sx={{
-                position: "absolute",
-                right: { xs: 18, md: 42 },
-                bottom: { xs: -46, md: -56 },
-                width: { xs: 92, md: 118 },
-                height: { xs: 92, md: 118 },
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: (theme) => `4px solid ${theme.palette.dashboard.surface}`,
-                boxShadow: (theme) => theme.palette.dashboard.shadow,
-                bgcolor: (theme) => theme.palette.dashboard.surface,
+                mt: 0.6,
+                color: (theme) => theme.palette.dashboard.textSecondary,
+                fontSize: { xs: 16, md: 17 },
+                fontWeight: 500,
+                width: "fit-content",
+                ml: "auto",
               }}
-            />
+            >
+              <Box
+                component="button"
+                type="button"
+                onClick={() => setConnectionsType("followers")}
+                sx={{
+                  border: 0,
+                  p: 0,
+                  bgcolor: "transparent",
+                  color: "inherit",
+                  font: "inherit",
+                  cursor: "pointer",
+                  "&:hover": { color: "#5583FF" },
+                }}
+              >
+                <Box
+                  component="span"
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    fontWeight: 800,
+                  }}
+                >
+                  {formatCount(header.followers_count)}
+                </Box>{" "}
+                متابع
+              </Box>{" "}
+              .{" "}
+              <Box
+                component="button"
+                type="button"
+                onClick={() => setConnectionsType("following")}
+                sx={{
+                  border: 0,
+                  p: 0,
+                  bgcolor: "transparent",
+                  color: "inherit",
+                  font: "inherit",
+                  cursor: "pointer",
+                  "&:hover": { color: "#5583FF" },
+                }}
+              >
+                <Box
+                  component="span"
+                  sx={{
+                    color: (theme) => theme.palette.dashboard.textPrimary,
+                    fontWeight: 800,
+                  }}
+                >
+                  {formatCount(header.following_count)}
+                </Box>{" "}
+                يتابع
+              </Box>{" "}
+              .{" "}
+              <Box
+                component="span"
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textPrimary,
+                  fontWeight: 800,
+                }}
+              >
+                {formatCount(header.published_tests_count)}
+              </Box>{" "}
+              اختبار
+            </Typography>
           </Box>
 
           <Box
             sx={{
-              px: { xs: 2, md: 4 },
-              pt: { xs: 4.1, md: 4.4 },
-              pb: 2.2,
+              gridArea: "verification",
+              maxWidth: 560,
+              width: "100%",
               minWidth: 0,
+              justifySelf: "center",
             }}
           >
             <Box
               sx={{
                 display: "grid",
-                gridTemplateAreas: {
-                  xs: `"profile" "verification"`,
-                  lg: `"verification profile"`,
-                },
                 gridTemplateColumns: {
                   xs: "1fr",
-                  lg: "minmax(520px, 1fr) minmax(520px, 0.95fr)",
+                  md: "minmax(240px, 280px) minmax(210px, 240px)",
                 },
-                columnGap: {
-                  xs: 3,
-                  lg: "clamp(48px, 7vw, 132px)",
-                  xl: "clamp(72px, 8vw, 180px)",
-                },
-                rowGap: { xs: 2.4, lg: 0 },
-                alignItems: "center",
+                columnGap: 3,
                 direction: "ltr",
+              }}
+            >
+              <Box sx={{ display: { xs: "none", md: "block" } }} />
+              <VerificationInfo header={header} />
+            </Box>
+          </Box>
+        </Box>
+
+        <Box sx={{ mt: 0.7, pt: 0.5 }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                lg: "minmax(520px, 1fr) minmax(520px, 0.95fr)",
+              },
+              columnGap: {
+                xs: 3,
+                lg: "clamp(48px, 7vw, 132px)",
+                xl: "clamp(72px, 8vw, 180px)",
+              },
+              rowGap: { xs: 3, md: 2 },
+              alignItems: "start",
+              direction: "rtl",
+              minWidth: 0,
+            }}
+          >
+            <Box sx={{ textAlign: "right", minWidth: 0 }}>
+              <Typography
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textPrimary,
+                  fontSize: 22,
+                  fontWeight: 800,
+                  mr: 3,
+                }}
+              >
+                معلومات أساسية
+              </Typography>
+
+              <Stack
+                direction="row"
+                alignItems="flex-start"
+                justifyContent="space-between"
+                sx={{ mt: 2.4, minWidth: 0, width: "100%" }}
+              >
+                <BasicInfoItem
+                  icon={<SchoolOutlinedIcon sx={{ fontSize: 34 }} />}
+                  label="المستوى"
+                  value={basicInfo.education_level || "-"}
+                  color="#2AA8FF"
+                />
+                <Box
+                  sx={{
+                    width: "1px",
+                    height: 92,
+                    bgcolor: (theme) => theme.palette.dashboard.divider,
+                  }}
+                />
+                <BasicInfoItem
+                  icon={<HourglassEmptyRoundedIcon sx={{ fontSize: 34 }} />}
+                  label="انضم في"
+                  value={basicInfo.joined_at || "-"}
+                  color="#FF5C4D"
+                />
+
+                <Box
+                  sx={{
+                    width: "1px",
+                    height: 92,
+                    bgcolor: (theme) => theme.palette.dashboard.divider,
+                  }}
+                />
+
+                <BasicInfoItem
+                  icon={<WcRoundedIcon sx={{ fontSize: 34 }} />}
+                  label="الجنس"
+                  value={basicInfo.gender || "-"}
+                  color="#FFB300"
+                />
+
+                <Box
+                  sx={{
+                    width: "1px",
+                    height: 92,
+                    bgcolor: (theme) => theme.palette.dashboard.divider,
+                  }}
+                />
+
+                <BasicInfoItem
+                  icon={<LocationOnOutlinedIcon sx={{ fontSize: 34 }} />}
+                  label="المحافظة"
+                  value={basicInfo.governorate || "-"}
+                  color="#66D14A"
+                />
+              </Stack>
+            </Box>
+
+            <Box
+              sx={{
+                maxWidth: 560,
+                justifySelf: "center",
+                width: "100%",
                 minWidth: 0,
               }}
             >
               <Box
                 sx={{
-                  gridArea: "profile",
-                  textAlign: "right",
-                  direction: "rtl",
-                  pr: {
-                    xs: "calc(18px + 92px + 4px)",
-                    md: "calc(42px + 118px + -22px)",
-                  },
-                  mt: { xs: -1.2, md: -5.8 },
-                  minWidth: 0,
-                }}
-              >
-                <Stack
-                  direction="row-reverse"
-                  spacing={0.7}
-                  alignItems="center"
-                  justifyContent="flex-start"
-                  sx={{
-                    width: "fit-content",
-                    ml: "auto",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      color: (theme) => theme.palette.dashboard.textPrimary,
-                      fontSize: { xs: 24, md: 26 },
-                      fontWeight: 800,
-                    }}
-                  >
-                    {header.name || "-"}
-                  </Typography>
-                  {header.is_academically_verified && (
-                    <VerifiedRoundedIcon
-                      sx={{ fontSize: 22, color: "#5C84FF" }}
-                    />
-                  )}
-                </Stack>
-
-                <Typography
-                  component="div"
-                  sx={{
-                    mt: 0.6,
-                    color: (theme) => theme.palette.dashboard.textSecondary,
-                    fontSize: { xs: 16, md: 17 },
-                    fontWeight: 500,
-                    width: "fit-content",
-                    ml: "auto",
-                  }}
-                >
-                  <Box
-                    component="button"
-                    type="button"
-                    onClick={() => setConnectionsType("followers")}
-                    sx={{
-                      border: 0,
-                      p: 0,
-                      bgcolor: "transparent",
-                      color: "inherit",
-                      font: "inherit",
-                      cursor: "pointer",
-                      "&:hover": { color: "#5583FF" },
-                    }}
-                  >
-                    <Box
-                      component="span"
-                      sx={{
-                        color: (theme) => theme.palette.dashboard.textPrimary,
-                        fontWeight: 800,
-                      }}
-                    >
-                      {formatCount(header.followers_count)}
-                    </Box>{" "}
-                    متابع
-                  </Box>{" "}
-                  .{" "}
-                  <Box
-                    component="button"
-                    type="button"
-                    onClick={() => setConnectionsType("following")}
-                    sx={{
-                      border: 0,
-                      p: 0,
-                      bgcolor: "transparent",
-                      color: "inherit",
-                      font: "inherit",
-                      cursor: "pointer",
-                      "&:hover": { color: "#5583FF" },
-                    }}
-                  >
-                    <Box
-                      component="span"
-                      sx={{
-                        color: (theme) => theme.palette.dashboard.textPrimary,
-                        fontWeight: 800,
-                      }}
-                    >
-                      {formatCount(header.following_count)}
-                    </Box>{" "}
-                    يتابع
-                  </Box>{" "}
-                  .{" "}
-                  <Box
-                    component="span"
-                    sx={{
-                      color: (theme) => theme.palette.dashboard.textPrimary,
-                      fontWeight: 800,
-                    }}
-                  >
-                    {formatCount(header.published_tests_count)}
-                  </Box>{" "}
-                  اختبار
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  gridArea: "verification",
-                  maxWidth: 560,
-                  width: "100%",
-                  minWidth: 0,
-                  justifySelf: "center",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: {
-                      xs: "1fr",
-                      md: "minmax(240px, 280px) minmax(210px, 240px)",
-                    },
-                    columnGap: 3,
-                    direction: "ltr",
-                  }}
-                >
-                  <Box sx={{ display: { xs: "none", md: "block" } }} />
-                  <VerificationInfo
-                    header={header}
-                    onShowCertificate={handleShowCertificate}
-                  />
-                </Box>
-              </Box>
-            </Box>
-
-            <Box sx={{ mt: 0.7, pt: 0.5 }}>
-              <Box
-                sx={{
                   display: "grid",
                   gridTemplateColumns: {
                     xs: "1fr",
-                    lg: "minmax(520px, 1fr) minmax(520px, 0.95fr)",
+                    md: "minmax(240px, 280px) minmax(210px, 240px)",
                   },
-                  columnGap: {
-                    xs: 3,
-                    lg: "clamp(48px, 7vw, 132px)",
-                    xl: "clamp(72px, 8vw, 180px)",
-                  },
-                  rowGap: { xs: 3, md: 2 },
+                  columnGap: 3,
+                  rowGap: 2,
                   alignItems: "start",
-                  direction: "rtl",
+                  direction: "ltr",
                   minWidth: 0,
                 }}
               >
-                <Box sx={{ textAlign: "right", minWidth: 0 }}>
-                  <Typography
-                    sx={{
-                      color: (theme) => theme.palette.dashboard.textPrimary,
-                      fontSize: 22,
-                      fontWeight: 800,
-                      mr: 3,
-                    }}
-                  >
-                    معلومات أساسية
-                  </Typography>
-
-                  <Stack
-                    direction="row"
-                    alignItems="flex-start"
-                    justifyContent="space-between"
-                    sx={{ mt: 2.4, minWidth: 0, width: "100%" }}
-                  >
-                    <BasicInfoItem
-                      icon={<SchoolOutlinedIcon sx={{ fontSize: 34 }} />}
-                      label="المستوى"
-                      value={basicInfo.education_level || "-"}
-                      color="#2AA8FF"
-                    />
-                    <Box
-                      sx={{
-                        width: "1px",
-                        height: 92,
-                        bgcolor: (theme) => theme.palette.dashboard.divider,
-                      }}
-                    />
-                    <BasicInfoItem
-                      icon={<HourglassEmptyRoundedIcon sx={{ fontSize: 34 }} />}
-                      label="انضم في"
-                      value={basicInfo.joined_at || "-"}
-                      color="#FF5C4D"
-                    />
-
-                    <Box
-                      sx={{
-                        width: "1px",
-                        height: 92,
-                        bgcolor: (theme) => theme.palette.dashboard.divider,
-                      }}
-                    />
-
-                    <BasicInfoItem
-                      icon={<WcRoundedIcon sx={{ fontSize: 34 }} />}
-                      label="الجنس"
-                      value={basicInfo.gender || "-"}
-                      color="#FFB300"
-                    />
-
-                    <Box
-                      sx={{
-                        width: "1px",
-                        height: 92,
-                        bgcolor: (theme) => theme.palette.dashboard.divider,
-                      }}
-                    />
-
-                    <BasicInfoItem
-                      icon={<LocationOnOutlinedIcon sx={{ fontSize: 34 }} />}
-                      label="المحافظة"
-                      value={basicInfo.governorate || "-"}
-                      color="#66D14A"
-                    />
-
-                  
-                  </Stack>
-                </Box>
-
-                <Box
-                  sx={{
-                    maxWidth: 560,
-                    justifySelf: "center",
-                    width: "100%",
-                    minWidth: 0,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: {
-                        xs: "1fr",
-                        md: "minmax(240px, 280px) minmax(210px, 240px)",
-                      },
-                      columnGap: 3,
-                      rowGap: 2,
-                      alignItems: "start",
-                      direction: "ltr",
-                      minWidth: 0,
-                    }}
-                  >
-                    <Stack spacing={1} sx={{ minWidth: 0 }}>
-                      {reviewLevels.map((item) => (
-                        <Stack
-                          key={item.label}
-                          direction="row-reverse"
-                          alignItems="center"
-                          spacing={0.9}
-                        >
-                          <Box
-                            sx={{
-                              flex: 1,
-                              height: 5,
-                              borderRadius: "999px",
-                              bgcolor: (theme) =>
-                                theme.palette.dashboard.activeItem.background,
-                              overflow: "hidden",
-                            }}
-                          >
-                            <Box
-                              sx={{
-                                width: `${item.value * 100}%`,
-                                height: "100%",
-                                borderRadius: "999px",
-                                bgcolor: "#5C84FF",
-                              }}
-                            />
-                          </Box>
-                          <Typography
-                            sx={{
-                              minWidth: 46,
-                              color: (theme) => theme.palette.dashboard.textSecondary,
-                              fontSize: 13,
-                              fontWeight: 500,
-                            }}
-                          >
-                            {item.label}
-                          </Typography>
-                        </Stack>
-                      ))}
-                    </Stack>
-
+                <Stack spacing={1} sx={{ minWidth: 0 }}>
+                  {reviewLevels.map((item) => (
                     <Stack
-                      spacing={0.7}
-                      alignItems="flex-start"
-                      sx={{ minWidth: 0, width: "100%", direction: "rtl" }}
+                      key={item.label}
+                      direction="row-reverse"
+                      alignItems="center"
+                      spacing={0.9}
                     >
-                      <Typography
+                      <Box
                         sx={{
-                          color: (theme) => theme.palette.dashboard.textPrimary,
-                          fontSize: 22,
-                          fontWeight: 800,
-                          textAlign: "right",
+                          flex: 1,
+                          height: 5,
+                          borderRadius: "999px",
+                          bgcolor: (theme) =>
+                            theme.palette.dashboard.activeItem.background,
+                          overflow: "hidden",
                         }}
                       >
-                        المراجعات
-                      </Typography>
-
+                        <Box
+                          sx={{
+                            width: `${item.value * 100}%`,
+                            height: "100%",
+                            borderRadius: "999px",
+                            bgcolor: "#5C84FF",
+                          }}
+                        />
+                      </Box>
                       <Typography
                         sx={{
-                          color: (theme) => theme.palette.dashboard.textPrimary,
-                          fontSize: 21,
-                          fontWeight: 800,
-                          textAlign: "right",
-                        }}
-                      >
-                        5 /{" "}
-                        <Box component="span" sx={{ color: "#5C84FF" }}>
-                          {Number(reviews.average_rating || 0).toFixed(1)}
-                        </Box>
-                      </Typography>
-
-                      <Typography
-                        sx={{
-                          color: (theme) => theme.palette.dashboard.textSecondary,
-                          fontSize: 14,
+                          minWidth: 46,
+                          color: (theme) =>
+                            theme.palette.dashboard.textSecondary,
+                          fontSize: 13,
                           fontWeight: 500,
-                          textAlign: "right",
                         }}
                       >
-                        {formatCount(reviews.total_ratings)} تقييم
+                        {item.label}
                       </Typography>
-
-                      <Stack
-                        direction="row"
-                        justifyContent="flex-end"
-                        spacing={0.05}
-                        sx={{ pt: 0.3, width: "100%", direction: "ltr" }}
-                      >
-                        {[0, 1, 2, 3, 4].map((item) => (
-                          <StarRoundedIcon
-                            key={item}
-                            sx={{
-                              fontSize: 31,
-                              color:
-                                item < roundedRating ? "#FFC933" : "#E7E7E7",
-                            }}
-                          />
-                        ))}
-                      </Stack>
                     </Stack>
-                  </Box>
-                </Box>
-              </Box>
+                  ))}
+                </Stack>
 
-              <Box
-                sx={{
-                  mt: 0.7,
-                  pt: 0,
-                  display: "grid",
-                  gridTemplateColumns: { xs: "1fr", lg: "1.1fr 0.9fr" },
-                  gap: { xs: 3, lg: 4 },
-                  alignItems: "start",
-                  direction: "rtl",
-                }}
-              >
-                <Box sx={{ textAlign: "right" }}>
+                <Stack
+                  spacing={0.7}
+                  alignItems="flex-start"
+                  sx={{ minWidth: 0, width: "100%", direction: "rtl" }}
+                >
                   <Typography
                     sx={{
                       color: (theme) => theme.palette.dashboard.textPrimary,
                       fontSize: 22,
                       fontWeight: 800,
                       textAlign: "right",
-                      mr: 3,
                     }}
                   >
-                    إحصائيات عامة
+                    المراجعات
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: (theme) => theme.palette.dashboard.textPrimary,
+                      fontSize: 21,
+                      fontWeight: 800,
+                      textAlign: "right",
+                    }}
+                  >
+                    5 /{" "}
+                    <Box component="span" sx={{ color: "#5C84FF" }}>
+                      {Number(reviews.average_rating || 0).toFixed(1)}
+                    </Box>
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: (theme) => theme.palette.dashboard.textSecondary,
+                      fontSize: 14,
+                      fontWeight: 500,
+                      textAlign: "right",
+                    }}
+                  >
+                    {formatCount(reviews.total_ratings)} تقييم
                   </Typography>
 
                   <Stack
-                    direction={{ xs: "column", sm: "row" }}
-                    useFlexGap
-                    gap={2.2}
-                    sx={{ mt: 0.5, width: "100%", justifyContent: "flex-start" }}
+                    direction="row"
+                    justifyContent="flex-end"
+                    spacing={0.05}
+                    sx={{
+                      pt: 0.3,
+                      width: "100%",
+                      direction: "ltr",
+                      transform: "translateX(12px)",
+                    }}
                   >
-                    {profileStats.map((item) => (
-                      <ProfileStatCard
-                        key={item.label}
-                        value={item.value}
-                        label={item.label}
-                        icon={item.icon}
+                    {[0, 1, 2, 3, 4].map((item) => (
+                      <StarRoundedIcon
+                        key={item}
+                        sx={{
+                          fontSize: 31,
+                          color: item < roundedRating ? "#FFC933" : "#E7E7E7",
+                        }}
                       />
                     ))}
                   </Stack>
-                </Box>
-
-                <Box sx={{ textAlign: "right" }}>
-                  <Stack direction="row-reverse" useFlexGap flexWrap="wrap" gap={1.2}>
-                    {profileTags.map((tag) => (
-                      <TagChip key={tag} label={tag} />
-                    ))}
-                  </Stack>
-                </Box>
+                </Stack>
               </Box>
             </Box>
           </Box>
-      <AcademicCertificateModal
-        open={isCertificateOpen}
-        onClose={handleCloseCertificate}
-        imageUrl={certificateUrl}
-        isLoading={certificateMutation.isPending}
-      />
+
+          <Box
+            sx={{
+              mt: 0.7,
+              pt: 0,
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", lg: "1.1fr 0.9fr" },
+              gap: { xs: 3, lg: 4 },
+              alignItems: "start",
+              direction: "rtl",
+            }}
+          >
+            <Box sx={{ textAlign: "right" }}>
+              <Typography
+                sx={{
+                  color: (theme) => theme.palette.dashboard.textPrimary,
+                  fontSize: 22,
+                  fontWeight: 800,
+                  textAlign: "right",
+                  mr: 3,
+                }}
+              >
+                إحصائيات عامة
+              </Typography>
+
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                useFlexGap
+                gap={2.2}
+                sx={{ mt: 0.5, width: "100%", justifyContent: "flex-start" }}
+              >
+                {profileStats.map((item) => (
+                  <ProfileStatCard
+                    key={item.label}
+                    value={item.value}
+                    label={item.label}
+                    icon={item.icon}
+                  />
+                ))}
+              </Stack>
+            </Box>
+
+            <Box sx={{ textAlign: "right" }}>
+              <Stack
+                direction="row-reverse"
+                useFlexGap
+                flexWrap="wrap"
+                gap={1.2}
+              >
+                {profileTags.map((tag) => (
+                  <TagChip key={tag} label={tag} />
+                ))}
+              </Stack>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
       <UserConnectionsSlide
         open={Boolean(connectionsType)}
         type={connectionsType}

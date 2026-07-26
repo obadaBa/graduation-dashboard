@@ -1,8 +1,7 @@
 import AppsRoundedIcon from "@mui/icons-material/AppsRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import GTranslateRoundedIcon from "@mui/icons-material/GTranslateRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
@@ -105,12 +104,12 @@ function TagChip({ label }) {
         px: 1.6,
         mt: 2,
         borderRadius: "5px",
-        border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
-        bgcolor: (theme) => theme.palette.dashboard.chartBackground,
+        border: (theme) => `1px solid ${theme.palette.dashboard.mutedChip.border}`,
+        bgcolor: (theme) => theme.palette.dashboard.mutedChip.background,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        color: (theme) => theme.palette.dashboard.textSecondary,
+        color: (theme) => theme.palette.dashboard.mutedChip.color,
         fontSize: 13,
         fontWeight: 500,
         whiteSpace: "nowrap",
@@ -221,7 +220,7 @@ export default function TestDetailsOverview({ testDetails, isLoading = false }) 
     },
     {
       value: formatNumber(statistics.downloads_count || 8),
-      icon: <DownloadRoundedIcon sx={{ fontSize: 24 }} />,
+      icon: <DownloadOutlinedIcon sx={{ fontSize: 24 }} />,
     },
   ];
 
@@ -408,7 +407,13 @@ export default function TestDetailsOverview({ testDetails, isLoading = false }) 
         </Stack>
       </Stack>
 
-      <Box sx={{ mt: 1.7, textAlign: "right" }}>
+      <Box
+        sx={{
+          mt: 1.7,
+          textAlign: "right",
+          pr: 2,
+        }}
+      >
         <Typography
           sx={{
             color: (theme) => theme.palette.dashboard.textPrimary,
@@ -480,7 +485,7 @@ export default function TestDetailsOverview({ testDetails, isLoading = false }) 
         flexWrap="wrap"
         useFlexGap
         gap={1}
-        sx={{ mt: 2.1, justifyContent: "flex-start", mr: 4 }}
+        sx={{ mt: 2.1, justifyContent: "flex-start", mr: 1 }}
       >
         {tags.map((tag) => (
           <TagChip key={tag} label={tag} />
@@ -492,7 +497,7 @@ export default function TestDetailsOverview({ testDetails, isLoading = false }) 
         flexWrap="wrap"
         useFlexGap
         gap={4.8}
-        sx={{ mt: 1.5, justifyContent: "flex-start", mr: 3 }}
+        sx={{ mt: 1.5, justifyContent: "flex-start", mr: 0 }}
       >
         {bottomMeta.map((item) => (
           <BottomMetaItem key={item.label} {...item} />

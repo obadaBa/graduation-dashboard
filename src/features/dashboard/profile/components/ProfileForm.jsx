@@ -157,7 +157,7 @@ export default function ProfileForm({
             onAvatarDelete={handleAvatarDelete}
           />
 
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{ flex: 1, alignSelf: "flex-start", mt: -0.8 }}>
             <ProfileField label="الاسم">
               <AuthFormInput
                 control={control}
@@ -278,7 +278,7 @@ export default function ProfileForm({
           disableElevation
           disabled={!isDirty || updateProfileMutation.isPending}
           sx={{
-            height: 46,
+            height: 42,
             borderRadius: "8px",
             bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
             color: "#FFFFFF",
@@ -288,8 +288,8 @@ export default function ProfileForm({
               bgcolor: (theme) => theme.palette.dashboard.logoPrimary,
             },
             "&.Mui-disabled": {
-              bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-              color: (theme) => theme.palette.dashboard.textSecondary,
+              bgcolor: "#C4C4C4",
+              color: "#FFFFFF",
             },
           }}
         >

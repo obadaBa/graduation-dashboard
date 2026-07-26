@@ -4,7 +4,7 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { useEffect, useState } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { createIdempotencyKey } from "../../../../../shared/lib/idempotency";
 import { useTestAiEvaluation } from "../../context/TestAiEvaluationContext";
 import { useApproveManagementTestMutation } from "../../hooks/useApproveManagementTestMutation";
@@ -88,22 +88,22 @@ const actionDividerSx = {
 
 const deleteActionSx = {
   position: "relative",
-  minWidth: 48,
-  width: 48,
+  minWidth: 54,
+  width: 54,
   height: 54,
   borderRadius: "10px",
-  border: "1.5px dashed #FF6A64",
-  bgcolor: "transparent",
-  color: "#FF6A64",
+  border: "1.5px dashed #FF3B30",
+  bgcolor: "rgba(255, 59, 48, 0.1)",
+  color: "#FF3B30",
   p: 0,
   "&:hover": {
-    bgcolor: (theme) => theme.palette.dashboard.hoverItem.background,
-    borderColor: "#FF6A64",
+    bgcolor: "rgba(255, 59, 48, 0.16)",
+    borderColor: "#FF3B30",
   },
   "&.Mui-disabled": {
-    bgcolor: (theme) => theme.palette.dashboard.chartBackground,
-    color: "#FFAAA6",
-    borderColor: "#FFAAA6",
+    bgcolor: "rgba(255, 59, 48, 0.08)",
+    color: "#FF9A94",
+    borderColor: "#FF9A94",
   },
 };
 
@@ -117,9 +117,10 @@ const getStatusPillSx = ({ color, bgcolor }) => ({
   fontSize: 12,
   fontWeight: 800,
   whiteSpace: "nowrap",
-  boxShadow: `0 6px 12px ${color}33`,
+  boxShadow: `0 0 18px ${color}73, 0 0 8px ${color}4D`,
   "&:hover": {
     bgcolor,
+    boxShadow: `0 0 22px ${color}8C, 0 0 11px ${color}66`,
   },
   "&.Mui-disabled": {
     bgcolor,
@@ -165,6 +166,7 @@ function DeleteAction({ onClick, disabled = false }) {
 }
 
 export default function TestDetailsActionButtons({ testId, testTitle }) {
+  const navigate = useNavigate();
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isChangesModalOpen, setIsChangesModalOpen] = useState(false);
@@ -172,7 +174,13 @@ export default function TestDetailsActionButtons({ testId, testTitle }) {
   const [deleteReason, setDeleteReason] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const approveMutation = useApproveManagementTestMutation(testId);
-  const deleteMutation = useDeleteManagementTestMutation(testId);
+  const deleteMutation = useDeleteManagementTestMutation(testId, {
+    onDeleted: () => {
+      setIsDeleteModalOpen(false);
+      setDeleteReason("");
+      navigate("/dashboard/tests", { replace: true });
+    },
+  });
   const revisionsMutation = useRequestManagementTestRevisionsMutation(testId);
   const {
     job: aiEvaluationJob,
@@ -268,11 +276,6 @@ export default function TestDetailsActionButtons({ testId, testTitle }) {
       testId,
       reason,
       idempotencyKey: createIdempotencyKey(),
-    }, {
-      onSuccess: () => {
-        setIsDeleteModalOpen(false);
-        setDeleteReason("");
-      },
     });
   };
 

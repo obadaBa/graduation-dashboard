@@ -20,7 +20,6 @@ import { useUserProfileFoldersQuery } from "../../hooks/useUserProfileFoldersQue
 import FolderContentModal from "./FolderContentModal";
 
 const EMPTY_FOLDERS = [];
-
 const SORT_OPTIONS = [
   { value: "latest", label: "الأحدث" },
   { value: "tests_count", label: "عدد الاختبارات" },
@@ -323,9 +322,11 @@ export default function UserProfileListsPanel() {
               onClick={(event) => setSortAnchorEl(event.currentTarget)}
               endIcon={<KeyboardArrowDownRoundedIcon />}
               sx={{
-                minWidth: 126,
+                minWidth: 108,
                 height: 42,
+                px: 1.6,
                 borderRadius: "999px",
+                columnGap: 0.8,
                 bgcolor: (theme) => theme.palette.dashboard.surface,
                 border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
                 boxShadow: (theme) => theme.palette.dashboard.shadow,
@@ -337,6 +338,7 @@ export default function UserProfileListsPanel() {
                   border: (theme) => `1px solid ${theme.palette.dashboard.chartBorder}`,
                 },
                 "& .MuiButton-endIcon": {
+                  m: 0,
                   color: (theme) => theme.palette.dashboard.textSecondary,
                 },
               }}
@@ -373,7 +375,9 @@ export default function UserProfileListsPanel() {
                     setSortAnchorEl(null);
                   }}
                   sx={{
-                    justifyContent: "flex-end",
+                    justifyContent: "flex-start",
+                    textAlign: "right",
+                    direction: "rtl",
                     color: (theme) => theme.palette.dashboard.textPrimary,
                     fontSize: 14,
                     fontWeight: 600,
@@ -423,7 +427,12 @@ export default function UserProfileListsPanel() {
               stats={listsStats}
               showInfoIcon={false}
               borderSide="none"
-              sx={{ height: "100%", px: 0, py: 0 }}
+              sx={{
+                height: "100%",
+                px: 0,
+                py: 0,
+                transform: "translateY(-65px)",
+              }}
             />
           </Box>
 

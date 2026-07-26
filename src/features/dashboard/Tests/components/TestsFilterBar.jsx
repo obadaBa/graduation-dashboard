@@ -112,6 +112,17 @@ export default function TestsFilterBar({
           onChange={(event) => onSortByChange?.(event.target.value)}
           size="small"
           IconComponent={KeyboardArrowDownRoundedIcon}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                direction: "rtl",
+                "& .MuiMenuItem-root": {
+                  justifyContent: "flex-start",
+                  textAlign: "right",
+                },
+              },
+            },
+          }}
           sx={{
             width: { xs: "100%", sm: 130 },
             height: 38,
@@ -128,10 +139,10 @@ export default function TestsFilterBar({
               color: (theme) => theme.palette.dashboard.textSecondary,
               fontSize: 13,
               fontWeight: 600,
-              textAlign: "right",
+              textAlign: "start",
             },
             ".MuiSvgIcon-root": {
-              left: 11,
+              left: 1,
               right: "auto",
               color: (theme) => theme.palette.dashboard.textSecondary,
             },

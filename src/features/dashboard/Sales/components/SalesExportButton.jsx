@@ -409,8 +409,8 @@ export default function SalesExportButton({
         startIcon={<FileDownloadOutlinedIcon sx={{ fontSize: 20 }} />}
         endIcon={<KeyboardArrowDownRoundedIcon sx={{ fontSize: 22 }} />}
         sx={{
-          mt: 1.3,
-          ml: 3,
+          mt: 3.3,
+          ml: 0,
           minWidth: 198,
           height: 42,
           px: 2.2,

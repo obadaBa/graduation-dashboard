@@ -1,9 +1,9 @@
 import { IconButton, Stack } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import BoyIcon from "@mui/icons-material/Boy";
-import GirlIcon from "@mui/icons-material/Girl";
+import FemaleRoundedIcon from "@mui/icons-material/FemaleRounded";
+import MaleRoundedIcon from "@mui/icons-material/MaleRounded";
 
-function GenderButton({ active, children, onClick }) {
+function GenderButton({ active, color, children, onClick }) {
   return (
     <IconButton
       type="button"
@@ -14,20 +14,20 @@ function GenderButton({ active, children, onClick }) {
         borderRadius: "8px",
         border: (theme) =>
           active
-            ? `1px solid ${theme.palette.dashboard.logoPrimary}`
+            ? `1px solid ${color}`
             : `1px solid ${theme.palette.dashboard.chartBorder}`,
         color: (theme) =>
           active
-            ? theme.palette.dashboard.logoPrimary
+            ? color
             : theme.palette.dashboard.textSecondary,
         bgcolor: (theme) =>
           active
-            ? alpha(theme.palette.dashboard.logoPrimary, theme.palette.mode === "dark" ? 0.16 : 0.1)
+            ? alpha(color, theme.palette.mode === "dark" ? 0.18 : 0.1)
             : theme.palette.dashboard.chartBackground,
         "&:hover": {
           bgcolor: (theme) =>
             active
-              ? alpha(theme.palette.dashboard.logoPrimary, theme.palette.mode === "dark" ? 0.2 : 0.13)
+              ? alpha(color, theme.palette.mode === "dark" ? 0.24 : 0.14)
               : theme.palette.dashboard.hoverItem.background,
         },
       }}
@@ -40,12 +40,20 @@ function GenderButton({ active, children, onClick }) {
 export default function ProfileGenderSelector({ value, onChange }) {
   return (
     <Stack direction="row" justifyContent="flex-start" spacing={1} gap={1}>
-      <GenderButton active={value === "female"} onClick={() => onChange("female")}>
-        <GirlIcon sx={{ fontSize: 28 }} />
+      <GenderButton
+        active={value === "female"}
+        color="#FF4DB3"
+        onClick={() => onChange("female")}
+      >
+        <FemaleRoundedIcon sx={{ fontSize: 27 }} />
       </GenderButton>
 
-      <GenderButton active={value === "male"} onClick={() => onChange("male")}>
-        <BoyIcon sx={{ fontSize: 28 }} />
+      <GenderButton
+        active={value === "male"}
+        color="#19A7FF"
+        onClick={() => onChange("male")}
+      >
+        <MaleRoundedIcon sx={{ fontSize: 27 }} />
       </GenderButton>
     </Stack>
   );

@@ -154,6 +154,18 @@ export default function UsersActions({
           onChange={(event) => onSortChange?.(event.target.value)}
           size="small"
           IconComponent={KeyboardArrowDownRoundedIcon}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                direction: "rtl",
+                "& .MuiMenuItem-root": {
+                  justifyContent: "flex-start",
+                  textAlign: "right",
+                  direction: "rtl",
+                },
+              },
+            },
+          }}
           sx={{
             minWidth: 150,
             height: 40,
@@ -179,7 +191,15 @@ export default function UsersActions({
           }}
         >
           {SORT_OPTIONS.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem
+              key={option.value}
+              value={option.value}
+              sx={{
+                justifyContent: "flex-start",
+                textAlign: "right",
+                direction: "rtl",
+              }}
+            >
               {option.label}
             </MenuItem>
           ))}
@@ -196,7 +216,7 @@ export default function UsersActions({
           bgcolor: (theme) => theme.palette.dashboard.surface,
           boxShadow: (theme) => theme.palette.dashboard.shadow,
           p: 0.45,
-          ml: 3,
+          ml: 0,
         }}
       >
         {USER_TYPES.map((type) => (

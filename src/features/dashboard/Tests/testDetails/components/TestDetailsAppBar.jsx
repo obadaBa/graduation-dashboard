@@ -9,6 +9,7 @@ import { Box, Button, Stack } from "@mui/material";
 const tabStartIconSx = {
   marginInlineStart: 0,
   marginInlineEnd: "8px",
+  transform: "translateY(2px)",
 };
 
 const appBarSx = {
@@ -71,7 +72,9 @@ function TabAction({ label, icon, active = false, onClick }) {
       startIcon={icon}
       sx={getTabActionSx(active)}
     >
-      {label}
+      <Box component="span" sx={{ display: "inline-flex", transform: "translateY(4px)" }}>
+        {label}
+      </Box>
     </Button>
   );
 }

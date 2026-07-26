@@ -9,7 +9,7 @@ export default function ReviewingStatusDetails({ history }) {
     <StatusDetailsShell>
       <StatusTimeBlock
         time={details.decision_at || history?.entered_at}
-        sx={{ mt: 2.2, justifyContent: "flex-end" }}
+        sx={{ mt: 2.2, justifyContent: "flex-start" }}
       />
       <StatusChangesTable changes={details.changes || []} />
     </StatusDetailsShell>

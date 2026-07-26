@@ -101,7 +101,7 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
             lineHeight: 1,
           }}
         >
-          #{card.number}
+          {`${card.number}#`}
         </Typography>
 
         <Stack direction="row" alignItems="center" spacing={0.5} gap={0.5}>
@@ -130,7 +130,7 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
           px: size.px,
           pt: compact ? 1.2 : 3,
           pb: compact ? 1 : 2.6,
-          textAlign: "center",
+          textAlign: "right",
         }}
       >
         <Typography
@@ -139,6 +139,7 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
             fontSize: size.title,
             fontWeight: 800,
             lineHeight: 1.2,
+            textAlign: "right",
           }}
         >
           {card.title}
@@ -148,7 +149,8 @@ export default function TestCard({ compact = false, number = 180, test, fluid = 
           sx={{
             mt: compact ? 0.7 : 1.6,
            
-            maxWidth: compact ? 135 : 340,
+            width: "100%",
+            maxWidth: compact ? "100%" : 340,
             color: (theme) => theme.palette.dashboard.textSecondary,
             fontSize: size.desc,
             fontWeight: 500,

@@ -5,8 +5,8 @@ import { useEffect, useRef } from "react";
 import { useLibraryMaterialReportsQuery } from "../../hooks/useLibraryMaterialReportsQuery";
 import { useTestReportsQuery } from "../../../Tests/hooks/useTestReportsQuery";
 
-const defaultAvatar =
-  "http://localhost/storage/defaults/User_Avatar_Default.svg";
+const appUrl = process.env.REACT_APP_APP_URL || "http://localhost";
+const defaultAvatar = `${appUrl}/storage/defaults/User_Avatar_Default.svg`;
 
 function formatNumber(value) {
   return Number(value || 0).toLocaleString("en-US");
@@ -94,7 +94,8 @@ function ReportCard({ item }) {
             spacing={0.7}
             alignItems="center"
             justifyContent="flex-start"
-            sx={{ mt: 0.9 }}
+            sx={{ mt: 0.2 }}
+            gap={1}
           >
             <Typography
               sx={{

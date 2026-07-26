@@ -7,7 +7,7 @@ export default function StatusTimeBlock({ time, sx }) {
   }
 
   return (
-    <Stack direction="row-reverse" spacing={0.9} alignItems="center" sx={sx}>
+    <Stack direction="row-reverse" spacing={0.9} alignItems="center" sx={sx} gap={1}>
       <Typography
         sx={{
           color: (theme) => theme.palette.dashboard.textPrimary,

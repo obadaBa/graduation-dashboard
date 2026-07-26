@@ -97,12 +97,29 @@ export default function SalesActions({
         flexWrap: { xs: "wrap", lg: "nowrap" },
       }}
     >
-      <Stack direction="row" alignItems="center" spacing={1.4} gap={1}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1.4}
+        gap={1}
+      >
         <Select
           value={sortBy}
           onChange={(event) => onSortChange(event.target.value)}
           size="small"
           IconComponent={KeyboardArrowDownRoundedIcon}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                direction: "rtl",
+                "& .MuiMenuItem-root": {
+                  justifyContent: "flex-start",
+                  textAlign: "right",
+                  direction: "rtl",
+                },
+              },
+            },
+          }}
           sx={{
             minWidth: 136,
             height: 40,
@@ -129,14 +146,28 @@ export default function SalesActions({
           }}
         >
           {sortOptions.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem
+              key={option.value}
+              value={option.value}
+              sx={{
+                justifyContent: "flex-start",
+                textAlign: "right",
+                direction: "rtl",
+              }}
+            >
               {option.label}
             </MenuItem>
           ))}
         </Select>
       </Stack>
 
-      <Stack direction="row" alignItems="center" spacing={1.2} gap={1}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1.2}
+        gap={1.5}
+        sx={{ transform: { xs: "none", lg: "translateX(-10px)" } }}
+      >
         <Stack
           direction="row"
           alignItems="center"

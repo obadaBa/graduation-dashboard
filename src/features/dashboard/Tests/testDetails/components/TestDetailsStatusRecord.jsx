@@ -1,46 +1,139 @@
 import { useState } from "react";
-import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
-import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import ArticleRoundedIcon from "@mui/icons-material/ArticleRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditNoteRoundedIcon from "@mui/icons-material/EditNoteRounded";
-import OutlinedFlagRoundedIcon from "@mui/icons-material/OutlinedFlagRounded";
-import RateReviewRoundedIcon from "@mui/icons-material/RateReviewRounded";
-import ReportGmailerrorredRoundedIcon from "@mui/icons-material/ReportGmailerrorredRounded";
-import { Box, Stack, Typography } from "@mui/material";
+import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
+import ManageSearchRoundedIcon from "@mui/icons-material/ManageSearchRounded";
+import ReportRoundedIcon from "@mui/icons-material/ReportRounded";
+import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
+import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import { useTestStatusHistoryQuery } from "../../hooks/useTestStatusHistoryQuery";
 import ApprovedStatusDetails from "./statusRecord/ApprovedStatusDetails";
 import DefaultStatusDetails from "./statusRecord/DefaultStatusDetails";
 import DeletedStatusDetails from "./statusRecord/DeletedStatusDetails";
 import NeedsEditStatusDetails from "./statusRecord/NeedsEditStatusDetails";
 import NewStatusDetails from "./statusRecord/NewStatusDetails";
+import ReportedStatusDetails from "./statusRecord/ReportedStatusDetails";
 import ReviewingStatusDetails from "./statusRecord/ReviewingStatusDetails";
 import StatusRecordItem from "./statusRecord/StatusRecordItem";
 
-function getStatusPresentation(title = "") {
-  if (title.includes("حذف")) {
+const STATUS_LABELS = {
+  current: "الحالة الحالية",
+  previous: "الحالات السابقة",
+  empty: "لا يوجد سجل حالات لهذا الاختبار",
+};
+
+function getStatusText(historyOrTitle = "") {
+  if (typeof historyOrTitle === "string") {
+    return historyOrTitle;
+  }
+
+  return [
+    historyOrTitle?.status,
+    historyOrTitle?.status_key,
+    historyOrTitle?.type,
+    historyOrTitle?.key,
+    historyOrTitle?.title,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+function getStatusHistoryItems(response) {
+  const data = response?.data;
+  const candidates = [
+    data?.histories,
+    data?.status_history,
+    data?.history,
+    data?.items,
+    data,
+  ];
+  const historySource = candidates.find(
+    (candidate) => Array.isArray(candidate) || Array.isArray(candidate?.items),
+  );
+
+  if (Array.isArray(historySource)) {
+    return historySource;
+  }
+
+  return historySource?.items || [];
+}
+
+function normalizeHistory(history, index) {
+  const details = history?.details || {};
+  const actor = details.actor;
+
+  return {
+    ...history,
+    id: history?.id ?? history?.status_history_id ?? `${index}`,
+    title:
+      history?.title ||
+      history?.status ||
+      history?.status_label ||
+      history?.status_name ||
+      "-",
+    entered_at:
+      history?.entered_at ||
+      history?.created_at ||
+      history?.decision_at ||
+      details.decision_at ||
+      "-",
+    details: {
+      ...details,
+      actor: actor
+        ? {
+            ...actor,
+            avatar: actor.avatar || actor.avatar_url,
+          }
+        : actor,
+    },
+  };
+}
+
+function getStatusPresentation(historyOrTitle = "") {
+  const statusText = getStatusText(historyOrTitle).toLowerCase();
+
+  if (
+    statusText.includes("delete") ||
+    statusText.includes("deleted") ||
+    statusText.includes("حذف")
+  ) {
     return {
       type: "deleted",
       color: "#FF6A64",
-      icon: <DeleteOutlineRoundedIcon sx={{ fontSize: 18, color: "#FF6A64" }} />,
+      icon: <DeleteRoundedIcon sx={{ fontSize: 18, color: "#FF6A64" }} />,
     };
   }
 
-  if (title.includes("الموافقة")) {
+  if (
+    statusText.includes("approve") ||
+    statusText.includes("approved") ||
+    statusText.includes("الموافقة")
+  ) {
     return {
       type: "approved",
       color: "#32D74B",
-      icon: <CheckBoxRoundedIcon sx={{ fontSize: 18, color: "#32D74B" }} />,
+      icon: <TaskAltRoundedIcon sx={{ fontSize: 18, color: "#32D74B" }} />,
     };
   }
 
-  if (title.includes("قيد المراجعة")) {
+  if (
+    statusText.includes("review") ||
+    statusText.includes("reviewing") ||
+    statusText.includes("قيد المراجعة")
+  ) {
     return {
       type: "reviewing",
       color: "#FFD400",
-      icon: <RateReviewRoundedIcon sx={{ fontSize: 18, color: "#FFD400" }} />,
+      icon: <ManageSearchRoundedIcon sx={{ fontSize: 18, color: "#FFD400" }} />,
     };
   }
 
-  if (title.includes("تعديل")) {
+  if (
+    statusText.includes("need") ||
+    statusText.includes("revision") ||
+    statusText.includes("تعديل")
+  ) {
     return {
       type: "needs_edit",
       color: "#FFB84D",
@@ -48,35 +141,40 @@ function getStatusPresentation(title = "") {
     };
   }
 
-  if (title.includes("مسودة") || title.includes("جديد")) {
+  if (
+    statusText.includes("draft") ||
+    statusText.includes("new") ||
+    statusText.includes("مسودة") ||
+    statusText.includes("جديد")
+  ) {
     return {
       type: "new",
       color: "#5C84FF",
-      icon: <OutlinedFlagRoundedIcon sx={{ fontSize: 18, color: "#5C84FF" }} />,
+      icon: <ArticleRoundedIcon sx={{ fontSize: 18, color: "#5C84FF" }} />,
     };
   }
 
-  if (title.includes("مبلغ")) {
+  if (
+    statusText.includes("report") ||
+    statusText.includes("reported") ||
+    statusText.includes("مبلغ")
+  ) {
     return {
       type: "reported",
       color: "#A66BFF",
-      icon: (
-        <ReportGmailerrorredRoundedIcon
-          sx={{ fontSize: 18, color: "#A66BFF" }}
-        />
-      ),
+      icon: <ReportRoundedIcon sx={{ fontSize: 18, color: "#A66BFF" }} />,
     };
   }
 
   return {
     type: "default",
     color: "#A66BFF",
-    icon: <OutlinedFlagRoundedIcon sx={{ fontSize: 18, color: "#A66BFF" }} />,
+    icon: <FlagRoundedIcon sx={{ fontSize: 18, color: "#A66BFF" }} />,
   };
 }
 
-function StatusDetails({ history, testId }) {
-  const type = getStatusPresentation(history?.title).type;
+function StatusDetails({ history, testId, onShowReports }) {
+  const type = getStatusPresentation(history).type;
 
   if (type === "deleted") {
     return <DeletedStatusDetails history={history} />;
@@ -98,13 +196,24 @@ function StatusDetails({ history, testId }) {
     return <NewStatusDetails history={history} />;
   }
 
+  if (type === "reported") {
+    return (
+      <ReportedStatusDetails
+        history={history}
+        onShowReports={onShowReports}
+      />
+    );
+  }
+
   return <DefaultStatusDetails history={history} />;
 }
 
-export default function TestDetailsStatusRecord({ testId }) {
+export default function TestDetailsStatusRecord({ testId, onShowReports }) {
   const [selectedHistoryId, setSelectedHistoryId] = useState(null);
   const statusHistoryQuery = useTestStatusHistoryQuery(testId);
-  const histories = statusHistoryQuery.data?.data?.histories || [];
+  const histories = getStatusHistoryItems(statusHistoryQuery.data).map(
+    normalizeHistory,
+  );
   const currentHistory = histories[0];
   const previousHistories = histories.slice(1);
   const selectedHistory =
@@ -127,7 +236,18 @@ export default function TestDetailsStatusRecord({ testId }) {
         overflow: "hidden",
       }}
     >
-      {currentHistory ? (
+      {statusHistoryQuery.isLoading ? (
+        <Box
+          sx={{
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <CircularProgress size={32} />
+        </Box>
+      ) : currentHistory ? (
         <Box
           sx={{
             height: "100%",
@@ -158,16 +278,16 @@ export default function TestDetailsStatusRecord({ testId }) {
                 mb: 1.8,
               }}
             >
-              الحالة الحالية
+              {STATUS_LABELS.current}
             </Typography>
 
             <StatusRecordItem
               label={currentHistory.title}
               time={currentHistory.entered_at}
-              color={getStatusPresentation(currentHistory.title).color}
+              color={getStatusPresentation(currentHistory).color}
               active={selectedHistory?.id === currentHistory.id}
               onClick={() => setSelectedHistoryId(currentHistory.id)}
-              icon={getStatusPresentation(currentHistory.title).icon}
+              icon={getStatusPresentation(currentHistory).icon}
             />
 
             {previousHistories.length > 0 && (
@@ -190,12 +310,12 @@ export default function TestDetailsStatusRecord({ testId }) {
                     mb: 1.8,
                   }}
                 >
-                  الحالات السابقة
+                  {STATUS_LABELS.previous}
                 </Typography>
 
                 <Stack spacing={1.4}>
                   {previousHistories.map((history) => {
-                    const presentation = getStatusPresentation(history.title);
+                    const presentation = getStatusPresentation(history);
 
                     return (
                       <StatusRecordItem
@@ -224,23 +344,25 @@ export default function TestDetailsStatusRecord({ testId }) {
               pb: 2,
             }}
           >
-            <StatusDetails history={selectedHistory} testId={testId} />
+            <StatusDetails
+              history={selectedHistory}
+              testId={testId}
+              onShowReports={onShowReports}
+            />
           </Box>
         </Box>
       ) : (
-        !statusHistoryQuery.isLoading && (
-          <Typography
-            sx={{
-              py: 5,
-              color: (theme) => theme.palette.dashboard.textSecondary,
-              fontSize: 16,
-              fontWeight: 700,
-              textAlign: "center",
-            }}
-          >
-            لا يوجد سجل حالات لهذا الاختبار
-          </Typography>
-        )
+        <Typography
+          sx={{
+            py: 5,
+            color: (theme) => theme.palette.dashboard.textSecondary,
+            fontSize: 16,
+            fontWeight: 700,
+            textAlign: "center",
+          }}
+        >
+          {STATUS_LABELS.empty}
+        </Typography>
       )}
     </Box>
   );

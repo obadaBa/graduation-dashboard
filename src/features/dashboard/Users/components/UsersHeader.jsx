@@ -31,7 +31,7 @@ function HeaderAction({ label, variant = "filled", icon, onClick }) {
     },
     success: {
       color: "#1FC75A",
-      bgcolor: "transparent",
+      bgcolor: "rgba(31, 199, 90, 0.12)",
       border: "1px solid #1FC75A",
       boxShadow: "none",
     },

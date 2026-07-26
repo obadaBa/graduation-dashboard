@@ -37,6 +37,7 @@ export default function StatusChangesTable({ changes = [] }) {
         alignItems="center"
         justifyContent="flex-start"
         sx={{ px: 1.5, py: 1.25, direction: "rtl" }}
+        gap={1}
       >
         <Typography
           sx={{

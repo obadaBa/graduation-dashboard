@@ -53,7 +53,12 @@ export default function TestDetails() {
       {activeTab === "questions" && <TestDetailsQuestions testId={testId} />}
       {activeTab === "sample" && <TestDetailsSampleQuestions testId={testId} />}
       {activeTab === "reviews" && <TestDetailsReviews testId={testId} />}
-      {activeTab === "status" && <TestDetailsStatusRecord testId={testId} />}
+      {activeTab === "status" && (
+        <TestDetailsStatusRecord
+          testId={testId}
+          onShowReports={() => setActiveTab("creations")}
+        />
+      )}
       {activeTab === "creations" && <ContentCreationsRecord testId={testId} />}
     </Box>
   );

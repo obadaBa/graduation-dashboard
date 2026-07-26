@@ -8,6 +8,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
@@ -141,72 +142,75 @@ function DrawerToggle({ open, onClick }) {
 function NavigationItem({ item, open, isActive, onClick }) {
   return (
     <ListItem disablePadding sx={{ mb: 0.75 }}>
-      <ListItemButton
-        component={NavLink}
-        to={item.path}
-        onClick={onClick}
-        sx={(theme) => ({
-          minHeight: 44,
-          px: 0,
-          py: 0.75,
-          borderRadius: "10px",
-          justifyContent: open ? "flex-start" : "center",
-          flexDirection: "row",
-          position: "relative",
-          textDecoration: "none",
-          color: isActive
-            ? theme.palette.dashboard.activeItem.color
-            : theme.palette.dashboard.inactiveItem.color,
-          backgroundColor: isActive
-            ? theme.palette.dashboard.activeItem.background
-            : "transparent",
-          "&:hover": {
+      <Tooltip title={open ? "" : item.label} placement="left" arrow>
+        <ListItemButton
+          component={NavLink}
+          to={item.path}
+          onClick={onClick}
+          sx={(theme) => ({
+            minHeight: 44,
+            px: 0,
+            py: 0.75,
+            borderRadius: "10px",
+            justifyContent: open ? "flex-start" : "center",
+            flexDirection: "row",
+            position: "relative",
+            textDecoration: "none",
+            color: isActive
+              ? theme.palette.dashboard.activeItem.color
+              : theme.palette.dashboard.inactiveItem.color,
             backgroundColor: isActive
               ? theme.palette.dashboard.activeItem.background
-              : theme.palette.dashboard.hoverItem.background,
-          },
-          "&::after": isActive
-            ? {
-                content: '""',
-                position: "absolute",
-                right: -12,
-                top: 6,
-                bottom: 6,
-                width: 4,
-                borderRadius: 999,
-                backgroundColor: theme.palette.dashboard.activeItem.color,
-              }
-            : {},
-        })}
-      >
-        <ListItemIcon
-          sx={{
-            minWidth: 0,
-            color: "inherit",
-            mr: open ? 1.25 : 0,
-            justifyContent: "flex-start",
-            "& svg": {
-              fontSize: 23,
+              : "transparent",
+            "&:hover": {
+              backgroundColor: isActive
+                ? theme.palette.dashboard.activeItem.background
+                : theme.palette.dashboard.hoverItem.background,
             },
-          }}
+            "&::after": isActive
+              ? {
+                  content: '""',
+                  position: "absolute",
+                  right: -12,
+                  top: 6,
+                  bottom: 6,
+                  width: 4,
+                  borderRadius: 999,
+                  backgroundColor: theme.palette.dashboard.activeItem.color,
+                }
+              : {},
+          })}
         >
-          {item.icon}
-        </ListItemIcon>
-        {open && (
-          <ListItemText
-            primary={item.label}
+          <ListItemIcon
             sx={{
-              textAlign: "right",
-              m: 0,
-              "& .MuiTypography-root": {
-                fontSize: 15,
-                fontWeight: isActive ? 600 : 500,
-                lineHeight: 1.4,
+              minWidth: 0,
+              color: "inherit",
+              mr: 0,
+              marginInlineEnd: open ? 0.4 : 0,
+              justifyContent: "flex-start",
+              "& svg": {
+                fontSize: 23,
               },
             }}
-          />
-        )}
-      </ListItemButton>
+          >
+            {item.icon}
+          </ListItemIcon>
+          {open && (
+            <ListItemText
+              primary={item.label}
+              sx={{
+                textAlign: "right",
+                m: 0,
+                "& .MuiTypography-root": {
+                  fontSize: 15,
+                  fontWeight: isActive ? 600 : 500,
+                  lineHeight: 1.4,
+                },
+              }}
+            />
+          )}
+        </ListItemButton>
+      </Tooltip>
     </ListItem>
   );
 }

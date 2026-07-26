@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import ErrorMarkIcon from "../../../features/dashboard/Assets/wrong-mark-svgrepo-com.svg";
-import SuccessMarkIcon from "../../../features/dashboard/Assets/wrong-mark-svgrepo-com (1).svg";
+import SuccessMarkIcon from "../../../features/dashboard/Assets/success-mark.svg";
 
 function normalizeToastText(value, fallback = "") {
   if (value == null) {

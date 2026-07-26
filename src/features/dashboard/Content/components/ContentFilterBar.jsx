@@ -117,6 +117,18 @@ export default function ContentFilterBar({
           onChange={(event) => onSortChange?.(event.target.value)}
           size="small"
           IconComponent={KeyboardArrowDownRoundedIcon}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                direction: "rtl",
+                "& .MuiMenuItem-root": {
+                  justifyContent: "flex-start",
+                  textAlign: "right",
+                  direction: "rtl",
+                },
+              },
+            },
+          }}
           sx={{
             width: { xs: "100%", sm: 150 },
             height: 38,
@@ -143,7 +155,15 @@ export default function ContentFilterBar({
           }}
         >
           {SORT_OPTIONS.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem
+              key={option.value}
+              value={option.value}
+              sx={{
+                justifyContent: "flex-start",
+                textAlign: "right",
+                direction: "rtl",
+              }}
+            >
               {option.label}
             </MenuItem>
           ))}

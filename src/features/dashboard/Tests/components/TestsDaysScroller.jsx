@@ -50,10 +50,14 @@ export const TODAY_DAY_ID = formatDateId(getStartOfLocalDay(new Date()));
 
 export function buildDays(baseDate = new Date()) {
   const today = getStartOfLocalDay(baseDate);
+  const firstDate = new Date(2025, 0, 1);
+  const lastDate = addDays(today, 7);
+  const daysCount =
+    Math.floor((lastDate.getTime() - firstDate.getTime()) / 86400000) + 1;
 
-  return Array.from({ length: 29 }, (_, index) => {
-    const offset = index - 14;
-    const date = addDays(today, offset);
+  return Array.from({ length: Math.max(1, daysCount) }, (_, index) => {
+    const date = addDays(firstDate, index);
+    const offset = Math.round((date.getTime() - today.getTime()) / 86400000);
 
     return {
       id: formatDateId(date),
@@ -67,13 +71,14 @@ export function buildDays(baseDate = new Date()) {
   });
 }
 
-function DayCard({ day, date, status, isToday, isSelected, onClick }) {
+function DayCard({ id, day, date, status, isToday, isSelected, onClick }) {
   const isFuture = status === "future";
 
   return (
     <Stack
       component="button"
       type="button"
+      data-day-id={id}
       disabled={isFuture}
       onClick={isFuture ? undefined : onClick}
       alignItems="center"
@@ -129,18 +134,32 @@ function DayCard({ day, date, status, isToday, isSelected, onClick }) {
 export default function TestsDaysScroller({ selectedDayId, onSelectDay }) {
   const days = useMemo(() => buildDays(), []);
   const scrollerRef = useRef(null);
+  const didInitialScrollRef = useRef(false);
 
   useEffect(() => {
-    if (!scrollerRef.current) return;
+    if (!scrollerRef.current || didInitialScrollRef.current) return;
 
-    const selectedIndex = days.findIndex((day) => day.id === selectedDayId);
-    if (selectedIndex < 0) return;
+    const scroller = scrollerRef.current;
+    const frameId = requestAnimationFrame(() => {
+      const todayCard = scroller.querySelector(`[data-day-id="${TODAY_DAY_ID}"]`);
 
-    const cardWidth = 70;
-    scrollerRef.current.scrollLeft = Math.max(0, selectedIndex * cardWidth - 280);
-  }, [days, selectedDayId]);
+      if (!todayCard) return;
 
-  const selectedDay = days.find((day) => day.id === selectedDayId) ?? days[14];
+      todayCard.scrollIntoView({
+        block: "nearest",
+        inline: "center",
+        behavior: "auto",
+      });
+      didInitialScrollRef.current = true;
+    });
+
+    return () => cancelAnimationFrame(frameId);
+  }, [days]);
+
+  const selectedDay =
+    days.find((day) => day.id === selectedDayId) ??
+    days.find((day) => day.isToday) ??
+    days[0];
 
   const scrollByCards = (direction) => {
     scrollerRef.current?.scrollBy({
@@ -224,6 +243,7 @@ export default function TestsDaysScroller({ selectedDayId, onSelectDay }) {
             {days.map((item) => (
               <DayCard
                 key={item.id}
+                id={item.id}
                 day={item.day}
                 date={item.date}
                 status={item.status}

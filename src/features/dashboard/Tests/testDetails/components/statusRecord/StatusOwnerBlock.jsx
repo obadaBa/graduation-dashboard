@@ -1,6 +1,7 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material";
 
-const defaultAvatar = "http://localhost/storage/defaults/default-avatar.svg";
+const appUrl = process.env.REACT_APP_APP_URL || "http://localhost";
+const defaultAvatar = `${appUrl}/storage/defaults/default-avatar.svg`;
 
 const roleLabels = {
   owner: "مالك التطبيق",
@@ -15,11 +16,7 @@ export default function StatusOwnerBlock({ actor }) {
 
   return (
     <Stack direction="row-reverse" spacing={1.1} alignItems="center" gap={1}>
-      <Avatar
-        src={actor.avatar || defaultAvatar}
-        alt={actor.name}
-        sx={{ width: 48, height: 48, borderRadius: "10px" }}
-      />
+
       <Box sx={{ textAlign: "right" }}>
         <Typography
           sx={{
@@ -42,6 +39,11 @@ export default function StatusOwnerBlock({ actor }) {
           </Typography>
         )}
       </Box>
+      <Avatar
+        src={actor.avatar || defaultAvatar}
+        alt={actor.name}
+        sx={{ width: 48, height: 48, borderRadius: "10px" }}
+      />
     </Stack>
   );
 }

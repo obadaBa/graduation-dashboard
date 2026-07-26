@@ -73,6 +73,17 @@ export default function RevisionRequestFields({
             })
           }
           IconComponent={KeyboardArrowDownRoundedIcon}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                direction: "rtl",
+                "& .MuiMenuItem-root": {
+                  justifyContent: "flex-start",
+                  textAlign: "right",
+                },
+              },
+            },
+          }}
           sx={fieldSx}
         >
           <MenuItem value="" disabled>

@@ -1,78 +1,66 @@
-import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
-import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import { Box, Button, Typography } from "@mui/material";
 import StatusDetailsShell from "./StatusDetailsShell";
+import StatusTimeBlock from "./StatusTimeBlock";
 
-export default function ReportedStatusDetails() {
+export default function ReportedStatusDetails({ history, onShowReports }) {
+  const details = history?.details || {};
+  const reportedMessage =
+    "هذا الاختبار ينتهك سياسة الخصوصية ويجب اتخاذ إجراء مناسب بحقه ويتم ذلك من خلال تاب سجل الإبلاغات والموجود ضمن نفس هذه الصفحة";
+
   return (
     <StatusDetailsShell>
       <Typography
         sx={{
-          mt: 2.1,
+          mt: 1.2,
           color: (theme) => theme.palette.dashboard.textSecondary,
-          fontSize: 17,
+          fontSize: 15,
           fontWeight: 500,
-          lineHeight: 1.7,
-          whiteSpace: "normal",
-          wordBreak: "break-word",
-          textAlign: "right",
+          lineHeight: 1.8,
+          textAlign: "start",
         }}
       >
-        هذا الاختبار ينتهك سياسة الخصوصية ويجب اتخاذ إجراء مناسب بحقه ويتم ذلك من خلال تاب
-        سجل الإبلاغات والوجود ضمن نفس هذه الصفحة
+        {reportedMessage}
       </Typography>
 
       <Box
         sx={{
-          mt: 2.15,
-          width: "100%",
+          mt: 1.4,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 2,
+          width: "100%",
         }}
       >
         <Button
-          startIcon={<ReplyRoundedIcon sx={{ fontSize: 18 }} />}
+          type="button"
+          onClick={onShowReports}
+          endIcon={<ArrowBackRoundedIcon sx={{ fontSize: 10 }} />}
           sx={{
-            minWidth: 94,
-            height: 31,
-            px: 1.45,
+            minWidth: 78,
+            height: 22,
+
             borderRadius: "999px",
             bgcolor: "#5C84FF",
-            color: "#FFFFFF",
+            color: "#fff",
             fontSize: 12,
-            fontWeight: 700,
-            boxShadow: "0 6px 14px rgba(92, 132, 255, 0.24)",
-            "&:hover": {
-              bgcolor: "#5C84FF",
+            fontWeight: 800,
+            lineHeight: 1,
+            boxShadow: "0 4px 10px rgba(92, 132, 255, 0.28)",
+            "& .MuiButton-endIcon": {
+              ml: 0,
+              mr: 0.45,
             },
-            "& .MuiButton-startIcon": {
-              marginInlineStart: 0,
-              marginInlineEnd: "4px",
+            "&:hover": {
+              bgcolor: "#4F74E8",
+              boxShadow: "0 5px 12px rgba(92, 132, 255, 0.34)",
             },
           }}
         >
           التوجه إليها
         </Button>
-
-        <Stack direction="row-reverse" spacing={0.9} alignItems="center">
-          <Typography
-            sx={{
-              color: (theme) => theme.palette.dashboard.textPrimary,
-              fontSize: 17,
-              fontWeight: 500,
-            }}
-          >
-            21\03\2026 - الساعة 14:00
-          </Typography>
-          <AccessTimeRoundedIcon
-            sx={{
-              fontSize: 22,
-              color: (theme) => theme.palette.dashboard.textPrimary,
-            }}
-          />
-        </Stack>
+          <StatusTimeBlock time={details.decision_at || history?.entered_at} />
       </Box>
     </StatusDetailsShell>
   );

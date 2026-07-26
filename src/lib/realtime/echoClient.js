@@ -23,7 +23,9 @@ export function createEchoClient() {
   }
 
   const scheme = process.env.REACT_APP_REVERB_SCHEME || "http";
-  const port = 8081;
+  const port = Number(process.env.REACT_APP_REVERB_PORT || 8081);
+  const authEndpoint =
+    process.env.REACT_APP_REVERB_AUTH_ENDPOINT || "/broadcasting/auth";
 
   echoClient = new Echo({
     broadcaster: "reverb",
@@ -33,7 +35,7 @@ export function createEchoClient() {
     wssPort: port,
     forceTLS: scheme === "https",
     enabledTransports: ["ws", "wss"],
-    authEndpoint: "/broadcasting/auth",
+    authEndpoint,
     auth: {
       headers: {
         Authorization: `Bearer ${token}`,
