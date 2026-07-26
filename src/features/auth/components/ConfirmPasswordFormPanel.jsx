@@ -46,7 +46,12 @@ export default function ConfirmPasswordFormPanel() {
       restart();
     },
   });
-  const { control, handleSubmit } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onTouched",
     defaultValues: otpFields.reduce((values, field) => ({ ...values, [field]: "" }), {}),
   });
 
@@ -153,7 +158,31 @@ export default function ConfirmPasswordFormPanel() {
             </Typography>
           </Box>
 
-          <AuthOtpInputs control={control} names={otpFields} />
+          <AuthOtpInputs
+            control={control}
+            names={otpFields}
+            rules={{
+              required: "رمز التحقق مطلوب",
+              pattern: {
+                value: /^\d$/,
+                message: "رمز التحقق يجب أن يكون أرقام فقط",
+              },
+            }}
+          />
+
+          {otpFields.some((field) => errors[field]) ? (
+            <Typography
+              sx={{
+                mt: 1,
+                color: theme.palette.error.main,
+                fontSize: { xs: "0.82rem", sm: "0.88rem" },
+                fontWeight: 600,
+                textAlign: "right",
+              }}
+            >
+              أدخل رمز التحقق الكامل المكون من 6 أرقام
+            </Typography>
+          ) : null}
 
           <AuthPrimaryButton
             type="submit"

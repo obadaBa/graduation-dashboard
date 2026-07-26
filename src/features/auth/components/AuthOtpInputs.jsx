@@ -5,6 +5,7 @@ import { Controller } from "react-hook-form";
 export default function AuthOtpInputs({
   control,
   names = ["digit1", "digit2", "digit3", "digit4", "digit5", "digit6"],
+  rules,
 }) {
   const theme = useTheme();
   const inputRefs = useRef([]);
@@ -27,8 +28,10 @@ export default function AuthOtpInputs({
           key={name}
           name={name}
           control={control}
-          render={({ field }) => (
+          rules={rules}
+          render={({ field, fieldState }) => (
             <FormControl
+              error={Boolean(fieldState.error)}
               variant="outlined"
               sx={{
                 flex: 1,
@@ -46,6 +49,15 @@ export default function AuthOtpInputs({
                     borderColor: theme.palette.auth.title,
                     borderWidth: "1px",
                   },
+                  "&.Mui-error fieldset": {
+                    borderColor: theme.palette.error.main,
+                  },
+                  "&.Mui-error:hover fieldset": {
+                    borderColor: theme.palette.error.main,
+                  },
+                  "&.Mui-error.Mui-focused fieldset": {
+                    borderColor: theme.palette.error.main,
+                  },
                 },
                 "& .MuiOutlinedInput-input": {
                   padding: 0,
@@ -58,6 +70,7 @@ export default function AuthOtpInputs({
             >
               <OutlinedInput
                 {...field}
+                value={field.value ?? ""}
                 inputRef={(element) => {
                   inputRefs.current[index] = element;
                 }}

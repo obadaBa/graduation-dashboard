@@ -29,13 +29,16 @@ export default function ResetPasswordFormPanel() {
     },
   });
   const { control, handleSubmit } = useForm({
+    mode: "onTouched",
     defaultValues: {
       email: "",
     },
   });
 
   const onSubmit = (data) => {
-    requestOtpMutation.mutate(data);
+    requestOtpMutation.mutate({
+      email: data.email.trim(),
+    });
   };
 
   return (
@@ -105,6 +108,15 @@ export default function ResetPasswordFormPanel() {
             name="email"
             placeholder="أدخل البريد الإلكتروني..."
             ariaLabel="البريد الإلكتروني"
+            rules={{
+              validate: {
+                required: (value) =>
+                  value.trim() ? true : "البريد الإلكتروني مطلوب",
+                email: (value) =>
+                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()) ||
+                  "أدخل بريد إلكتروني صحيح",
+              },
+            }}
             endAdornment={<MailOutline sx={{ color: "#B3B3B3", ml: 2 }} />}
           />
 

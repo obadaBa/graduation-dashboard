@@ -29,7 +29,8 @@ export default function CreateNewPasswordFormPanel() {
       navigate("/login", { replace: true });
     },
   });
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, getValues } = useForm({
+    mode: "onTouched",
     defaultValues: {
       password: "",
       confirmPassword: "",
@@ -125,6 +126,15 @@ export default function CreateNewPasswordFormPanel() {
             type={showPassword ? "text" : "password"}
             placeholder="أدخل كلمة المرور الخاصة بك..."
             ariaLabel="كلمة المرور"
+            rules={{
+              required: "كلمة المرور مطلوبة",
+              minLength: {
+                value: 8,
+                message: "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+              },
+              validate: (value) =>
+                value.trim() === value || "كلمة المرور لا يجب أن تبدأ أو تنتهي بمسافة",
+            }}
             endAdornment={
               <IconButton
                 type="button"
@@ -161,6 +171,11 @@ export default function CreateNewPasswordFormPanel() {
             type={showConfirmPassword ? "text" : "password"}
             placeholder="أدخل كلمة المرور مرة أخرى..."
             ariaLabel="تأكيد كلمة المرور"
+            rules={{
+              required: "تأكيد كلمة المرور مطلوب",
+              validate: (value) =>
+                value === getValues("password") || "كلمة المرور وتأكيدها غير متطابقين",
+            }}
             endAdornment={
               <IconButton
                 type="button"

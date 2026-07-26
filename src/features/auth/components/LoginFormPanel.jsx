@@ -18,6 +18,7 @@ export default function LoginFormPanel() {
     onSuccess: () => navigate("/dashboard"),
   });
   const { control, handleSubmit } = useForm({
+    mode: "onTouched",
     defaultValues: {
       email: "",
       password: "",
@@ -25,7 +26,10 @@ export default function LoginFormPanel() {
   });
 
   const onSubmit = (data) => {
-    loginMutation.mutate(data);
+    loginMutation.mutate({
+      ...data,
+      email: data.email.trim(),
+    });
   };
 
   return (
@@ -116,6 +120,15 @@ export default function LoginFormPanel() {
             name="email"
             placeholder="أدخل البريد الإلكتروني..."
             ariaLabel="البريد الإلكتروني"
+            rules={{
+              validate: {
+                required: (value) =>
+                  value.trim() ? true : "البريد الإلكتروني مطلوب",
+                email: (value) =>
+                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()) ||
+                  "أدخل بريد إلكتروني صحيح",
+              },
+            }}
             endAdornment={<MailOutline sx={{ color: "#B3B3B3", ml: 2 }} />}
           />
 
@@ -138,6 +151,9 @@ export default function LoginFormPanel() {
             type={showPassword ? "text" : "password"}
             placeholder="أدخل كلمة المرور الخاصة بك..."
             ariaLabel="كلمة المرور"
+            rules={{
+              required: "كلمة المرور مطلوبة",
+            }}
             endAdornment={
               <IconButton
                 type="button"
